@@ -19,7 +19,10 @@ export async function getCreditAccount() {
 export type CreditAccount = NonNullable<Awaited<ReturnType<typeof getCreditAccount>>>;
 function credentials(account: CreditAccount) {
   const secret = process.env.TRIP_CREDIT_SECRET;
-  if (!secret) throw new Error("Credit service is temporarily unavailable. Please try again.");
+  if (!secret) {
+    console.error("[TripCredits] TRIP_CREDIT_SECRET is not set in environment variables! Please add TRIP_CREDIT_SECRET to your Vercel and Convex environment variables.");
+    throw new Error("Credit service is temporarily unavailable. Please try again.");
+  }
   return { secret, userId: account.userId, capacity: account.capacity };
 }
 function info(account: CreditAccount, state: { remaining: number; updatedAt: number }) {
@@ -35,11 +38,17 @@ export async function readTripCredits(account: CreditAccount, requestId?: string
   try {
     const state = await client().query(api.credits.ReadBalance, { ...credentials(account), requestId });
     return { info: info(account, state), tripPlan: state.tripPlan };
-  } catch { throw new Error("Credit service is temporarily unavailable. Please try again."); }
+  } catch (err) {
+    console.error("[TripCredits] Failed to read trip credits from Convex:", err);
+    throw new Error("Credit service is temporarily unavailable. Please try again.");
+  }
 }
 export async function commitTripPlan(account: CreditAccount, requestId: string, tripPlan: unknown) {
   try {
     const state = await client().mutation(api.credits.CommitPlan, { ...credentials(account), requestId, tripPlan });
     return { info: info(account, state), denied: state.denied, tripPlan: state.tripPlan };
-  } catch { throw new Error("Credit service is temporarily unavailable. Please try again."); }
+  } catch (err) {
+    console.error("[TripCredits] Failed to commit trip plan in Convex:", err);
+    throw new Error("Credit service is temporarily unavailable. Please try again.");
+  }
 }

@@ -28,7 +28,14 @@ export default function CreditDisplay({ latest }: { latest: CreditInfo | null })
                 setCreditInfo(response.data);
                 setFailed(false);
             } catch (error) {
-                if (!axios.isCancel(error)) setFailed(true);
+                if (!axios.isCancel(error)) {
+                    if (axios.isAxiosError(error) && error.response?.status === 401) {
+                        setCreditInfo({ isAuthenticated: false, isPremium: false, remaining: 0, capacity: 2, resetInfo: null });
+                        setFailed(false);
+                    } else {
+                        setFailed(true);
+                    }
+                }
             } finally {
                 if (!controller.signal.aborted) setLoading(false);
             }
