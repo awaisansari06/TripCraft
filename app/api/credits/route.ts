@@ -7,7 +7,8 @@ export async function GET() {
     if (!account) return NextResponse.json({ isAuthenticated: false, isPremium: false, remaining: 0, capacity: 2, resetInfo: null }, { status: 401 });
     const { info } = await readTripCredits(account);
     return NextResponse.json(info, { headers: { "Cache-Control": "private, no-store" } });
-  } catch {
+  } catch (error) {
+    console.error("Credit service error in GET /api/credits:", error);
     return NextResponse.json({ error: "Credit service is temporarily unavailable. Please try again." }, { status: 503 });
   }
 }
