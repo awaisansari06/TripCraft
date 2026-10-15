@@ -1,0 +1,1781 @@
+.home,
+.header {
+  --paper: var(--tc-paper);
+  --ink: var(--tc-ink);
+  --muted: var(--tc-muted);
+  --card: #ffffff8c;
+  --line: #e7e5e0;
+  --orange: #ff6425;
+  background: var(--paper);
+  color: var(--ink);
+}
+:global(.dark) .home,
+:global(.dark) .header {
+  --paper: #0b1821;
+  --ink: #f0f0eb;
+  --muted: var(--tc-muted);
+  --card: #162633;
+  --line: #2a4050;
+}
+.home {
+  overflow: hidden;
+  background-image: radial-gradient(
+    ellipse at 25% 40%,
+    #d8bd9110,
+    transparent 65%
+  );
+}
+.container,
+.headerInner {
+  width: 89%;
+  max-width: 1120px;
+  margin: auto;
+}
+.headerInner {
+  height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 23px;
+  white-space: nowrap;
+}
+.header nav {
+  display: flex;
+  gap: 42px;
+  margin-right: auto;
+  margin-left: 9%;
+}
+.header nav a {
+  font-size: 14px;
+  color: var(--muted);
+  padding: 14px 0;
+  position: relative;
+}
+.header nav a[aria-current] {
+  color: var(--ink);
+}
+.header nav a[aria-current]:after {
+  content: "";
+  height: 2px;
+  background: var(--orange);
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  right: 0;
+}
+.account {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+}
+.themeToggle,
+.signIn {
+  background: var(--card);
+  border: 1px solid var(--line);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.themeToggle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.signIn {
+  padding: 9px 26px;
+  border-radius: 30px;
+  font-size: 14px;
+}
+.photo {
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
+.photo img {
+  object-fit: cover;
+}
+.darkPhoto {
+  display: none;
+}
+:global(.dark) .lightPhoto {
+  display: none;
+}
+:global(.dark) .darkPhoto {
+  display: block;
+}
+.hero {
+  position: relative;
+  max-width: 1260px;
+  margin: auto;
+  height: 575px;
+}
+.heroImage {
+  position: absolute;
+  right: -5%;
+  top: -12px;
+  width: 52%;
+  height: 555px;
+  border-radius: 40% 0 0 43%;
+  transform: rotate(5deg);
+  border-left: 18px solid #d0b88b1c;
+  border-bottom: 18px solid #d0b88b13;
+  overflow: hidden;
+}
+.heroImage > .photo {
+  height: 110%;
+  width: 110%;
+  transform: rotate(-5deg);
+  margin: -5%;
+}
+.heroImage img {
+  object-position: 65% center;
+}
+.heroContent {
+  position: relative;
+  z-index: 2;
+  padding-top: 76px;
+  margin-left: 5.5%;
+  width: 58%;
+}
+.hero h1 {
+  font-size: clamp(42px, 5.5vw, 72px);
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+  font-weight: 800;
+}
+.hero h1 .heroAccent {
+  font-size: 0.81em;
+  white-space: nowrap;
+  color: var(--orange);
+}
+.home p {
+  color: var(--muted);
+  line-height: 1.4;
+}
+.heroContent > p {
+  font-size: 19px;
+  margin: 12px 0 24px;
+}
+.prompt {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 9px 8px 18px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  box-shadow: 0 8px 25px #30271913;
+  border-radius: 18px;
+  max-width: 565px;
+}
+.prompt > svg {
+  color: var(--orange);
+  flex-shrink: 0;
+}
+.prompt input {
+  min-width: 0;
+  flex: 1;
+  border-left: 1px solid var(--line);
+  padding: 8px 0 8px 15px;
+  font-size: 15px;
+  outline: none;
+}
+.prompt button,
+.cta a,
+.newsletter button {
+  background: linear-gradient(115deg, #ff8239, #ff5022);
+  color: white;
+  border-radius: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px 22px;
+  cursor: pointer;
+}
+.prompt button {
+  flex-shrink: 0;
+  min-height: 44px;
+  white-space: nowrap;
+}
+.startLabel {
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 1.8px;
+  font-weight: 700;
+  color: var(--muted);
+  margin: 18px 0 10px;
+}
+.suggestions {
+  display: flex;
+  gap: 14px;
+}
+.suggestions button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 30px;
+  padding: 5px 13px 5px 5px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 16px #30271908;
+  font-size: 12px;
+  cursor: pointer;
+}
+.suggestions .photo {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+.location {
+  position: absolute;
+  bottom: 48px;
+  left: 50px;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transform: rotate(-5deg);
+  font-family: cursive;
+  font-size: 20px;
+  font-style: italic;
+}
+.flightPath {
+  position: absolute;
+  top: 32px;
+  left: 45%;
+  width: 25%;
+  height: 150px;
+  z-index: 1;
+}
+.flightPath path,
+.steps > svg:not(.stepPlane) path {
+  fill: none;
+  stroke: #cd9e70;
+  stroke-width: 2;
+  stroke-dasharray: 7 6;
+}
+.heroPlane {
+  position: absolute;
+  top: 43px;
+  left: 45%;
+  color: #cba17b;
+  transform: rotate(-25deg);
+}
+.stamp {
+  position: absolute;
+  bottom: 34px;
+  left: 45%;
+  transform: rotate(-16deg);
+  border: 4px double #b28c5d40;
+  color: #b28c5d40;
+  padding: 8px 20px;
+  text-align: center;
+  font-family: serif;
+  font-size: 19px;
+}
+.stamp span {
+  font-size: 30px;
+}
+.stamp small {
+  display: block;
+  font-size: 8px;
+}
+.leaves {
+  position: absolute;
+  left: -35px;
+  bottom: 0;
+  width: 100px;
+  height: 110px;
+  filter: blur(2px);
+  opacity: 0.55;
+  pointer-events: none;
+  transform: rotate(15deg);
+}
+.leaves i {
+  position: absolute;
+  left: 30px;
+  width: 65px;
+  height: 17px;
+  border-radius: 100% 0 100% 0;
+  background: linear-gradient(20deg, #405131, #899260);
+  transform-origin: 0 50%;
+}
+.home h2 {
+  font-size: 44px;
+  line-height: 1.1;
+  font-weight: 750;
+  letter-spacing: -0.035em;
+}
+.home em {
+  font-style: normal;
+  color: var(--orange);
+}
+.sectionHeading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+.sectionHeading p,
+.centerHeading p {
+  font-size: 18px;
+  margin-top: 8px;
+}
+.sectionHeading > a {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+  font-size: 13px;
+  color: #4d96ce;
+  text-decoration: underline;
+  padding-bottom: 7px;
+}
+.sectionHeading > a svg {
+  width: 15px;
+  height: 15px;
+}
+.threeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.templates {
+  padding: 22px 0 42px;
+}
+.templateCard,
+.destinationCard {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  isolation: isolate;
+}
+.templateCard {
+  aspect-ratio: 1.03;
+}
+.templateCard > .photo,
+.destinationCard > .photo {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+.templateCard:after,
+.destinationCard:after {
+  content: "";
+  position: absolute;
+  inset: 45% 0 0;
+  background: linear-gradient(transparent, #000b);
+  z-index: -1;
+}
+.templateCard > div {
+  position: absolute;
+  bottom: 20px;
+  left: 24px;
+  color: white;
+}
+.home h3 {
+  font-size: 19px;
+  line-height: 1.2;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.templateCard span:not(.photo) {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  margin-top: 5px;
+}
+.templateCard svg,
+.destinationCard svg {
+  width: 14px;
+  height: 14px;
+}
+.templateCard img,
+.destinationCard img {
+  transition: transform 0.3s;
+}
+.templateCard:hover img,
+.destinationCard:hover img {
+  transform: scale(1.04);
+}
+.how {
+  position: relative;
+  padding: 30px 0 36px;
+  background: linear-gradient(100deg, #d9c8ac0c, #d9c8ac18, #d9c8ac0c);
+}
+.how > .leaves {
+  left: auto;
+  right: -35px;
+  top: 0;
+  transform: rotate(190deg);
+}
+.centerHeading {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9%;
+  position: relative;
+  padding: 0 18px;
+}
+.steps > svg:not(.stepPlane) {
+  position: absolute;
+  left: 10%;
+  top: 8px;
+  width: 80%;
+  height: 70px;
+}
+.steps article {
+  position: relative;
+}
+.stepTop {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: var(--orange);
+  margin-bottom: 8px;
+}
+.stepTop > span {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border: 4px solid var(--card);
+  background: var(--paper);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 1px var(--line),
+    0 5px 12px #00000008;
+}
+.stepTop svg {
+  width: 30px;
+  height: 30px;
+}
+.stepTop b {
+  font-size: 21px;
+  background: var(--paper);
+  padding: 4px;
+}
+.steps p {
+  font-size: 16px;
+  margin-top: 9px;
+  max-width: 250px;
+}
+.stepPlane {
+  position: absolute;
+  left: 60%;
+  top: 12px;
+  width: 32px;
+  height: 32px;
+  color: #cba17b;
+  transform: rotate(35deg);
+}
+.features {
+  position: relative;
+  padding: 30px 0 36px;
+}
+.featureGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.65fr 1fr;
+  gap: 22px;
+}
+.featureColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.feature,
+.itinerary {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+  padding: 16px;
+}
+.feature {
+  flex: 1;
+}
+.icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  color: var(--orange);
+  border-radius: 50%;
+  background: #ff8b3310;
+  border: 1px solid #ff8b3330;
+  margin-bottom: 8px;
+}
+.icon svg {
+  width: 30px;
+  height: 30px;
+}
+.feature h3 {
+  font-size: 16px;
+}
+.feature p,
+.builderTitle p {
+  font-size: 14px;
+  line-height: 1.4;
+  margin-top: 10px;
+}
+.featureColumn:last-child .feature {
+  display: flex;
+  gap: 10px;
+}
+.featureColumn:last-child .icon {
+  width: 48px;
+  height: 48px;
+  border: 0;
+}
+.featureColumn:last-child .icon svg {
+  width: 28px;
+  height: 28px;
+}
+.builderTitle {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.builderTitle p {
+  margin-top: 7px;
+}
+.sample {
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--card);
+  box-shadow: 0 4px 15px #0000000b;
+  padding-bottom: 8px;
+}
+.sampleBanner {
+  height: 90px;
+  display: flex;
+}
+.sampleBanner > .photo {
+  width: 64%;
+}
+.miniMap {
+  width: 36%;
+  position: relative;
+  background: #d9edf4;
+}
+.miniMap:before {
+  content: "";
+  position: absolute;
+  background: #cce1bc;
+  width: 60%;
+  height: 70%;
+  right: 0;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 70%);
+}
+:global(.dark) .miniMap {
+  background: #123553;
+}
+:global(.dark) .miniMap:before {
+  background: #344c45;
+}
+.miniMap > svg:first-child {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  stroke: #fff9;
+  fill: none;
+  stroke-dasharray: 3 3;
+  stroke-width: 2;
+}
+.miniMap > svg:not(:first-child) {
+  position: absolute;
+  width: 23px;
+  color: var(--orange);
+  fill: var(--orange);
+  stroke: var(--paper);
+  left: 12%;
+  top: 30%;
+}
+.miniMap > svg:nth-child(3) {
+  left: 72%;
+  top: 18%;
+}
+.miniMap > svg:nth-child(4) {
+  left: 50%;
+  top: 69%;
+}
+.sample h4 {
+  font-size: 14px;
+  padding: 9px 12px;
+}
+.day {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--line);
+}
+.day:last-child {
+  border: 0;
+}
+.day > .photo {
+  width: 65px;
+  height: 40px;
+  border-radius: 7px;
+  flex-shrink: 0;
+}
+.day b {
+  font-size: 12px;
+  white-space: nowrap;
+}
+.day strong {
+  font-size: 12px;
+}
+.day p {
+  font-size: 12px;
+  line-height: 1.25;
+  margin-top: 2px;
+}
+.features > .leaves {
+  left: -90px;
+  bottom: 10px;
+}
+.destinations {
+  padding: 24px 0 32px;
+}
+.destinationCard {
+  aspect-ratio: 1.5;
+}
+.destinationCard h3 {
+  position: absolute;
+  bottom: 14px;
+  left: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  font-size: 17px;
+}
+.cta {
+  position: relative;
+  isolation: isolate;
+  width: 95%;
+  max-width: 1200px;
+  margin: 0 auto;
+  border-radius: 34px;
+  overflow: hidden;
+  height: 270px;
+}
+.cta > .photo {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+.cta img {
+  object-position: center 54%;
+}
+.cta:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #e5f3f8bb, transparent 75%);
+  z-index: -1;
+}
+:global(.dark) .cta:after {
+  background: linear-gradient(90deg, #102c4fdd, transparent 80%);
+}
+.cta > div {
+  padding: 34px 6%;
+}
+.cta p {
+  color: var(--ink);
+  font-size: 19px;
+  margin: 7px 0 16px;
+}
+.cta a {
+  width: max-content;
+  border-radius: 30px;
+  padding: 14px 26px;
+  box-shadow: 0 0 0 4px #ffffff30;
+  border: 1px solid #ffba80;
+}
+.footer {
+  padding-top: 40px;
+}
+.footerGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.1fr 0.9fr 2.1fr;
+  gap: 24px;
+}
+.footerGrid > div > p {
+  font-size: 12px;
+  margin-top: 12px;
+}
+.footerGrid h3 {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+.footerGrid > div > a:not(.brand) {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+.newsletter label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+.newsletter form {
+  display: flex;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 3px 9px #00000005;
+}
+.newsletter input {
+  min-width: 0;
+  width: 100%;
+  padding: 10px;
+  font-size: 11px;
+  outline: none;
+}
+.newsletter button {
+  font-size: 11px;
+  padding: 12px 16px;
+  border-radius: 9px;
+}
+.copyright {
+  margin-top: 32px;
+  border-top: 1px solid var(--line);
+  padding: 18px 0 28px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.home a:focus-visible,
+.home button:focus-visible,
+.header a:focus-visible,
+.header button:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 4px;
+}
+.prompt:focus-within,
+.newsletter form:focus-within {
+  outline: 2px solid var(--orange);
+}
+@media (min-width: 1400px) {
+  .hero {
+    height: 600px;
+  }
+}
+@media (max-width: 900px) {
+  .headerInner {
+    height: 60px;
+  }
+  .brand {
+    font-size: 18px;
+  }
+  .brand img {
+    width: 27px;
+    height: 27px;
+  }
+  .header nav {
+    gap: 28px;
+    margin-left: 8%;
+  }
+  .header nav a {
+    font-size: 12px;
+  }
+  .signIn {
+    padding: 7px 22px;
+    font-size: 12px;
+  }
+  .themeToggle {
+    width: 30px;
+    height: 30px;
+  }
+  .hero {
+    height: 365px;
+  }
+  .heroContent {
+    padding-top: 45px;
+  }
+  .hero h1 {
+    font-size: 48px;
+  }
+  .heroContent > p {
+    font-size: 14px;
+    margin: 10px 0 16px;
+  }
+  .heroImage {
+    height: 370px;
+    border-width: 12px;
+  }
+  .prompt {
+    gap: 10px;
+    padding: 6px;
+    max-width: 375px;
+    border-radius: 13px;
+  }
+  .prompt > svg {
+    width: 26px;
+    margin-left: 8px;
+  }
+  .prompt input {
+    font-size: 11px;
+    padding-left: 10px;
+  }
+  .prompt button {
+    font-size: 12px;
+    padding: 11px 15px;
+    gap: 7px;
+    border-radius: 9px;
+  }
+  .startLabel {
+    font-size: 8px;
+    margin-top: 12px;
+  }
+  .suggestions {
+    gap: 10px;
+  }
+  .suggestions button {
+    font-size: 10px;
+    gap: 7px;
+  }
+  .suggestions .photo {
+    width: 27px;
+    height: 27px;
+  }
+  .location {
+    font-size: 16px;
+    left: 35px;
+    bottom: 35px;
+  }
+  .stamp {
+    bottom: 8px;
+    padding: 4px 10px;
+    font-size: 15px;
+  }
+  .flightPath {
+    top: 16px;
+  }
+  .heroPlane {
+    top: 22px;
+  }
+  .home h2 {
+    font-size: 32px;
+  }
+  .sectionHeading p,
+  .centerHeading p {
+    font-size: 14px;
+    margin-top: 5px;
+  }
+  .sectionHeading > a {
+    font-size: 10px;
+  }
+  .threeGrid {
+    gap: 12px;
+  }
+  .templates {
+    padding-top: 25px;
+    padding-bottom: 30px;
+  }
+  .sectionHeading {
+    margin-bottom: 16px;
+  }
+  .templateCard,
+  .destinationCard {
+    border-radius: 12px;
+  }
+  .templateCard > div {
+    left: 16px;
+    bottom: 14px;
+  }
+  .home h3 {
+    font-size: 15px;
+  }
+  .templateCard span:not(.photo) {
+    font-size: 11px;
+  }
+  .how {
+    padding: 24px 0 25px;
+  }
+  .centerHeading {
+    margin-bottom: 24px;
+  }
+  .steps {
+    gap: 9%;
+    padding: 0 12px;
+  }
+  .stepTop > span {
+    width: 52px;
+    height: 52px;
+    border-width: 3px;
+  }
+  .stepTop svg {
+    width: 24px;
+    height: 24px;
+  }
+  .stepTop b {
+    font-size: 16px;
+  }
+  .stepTop {
+    gap: 10px;
+  }
+  .steps p {
+    font-size: 12px;
+    margin-top: 7px;
+  }
+  .steps > svg:not(.stepPlane) {
+    top: 0;
+    height: 60px;
+  }
+  .stepPlane {
+    top: 8px;
+    width: 26px;
+  }
+  .features {
+    padding: 20px 0 25px;
+  }
+  .featureGrid {
+    gap: 15px;
+  }
+  .featureColumn {
+    gap: 15px;
+  }
+  .feature,
+  .itinerary {
+    padding: 11px;
+    border-radius: 12px;
+  }
+  .icon {
+    width: 43px;
+    height: 43px;
+  }
+  .icon svg {
+    width: 25px;
+    height: 25px;
+  }
+  .feature h3 {
+    font-size: 12px;
+  }
+  .feature p,
+  .builderTitle p {
+    font-size: 11px;
+    margin-top: 7px;
+  }
+  .featureColumn:last-child .feature {
+    gap: 7px;
+  }
+  .featureColumn:last-child .icon {
+    width: 34px;
+    height: 34px;
+  }
+  .featureColumn:last-child .icon svg {
+    width: 23px;
+    height: 23px;
+  }
+  .builderTitle {
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .builderTitle h3 {
+    font-size: 15px;
+  }
+  .sampleBanner {
+    height: 68px;
+  }
+  .sample h4 {
+    font-size: 11px;
+    padding: 7px 9px;
+  }
+  .day {
+    gap: 9px;
+    margin: 0 9px;
+    padding: 5px 0;
+  }
+  .day > .photo {
+    width: 49px;
+    height: 30px;
+  }
+  .day b,
+  .day strong,
+  .day p {
+    font-size: 9px;
+  }
+  .destinations {
+    padding: 20px 0 25px;
+  }
+  .destinationCard h3 {
+    font-size: 12px;
+    left: 12px;
+    bottom: 10px;
+  }
+  .cta {
+    height: 190px;
+    border-radius: 25px;
+  }
+  .cta > div {
+    padding: 25px 6%;
+  }
+  .cta p {
+    font-size: 14px;
+    margin: 5px 0 12px;
+  }
+  .cta a {
+    font-size: 13px;
+    padding: 11px 22px;
+  }
+  .footer {
+    padding-top: 30px;
+  }
+  .footerGrid {
+    gap: 18px;
+  }
+  .footerGrid h3 {
+    font-size: 11px;
+  }
+  .footerGrid > div > a:not(.brand),
+  .footerGrid > div > p,
+  .newsletter label {
+    font-size: 9px;
+  }
+  .newsletter input {
+    font-size: 8px;
+    padding: 7px;
+  }
+  .newsletter button {
+    font-size: 9px;
+    padding: 9px 12px;
+  }
+  .copyright {
+    font-size: 9px;
+    margin-top: 25px;
+    padding-bottom: 22px;
+  }
+}
+@media (max-width: 600px) {
+  .headerInner {
+    width: 92%;
+    gap: 12px;
+    flex-wrap: wrap;
+    height: auto;
+    padding: 13px 0;
+  }
+  .header nav {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    margin: 0;
+    gap: 32px;
+  }
+  .header nav a {
+    padding: 7px 0;
+  }
+  .account {
+    gap: 10px;
+  }
+  .hero {
+    height: auto;
+    padding-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+  }
+  .heroImage {
+    position: relative;
+    order: 2;
+    width: 94%;
+    right: auto;
+    align-self: flex-end;
+    height: 285px;
+    margin-top: 25px;
+    border-radius: 40% 0 0 25%;
+    top: 0;
+  }
+  .heroContent {
+    width: 89%;
+    padding-top: 30px;
+  }
+  .hero h1 {
+    font-size: clamp(32px, 8.7vw, 52px);
+  }
+  .hero h1 .heroAccent {
+    font-size: 0.76em;
+  }
+  .heroContent > p {
+    font-size: 14px;
+  }
+  .prompt {
+    max-width: none;
+  }
+  .prompt button {
+    padding: 12px;
+    white-space: nowrap;
+  }
+  .heroPlane,
+  .flightPath,
+  .stamp {
+    display: none;
+  }
+  .hero > .leaves {
+    bottom: 5px;
+  }
+  .home h2 {
+    font-size: 28px;
+  }
+  .sectionHeading {
+    display: block;
+  }
+  .sectionHeading > a {
+    margin-top: 12px;
+  }
+  .threeGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .templates .threeGrid {
+    grid-template-columns: 1fr;
+  }
+  .templateCard {
+    aspect-ratio: 1.5;
+  }
+  .templateCard > div {
+    left: 20px;
+    bottom: 20px;
+  }
+  .templateCard h3 {
+    font-size: 20px;
+  }
+  .templateCard span:not(.photo) {
+    font-size: 13px;
+  }
+  .steps {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+  .steps > svg:not(.stepPlane),
+  .stepPlane {
+    display: none;
+  }
+  .steps article {
+    padding-left: 80px;
+    min-height: 85px;
+  }
+  .stepTop {
+    position: absolute;
+    left: 0;
+    top: 0;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .steps h3 {
+    font-size: 17px;
+  }
+  .steps p {
+    font-size: 14px;
+    max-width: none;
+  }
+  .featureGrid {
+    grid-template-columns: 1fr;
+  }
+  .featureColumn {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .featureColumn:last-child {
+    grid-template-columns: 1fr;
+  }
+  .feature {
+    padding: 16px;
+  }
+  .feature h3 {
+    font-size: 15px;
+  }
+  .feature p,
+  .builderTitle p {
+    font-size: 13px;
+  }
+  .itinerary {
+    grid-row: 1;
+    padding: 16px;
+  }
+  .builderTitle h3 {
+    font-size: 19px;
+  }
+  .sampleBanner {
+    height: 110px;
+  }
+  .sample h4 {
+    font-size: 14px;
+  }
+  .day > .photo {
+    width: 70px;
+    height: 45px;
+  }
+  .day b,
+  .day strong,
+  .day p {
+    font-size: 12px;
+  }
+  .day {
+    padding: 8px 0;
+  }
+  .featureColumn:last-child .feature {
+    gap: 16px;
+  }
+  .destinationCard {
+    aspect-ratio: 1.1;
+  }
+  .destinationCard h3 {
+    font-size: 12px;
+    left: 9px;
+    gap: 4px;
+  }
+  .cta {
+    height: 245px;
+  }
+  .cta > div {
+    padding: 30px 6%;
+  }
+  .cta:after {
+    background: linear-gradient(90deg, #e5f3f8dd, transparent);
+  }
+  .cta h2 {
+    font-size: 30px;
+  }
+  .footerGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .footerGrid > div:first-child {
+    grid-column: 1/-1;
+  }
+  .newsletter {
+    grid-column: 1/-1;
+    max-width: 350px;
+  }
+  .footerGrid h3 {
+    font-size: 13px;
+  }
+  .footerGrid > div > a:not(.brand),
+  .footerGrid > div > p,
+  .newsletter label {
+    font-size: 12px;
+  }
+  .newsletter input,
+  .newsletter button {
+    font-size: 12px;
+  }
+  .copyright {
+    font-size: 11px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .templateCard img,
+  .destinationCard img {
+    transition: none;
+  }
+}
+/* Match the reference's compact editorial type and section proportions. */
+.home,
+.header {
+  font-family: var(--font-outfit), Arial, sans-serif;
+}
+.steps {
+  grid-template-columns: 1fr 1.2fr 0.85fr;
+  gap: 6%;
+}
+@media (min-width: 601px) and (max-width: 900px) {
+  .steps h3 {
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  .feature p {
+    font-size: 10px;
+    line-height: 1.4;
+  }
+  .featureColumn:last-child .feature {
+    padding: 10px;
+  }
+  .featureGrid {
+    gap: 15px;
+  }
+}
+@media (max-width: 600px) {
+  .steps {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+}
+
+/* Entrance and interaction motion stays local to the homepage. */
+.heroContent {
+  animation: heroEnter 650ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+.heroImage {
+  animation: photoEnter 850ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+.heroPlane {
+  animation: planeEnter 900ms ease-out 250ms both;
+}
+.motionReady [data-reveal] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 550ms ease,
+    transform 550ms cubic-bezier(0.2, 0.75, 0.25, 1);
+}
+.motionReady [data-reveal].revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+.motionReady .threeGrid [data-reveal]:nth-child(2),
+.motionReady .steps [data-reveal]:nth-of-type(2),
+.motionReady .featureColumn [data-reveal]:nth-child(2) {
+  transition-delay: 70ms;
+}
+.motionReady .threeGrid [data-reveal]:nth-child(3),
+.motionReady .steps [data-reveal]:nth-of-type(3),
+.motionReady .featureColumn [data-reveal]:nth-child(3) {
+  transition-delay: 140ms;
+}
+.motionReady .threeGrid [data-reveal]:nth-child(4) {
+  transition-delay: 50ms;
+}
+.motionReady .threeGrid [data-reveal]:nth-child(5) {
+  transition-delay: 100ms;
+}
+.motionReady .threeGrid [data-reveal]:nth-child(6) {
+  transition-delay: 150ms;
+}
+.motionReady .templateCard.revealed:hover,
+.motionReady .destinationCard.revealed:hover {
+  transform: translateY(-5px);
+}
+.templateCard,
+.destinationCard,
+.feature,
+.itinerary,
+.suggestions button,
+.prompt button,
+.cta a,
+.newsletter button,
+.themeToggle,
+.signIn {
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    border-color 220ms ease,
+    background-color 220ms ease;
+}
+.templateCard:hover,
+.destinationCard:hover {
+  box-shadow: 0 14px 30px #07111a30;
+}
+.feature:hover,
+.itinerary:hover {
+  border-color: #ff8b3380;
+  box-shadow: 0 10px 24px #07111a12;
+}
+.suggestions button:hover,
+.themeToggle:hover,
+.signIn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 15px #07111a15;
+}
+.prompt button:hover:not(:disabled),
+.cta a:hover,
+.newsletter button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px #ff64254d;
+}
+.prompt button:active,
+.cta a:active,
+.newsletter button:active {
+  transform: translateY(0) scale(0.98);
+}
+.prompt button:disabled {
+  cursor: progress;
+  opacity: 0.85;
+}
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ffffff80;
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 700ms linear infinite;
+}
+@keyframes heroEnter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes photoEnter {
+  from {
+    opacity: 0;
+    translate: 28px 0;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@keyframes planeEnter {
+  from {
+    opacity: 0;
+    translate: -18px 10px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* A coordinated entrance, with restrained depth and light on interaction. */
+.home {
+  --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+.scrollProgress {
+  position: fixed;
+  inset: 0 0 auto;
+  height: 3px;
+  z-index: 100;
+  pointer-events: none;
+  background: linear-gradient(90deg, #ffb36b, #ff6425, #ff9870);
+  box-shadow: 0 0 12px #ff642550;
+  transform-origin: left;
+  transform: scaleX(var(--scroll-progress, 0));
+}
+.heroContent {
+  animation: none;
+}
+.heroLine {
+  display: block;
+  overflow: visible;
+}
+.heroLine > span {
+  display: block;
+  animation: titleRise 1100ms var(--motion-ease) both;
+}
+.heroLine:nth-child(2) > span {
+  animation-delay: 110ms;
+}
+.heroLine:nth-child(3) > span {
+  animation-delay: 220ms;
+}
+.heroAccent > span {
+  background: linear-gradient(100deg, #ff934f, #ff5425 60%, #ff8544);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.heroContent > p,
+.heroContent > .prompt,
+.heroContent > .startLabel,
+.heroContent > .suggestions {
+  animation: heroEnter 900ms var(--motion-ease) 320ms both;
+}
+.heroContent > .prompt {
+  animation-delay: 420ms;
+}
+.heroContent > .startLabel {
+  animation-delay: 500ms;
+}
+.heroContent > .suggestions {
+  animation-delay: 560ms;
+}
+.heroImage {
+  animation: coastReveal 1400ms var(--motion-ease) both;
+}
+.heroImage > .photo {
+  translate: 0 var(--hero-shift, 0px);
+}
+.heroPlane {
+  animation: planeEnter 1400ms var(--motion-ease) 500ms both;
+}
+.flightPath {
+  animation: routeReveal 1600ms var(--motion-ease) 500ms both;
+}
+.location {
+  left: 18%;
+  bottom: 16%;
+  white-space: nowrap;
+  padding: 10px 15px;
+  border: 1px solid #ffffff35;
+  border-radius: 24px;
+  background: #122a3a30;
+  backdrop-filter: blur(12px);
+}
+.motionReady [data-reveal] {
+  translate: 0 32px;
+  transform: none;
+  transition:
+    opacity 850ms var(--motion-ease),
+    translate 850ms var(--motion-ease),
+    transform 240ms ease-out,
+    box-shadow 350ms ease,
+    border-color 350ms ease;
+}
+.motionReady [data-reveal].revealed,
+.motionReady [data-reveal]:focus-within {
+  opacity: 1;
+  translate: 0 0;
+  transform: none;
+}
+.photo {
+  background: #b9b8ae20;
+}
+.photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    110deg,
+    transparent 25%,
+    #ffffff30 45%,
+    transparent 65%
+  );
+  translate: -100% 0;
+  opacity: 0;
+}
+.photo[data-light-ready="false"]::after,
+:global(.dark) .photo[data-dark-ready="false"]::after {
+  opacity: 1;
+  animation: imageShimmer 1500ms ease-in-out infinite;
+}
+:global(.dark) .photo[data-dark-ready="true"]::after {
+  opacity: 0;
+  animation: none;
+}
+.photo[data-light-ready="true"] .lightPhoto,
+.photo[data-dark-ready="true"] .darkPhoto {
+  animation: imageResolve 700ms ease-out;
+}
+.templateCard img,
+.destinationCard img {
+  transition: transform 1100ms var(--motion-ease);
+}
+.templateCard > div,
+.destinationCard h3 {
+  transition: translate 650ms var(--motion-ease);
+}
+.templateCard::before,
+.destinationCard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 350ms ease;
+  background: radial-gradient(
+    circle at calc(50% + var(--pointer-x, 0) * 45%)
+      calc(50% + var(--pointer-y, 0) * 45%),
+    #ffffff38,
+    transparent 65%
+  );
+  box-shadow: inset 0 0 0 1px #ffffff40;
+}
+.prompt button,
+.cta a,
+.newsletter button {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.prompt button::after,
+.cta a::before,
+.newsletter button::after {
+  content: "";
+  position: absolute;
+  inset: -60% -20%;
+  background: linear-gradient(
+    110deg,
+    transparent 35%,
+    #ffffff40 50%,
+    transparent 65%
+  );
+  transform: translateX(-100%);
+  pointer-events: none;
+}
+.prompt button:hover::after,
+.cta a:hover::before,
+.newsletter button:hover::after {
+  animation: buttonSheen 800ms var(--motion-ease);
+}
+.sectionHeading > a svg,
+.cta a svg,
+.suggestions button > svg {
+  transition: translate 400ms var(--motion-ease);
+}
+.sectionHeading > a:hover svg,
+.cta a:hover svg,
+.suggestions button:hover > svg {
+  translate: 4px 0;
+}
+.icon svg,
+.stepTop svg {
+  transition: transform 600ms var(--motion-ease);
+}
+.feature:hover .icon svg {
+  transform: translateY(-3px) rotate(-7deg);
+}
+.steps article:hover .stepTop svg {
+  transform: scale(1.12);
+}
+.itinerary:global(.tc-revealed) .miniMap > svg:not(:first-child) {
+  animation: pinArrive 650ms var(--motion-ease) 350ms both;
+}
+.itinerary:global(.tc-revealed) .miniMap > svg:nth-child(3) {
+  animation-delay: 500ms;
+}
+.itinerary:global(.tc-revealed) .miniMap > svg:nth-child(4) {
+  animation-delay: 650ms;
+}
+@media (hover: hover) and (pointer: fine) {
+  .home [data-depth][data-hovering="true"] {
+    transform: perspective(1000px) rotateX(calc(var(--pointer-y, 0) * -3deg))
+      rotateY(calc(var(--pointer-x, 0) * 4deg)) translateY(-7px);
+    transition-delay: 0ms;
+    box-shadow:
+      0 24px 44px -18px #081e3b55,
+      0 8px 18px -12px #ff64254d;
+  }
+  .templateCard:hover::before,
+  .destinationCard:hover::before {
+    opacity: 1;
+  }
+  .templateCard:hover img,
+  .destinationCard:hover img {
+    transform: scale(1.085);
+  }
+  .templateCard:hover > div,
+  .destinationCard:hover h3 {
+    translate: 0 -5px;
+  }
+  .home [data-magnetic]:hover:not(:disabled) {
+    transform: translate(
+      calc(var(--pointer-x, 0) * 4px),
+      calc(var(--pointer-y, 0) * 3px - 2px)
+    );
+  }
+}
+@keyframes titleRise {
+  from {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes coastReveal {
+  from {
+    opacity: 0;
+    translate: 45px 10px;
+    clip-path: inset(0 0 0 25% round 40% 0 0 43%);
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+    clip-path: inset(0 round 40% 0 0 43%);
+  }
+}
+@keyframes routeReveal {
+  from {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+  }
+  to {
+    clip-path: inset(0);
+    opacity: 1;
+  }
+}
+@keyframes imageShimmer {
+  to {
+    translate: 100% 0;
+  }
+}
+@keyframes imageResolve {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes buttonSheen {
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes pinArrive {
+  from {
+    opacity: 0;
+    translate: 0 -12px;
+    scale: 0.7;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home *,
+  .header * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  .motionReady [data-reveal] {
+    opacity: 1;
+    transform: none;
+    translate: none;
+  }
+  .home [data-depth],
+  .home [data-magnetic],
+  .home .photo,
+  .home .photo img,
+  .home .icon svg {
+    transform: none !important;
+    translate: none !important;
+  }
+  .home .heroImage > .photo {
+    transform: rotate(-5deg) !important;
+  }
+  .scrollProgress,
+  .photo::after,
+  .prompt button::after,
+  .cta a::before,
+  .newsletter button::after {
+    display: none;
+  }
+}

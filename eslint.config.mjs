@@ -12,6 +12,13 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "convex/_generated/**",
+    "tests/**",
+    "test-gemini.js",
+    "tmp/**",
+    "lint_full.json",
+    "lint.json",
+    "tsc_output.txt",
   ]),
 ]);
 

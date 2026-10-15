@@ -1,24 +1,34 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { X } from 'lucide-react';
 
+const emptySubscribe = () => () => {};
+
+interface EditTripFormData {
+    source?: string;
+    destination?: string;
+    groupSize?: string;
+    budget?: string;
+    tripDuration?: string | number;
+    [key: string]: unknown;
+}
+
 interface EditTripDialogProps {
     open: boolean;
     onClose: () => void;
-    currentData: any;
-    onSave: (newData: any) => void;
+    currentData: EditTripFormData;
+    onSave: (newData: EditTripFormData) => void;
 }
 
 function EditTripDialog({ open, onClose, currentData, onSave }: EditTripDialogProps) {
-    const [formData, setFormData] = useState(currentData || {});
-    const [mounted, setMounted] = useState(false);
+    const [formData, setFormData] = useState<EditTripFormData>(currentData || {});
+    const isMounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
 
     useEffect(() => {
-        setMounted(true);
         if (open) {
             document.body.style.overflow = 'hidden';
         } else {
@@ -26,14 +36,14 @@ function EditTripDialog({ open, onClose, currentData, onSave }: EditTripDialogPr
         }
         return () => {
             document.body.style.overflow = 'unset';
-        }
+        };
     }, [open]);
 
-    if (!open || !mounted) return null;
+    if (!open || !isMounted) return null;
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setFormData((prev: any) => ({ ...prev, [name]: value }));
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleSave = () => {

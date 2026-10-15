@@ -2,8 +2,16 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Sparkles, Edit2, Plane } from 'lucide-react';
 
+export interface GenerativeTripData {
+    destination?: string;
+    tripDuration?: string | number;
+    groupSize?: string;
+    budget?: string;
+    [key: string]: unknown;
+}
+
 interface GenerativeTripProps {
-    tripData: any;
+    tripData?: GenerativeTripData;
     onGenerate: () => void;
     onEdit: () => void;
     loading: boolean;
@@ -18,26 +26,26 @@ function GenerativeTripUi({ tripData, onGenerate, onEdit, loading }: GenerativeT
                 </div>
                 <div>
                     <h3 className="font-bold text-lg text-gray-900 dark:text-white">Ready to Plan?</h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Here's your trip summary</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Here&apos;s your trip summary</p>
                 </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
                     <span className="text-gray-400 dark:text-gray-400 text-xs block">Destination</span>
-                    <span className="font-semibold text-gray-900 dark:text-white">{tripData?.destination || 'N/A'}</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">{String(tripData?.destination || 'N/A')}</span>
                 </div>
                 <div>
                     <span className="text-gray-400 dark:text-gray-400 text-xs block">Duration</span>
-                    <span className="font-semibold text-gray-900 dark:text-white">{tripData?.tripDuration} Days</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">{tripData?.tripDuration ? `${tripData.tripDuration} Days` : 'N/A'}</span>
                 </div>
                 <div>
                     <span className="text-gray-400 dark:text-gray-400 text-xs block">Travelers</span>
-                    <span className="font-semibold text-gray-900 dark:text-white">{tripData?.groupSize}</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">{String(tripData?.groupSize || 'N/A')}</span>
                 </div>
                 <div>
                     <span className="text-gray-400 dark:text-gray-400 text-xs block">Budget</span>
-                    <span className="font-semibold text-gray-900 dark:text-white">{tripData?.budget}</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">{String(tripData?.budget || 'N/A')}</span>
                 </div>
             </div>
 

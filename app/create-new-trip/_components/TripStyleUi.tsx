@@ -52,7 +52,7 @@ export default function TripStyleUi({ value, onSelect }: TripStyleUiProps) {
         <div className="w-full max-w-xl rounded-2xl border border-gray-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 shadow-sm">
             <div>
                 <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Travel vibe</h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400">What's your travel mood?</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">What&apos;s your travel mood?</p>
             </div>
 
             <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">

@@ -1,8 +1,15 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+import { NextResponse } from 'next/server'
 
-const isPublicRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)', '/', '/api/credits(.*)'])
+const isPublicRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)', '/', '/pricing', '/contact-us', '/privacy-policy', '/terms-of-service', '/api/credits(.*)'])
 
 export default clerkMiddleware(async (auth, req) => {
+  if (req.nextUrl.pathname.startsWith('/api/')) {
+    if (req.method === 'GET' && req.nextUrl.pathname === '/api/google-place-detail') return;
+    const { userId } = await auth();
+    if (!userId) return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    return;
+  }
   if (!isPublicRoute(req)) {
     await auth.protect()
   }

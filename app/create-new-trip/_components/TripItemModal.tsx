@@ -3,7 +3,7 @@ import { GlassModal } from "@/components/GlassModal";
 import { Button } from "@/components/ui/button";
 import Image from 'next/image';
 import Link from 'next/link';
-import { MapPin, Star, Heart, Share2, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { MapPin, Heart, Share2, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { ModalItem } from './types';
 import { useMutation, useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';

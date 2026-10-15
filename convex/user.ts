@@ -31,13 +31,13 @@ export const CreateNewUser = mutation({
             name: args.name,
             email: args.email,
             imageUrl: args.imageUrl,
-            ...(args.subscription ? { subscription: args.subscription } : {}), // Add subscription if present
+            // Plan changes are managed by billing/admins, never by this browser-callable mutation.
         };
 
         if (user?.length === 0) {
             //If not then create new user
             const newUserId = await ctx.db.insert("UserTable", userData);
-            return userData;
+            return { ...userData, _id: newUserId, _creationTime: Date.now() };
         } else {
             // Update existing user to sync metadata (e.g. subscription)
             const existingUser = user[0];

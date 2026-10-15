@@ -2,6 +2,17 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
+    TripCreditAccounts: defineTable({
+        userId: v.string(),
+        remaining: v.number(),
+        capacity: v.number(),
+        updatedAt: v.number(),
+    }).index("by_user", ["userId"]),
+    TripCreditReceipts: defineTable({
+        userId: v.string(),
+        requestId: v.string(),
+        tripPlan: v.any(),
+    }).index("by_request", ["userId", "requestId"]),
     UserTable: defineTable({
         name: v.string(),
         imageUrl: v.string(),

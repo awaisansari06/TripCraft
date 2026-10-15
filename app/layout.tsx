@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import "./globals.css";
+import "./tripcraft.css";
 import Provider from "./provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ConvexClientProvider } from "./ConvexClientProvider";
@@ -39,7 +40,7 @@ export const metadata: Metadata = {
     description: "Plan your perfect trip in seconds with AI.",
   },
   icons: {
-    icon: "/logo.svg",
+    icon: "/brand/tripcraft-symbol.png",
   },
 };
 
@@ -61,7 +62,7 @@ export default function RootLayout({
         layout: {
           socialButtonsPlacement: "bottom",
           socialButtonsVariant: "blockButton",
-          logoImageUrl: "/logo.svg",
+          logoImageUrl: "/brand/tripcraft-symbol.png",
         },
         variables: {
           colorPrimary: "#f97316",
@@ -116,7 +117,7 @@ export default function RootLayout({
       }}
     >
       <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
-        <body className={outfit.className}>
+        <body className={`${outfit.className} ${outfit.variable}`}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

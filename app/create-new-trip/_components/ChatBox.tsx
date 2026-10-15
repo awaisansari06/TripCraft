@@ -6,9 +6,9 @@ import axios from 'axios';
 import { Send, ArrowLeft, MoreVertical, Trash2, Bot, Sparkles, Wand2, Loader } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState, useRef } from 'react';
-import UiRenderer from './UiRenderer';
+import UiRenderer, { type TripFormData } from './UiRenderer';
 import EditTripDialog from './EditTripDialog';
-import CreditDisplay from './CreditDisplay';
+import CreditDisplay, { type CreditInfo } from './CreditDisplay';
 import { TripInfo } from './types';
 import { useMutation, useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
@@ -35,7 +35,6 @@ function ChatBox() {
 
     // Convex Mutations
     const createTripDetail = useMutation(api.tripDetail.CreateTripDetail);
-    const updateTripDetail = useMutation(api.tripDetail.UpdateTrip);
     const saveMessage = useMutation(api.chat.SendMessage);
 
     // Convex Queries (enabled only if we have a tripId)
@@ -68,15 +67,17 @@ function ChatBox() {
     const [userInput, setUserInput] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [tripData, setTripData] = useState<any>({});
+    const [tripData, setTripData] = useState<TripFormData>({});
     const { setTripDetailInfo } = useTripDetail();
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [isFinal, setIsFinal] = useState(false);
-    const [refreshCredits, setRefreshCredits] = useState(0); // Trigger for credit refresh
+    const [creditInfo, setCreditInfo] = useState<CreditInfo | null>(null);
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
     const initialized = useRef(false);
+    const pendingRequest = useRef<{ text: string; id: string } | null>(null);
+    const sending = useRef(false);
 
     // Sync Messages from DB
     useEffect(() => {
@@ -137,7 +138,8 @@ function ChatBox() {
 
     const onSend = async (msg?: string) => {
         const textToUse = msg || userInput;
-        if (!textToUse?.trim()) return;
+        if (!textToUse?.trim() || sending.current) return;
+        sending.current = true;
 
         setUserInput('');
         setLoading(true);
@@ -147,21 +149,21 @@ function ChatBox() {
             const lastMsg = messages[messages.length - 1];
             if (lastMsg.role === 'assistant' && lastMsg.ui) {
                 if (lastMsg.ui === 'source') {
-                    setTripData((prev: any) => ({ ...prev, source: textToUse }));
+                    setTripData((prev) => ({ ...prev, source: textToUse }));
                 } else if (lastMsg.ui === 'destination') {
-                    setTripData((prev: any) => ({ ...prev, destination: textToUse }));
+                    setTripData((prev) => ({ ...prev, destination: textToUse }));
                 } else if (lastMsg.ui === 'groupSize') {
-                    setTripData((prev: any) => ({ ...prev, groupSize: textToUse }));
+                    setTripData((prev) => ({ ...prev, groupSize: textToUse }));
                 } else if (lastMsg.ui === 'budget') {
-                    setTripData((prev: any) => ({ ...prev, budget: textToUse }));
+                    setTripData((prev) => ({ ...prev, budget: textToUse }));
                 } else if (lastMsg.ui === 'tripDuration') {
-                    setTripData((prev: any) => ({ ...prev, tripDuration: textToUse }));
+                    setTripData((prev) => ({ ...prev, tripDuration: textToUse }));
                 } else if (lastMsg.ui === 'interests') {
-                    setTripData((prev: any) => ({ ...prev, interests: textToUse }));
+                    setTripData((prev) => ({ ...prev, interests: textToUse }));
                 } else if (lastMsg.ui === 'tripStyle') {
-                    setTripData((prev: any) => ({ ...prev, tripStyle: textToUse }));
+                    setTripData((prev) => ({ ...prev, tripStyle: textToUse }));
                 } else if (lastMsg.ui === 'travelPace') {
-                    setTripData((prev: any) => ({ ...prev, travelPace: textToUse }));
+                    setTripData((prev) => ({ ...prev, travelPace: textToUse }));
                 }
             }
         }
@@ -174,6 +176,7 @@ function ChatBox() {
 
         setMessages((prev) => [...prev, newMessage]);
 
+        try {
         if (sessionId) {
             await saveMessage({
                 tripId: sessionId,
@@ -183,11 +186,16 @@ function ChatBox() {
             });
         }
 
-        try {
+            if (pendingRequest.current?.text !== textToUse) {
+                pendingRequest.current = { text: textToUse, id: crypto.randomUUID() };
+            }
             const result = await axios.post("/api/aimodel", {
                 messages: [...messages, { role: "user", content: textToUse }],
-                isFinal: isFinal
+                isFinal: isFinal,
+                requestId: pendingRequest.current.id
             });
+            pendingRequest.current = null;
+            if (result.data.credits) setCreditInfo(result.data.credits);
 
             if (isFinal && result.data.trip_plan) {
                 // Handle Final Trip Plan
@@ -224,7 +232,6 @@ function ChatBox() {
                         }
 
                         // Refresh credit display
-                        setRefreshCredits(prev => prev + 1);
                     } catch (dbError) {
                         console.error("Failed to save trip to Convex:", dbError);
                     }
@@ -338,13 +345,14 @@ function ChatBox() {
                 });
             }
         } finally {
+            sending.current = false;
             setLoading(false);
         }
     }
 
-    const handleUiSelect = (value: any) => {
+    const handleUiSelect = (value: unknown) => {
         // Automatically send the selected value as a message
-        onSend(value.toString());
+        onSend(String(value));
     }
 
     const handleGenerateTrip = async () => {
@@ -419,14 +427,14 @@ function ChatBox() {
                             // Existing Trip Summary Card (Empty State Upgrade)
                             <div className="w-full max-w-sm bg-gray-50 dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm">
                                 <h3 className="text-gray-900 dark:text-gray-100 font-bold text-lg mb-1">
-                                    Planning trip to {tripData?.locationInfo?.name || "Unknown"}
+                                    Planning trip to {String(tripData?.locationInfo?.name || "Unknown")}
                                 </h3>
                                 <div className="flex gap-3 text-xs text-gray-500 mb-4">
                                     <span className="bg-white dark:bg-black px-2 py-1 rounded border border-gray-100 dark:border-zinc-800">
-                                        📅 {tripData?.tripDuration || "N/A"} Days
+                                        📅 {String(tripData?.tripDuration || "N/A")} Days
                                     </span>
                                     <span className="bg-white dark:bg-black px-2 py-1 rounded border border-gray-100 dark:border-zinc-800">
-                                        💰 {tripData?.budget || "Flexible"} Budget
+                                        💰 {String(tripData?.budget || "Flexible")} Budget
                                     </span>
                                 </div>
                                 <Button
@@ -504,7 +512,7 @@ function ChatBox() {
 
                 {/* Credit Status Zone */}
                 <div className="mb-2">
-                    <CreditDisplay key={refreshCredits} />
+                    <CreditDisplay key={creditInfo ? `${creditInfo.capacity}:${creditInfo.remaining}` : 'initial'} latest={creditInfo} />
                 </div>
 
                 <div className='px-4 pb-6'>

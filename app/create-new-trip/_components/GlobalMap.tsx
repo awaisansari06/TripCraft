@@ -3,7 +3,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import { useTripDetail } from "@/app/provider";
 
@@ -19,7 +18,7 @@ export default function GlobalMap() {
     const mapContainer = useRef<HTMLDivElement>(null);
     const mapRef = useRef<mapboxgl.Map | null>(null);
     const isUserInteracting = useRef(false);
-    const [errorMsg, setErrorMsg] = useState("");
+    const [errorMsg] = useState(!MAPBOX_TOKEN ? "Missing Mapbox API Key" : "");
     const { tripDetailInfo } = useTripDetail();
     const [filter, setFilter] = useState<'all' | 'hotel' | 'activity'>('all');
 
@@ -27,18 +26,14 @@ export default function GlobalMap() {
        Initialize Map (Imperative)
     ------------------------------ */
     useEffect(() => {
-        if (!mapContainer.current || mapRef.current) return;
-        if (!MAPBOX_TOKEN) {
-            setErrorMsg("Missing Mapbox API Key");
-            return;
-        }
+        if (!mapContainer.current || mapRef.current || !MAPBOX_TOKEN) return;
 
         mapboxgl.accessToken = MAPBOX_TOKEN;
 
         const map = new mapboxgl.Map({
             container: mapContainer.current,
             style: "mapbox://styles/mapbox/streets-v12",
-            projection: "globe" as any,
+            projection: { name: "globe" } as unknown as mapboxgl.ProjectionSpecification,
             center: [20, 15],
             zoom: 1.5,
             pitch: 0,
@@ -105,9 +100,10 @@ export default function GlobalMap() {
 
             /* 🖱️ Interactions */
             map.on("click", "trip-points-circle", (e) => {
-                const coordinates = (e.features?.[0].geometry as any).coordinates.slice();
-                const description = e.features?.[0].properties?.title;
-                const type = e.features?.[0].properties?.type;
+                const geom = e.features?.[0]?.geometry as GeoJSON.Point | undefined;
+                const coordinates = (geom?.coordinates ? [...geom.coordinates] : [0, 0]) as [number, number];
+                const description = e.features?.[0]?.properties?.title;
+                const type = e.features?.[0]?.properties?.type;
 
                 while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
@@ -163,7 +159,7 @@ export default function GlobalMap() {
         const map = mapRef.current;
         if (!map) return;
 
-        const features: any[] = [];
+        const features: GeoJSON.Feature[] = [];
         if (tripDetailInfo) {
             if (filter === 'all' || filter === 'hotel') {
                 tripDetailInfo.hotels?.forEach((hotel) => {
@@ -207,7 +203,9 @@ export default function GlobalMap() {
                     // Calculate bounds from all features
                     const bounds = new mapboxgl.LngLatBounds();
                     features.forEach((feature) => {
-                        bounds.extend(feature.geometry.coordinates as [number, number]);
+                        if (feature.geometry.type === "Point") {
+                            bounds.extend(feature.geometry.coordinates as [number, number]);
+                        }
                     });
 
                     // Fit map to bounds with padding
@@ -230,8 +228,8 @@ export default function GlobalMap() {
     /* -----------------------------
        Geocoder Handler
     ------------------------------ */
-    const handleRetrieve = (res: any) => {
-        const feature = res.features[0];
+    const handleRetrieve = (res: { features?: Array<{ geometry: { coordinates: [number, number] } }> }) => {
+        const feature = res.features?.[0];
         const map = mapRef.current;
         if (feature && map) {
             isUserInteracting.current = true;
@@ -271,7 +269,7 @@ export default function GlobalMap() {
                             options={{
                                 language: 'en',
                             }}
-                            onRetrieve={handleRetrieve}
+                            onRetrieve={handleRetrieve as never}
                             theme={{
                                 variables: {
                                     fontFamily: 'inherit',

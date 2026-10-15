@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Sparkles, Clock } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import axios from 'axios';
 
-interface CreditInfo {
+export interface CreditInfo {
     isAuthenticated: boolean;
     isPremium: boolean;
     remaining: number;
@@ -15,33 +15,36 @@ interface CreditInfo {
     } | null;
 }
 
-export default function CreditDisplay() {
-    const [creditInfo, setCreditInfo] = useState<CreditInfo | null>(null);
-    const [loading, setLoading] = useState(true);
+export default function CreditDisplay({ latest }: { latest: CreditInfo | null }) {
+    const [creditInfo, setCreditInfo] = useState<CreditInfo | null>(latest);
+    const [loading, setLoading] = useState(!latest);
+    const [failed, setFailed] = useState(false);
 
     useEffect(() => {
-        fetchCreditInfo();
+        const controller = new AbortController();
+        const fetchCreditInfo = async () => {
+            try {
+                const response = await axios.get('/api/credits', { signal: controller.signal });
+                setCreditInfo(response.data);
+                setFailed(false);
+            } catch (error) {
+                if (!axios.isCancel(error)) setFailed(true);
+            } finally {
+                if (!controller.signal.aborted) setLoading(false);
+            }
+        };
+        void fetchCreditInfo();
         // Refresh every 30 seconds
         const interval = setInterval(fetchCreditInfo, 30000);
-        return () => clearInterval(interval);
+        return () => { controller.abort(); clearInterval(interval); };
     }, []);
 
-    const fetchCreditInfo = async () => {
-        try {
-            const response = await axios.get('/api/credits');
-            setCreditInfo(response.data);
-        } catch (error) {
-            console.error('Failed to fetch credit info:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
+    if (failed) return <p role="status" className="px-4 py-2 text-xs text-amber-700 dark:text-amber-300">Credit balance is temporarily unavailable.</p>;
     if (loading || !creditInfo || !creditInfo.isAuthenticated) {
         return null; // Don't show for unauthenticated users
     }
 
-    const { isPremium, remaining, capacity } = creditInfo;
+    const { isPremium, remaining } = creditInfo;
 
     return (
         <div className="mx-4 mb-2 animate-in fade-in duration-700">

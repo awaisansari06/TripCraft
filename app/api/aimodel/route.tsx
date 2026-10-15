@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { ajFree, ajPremium } from "@/app/api/arcjet/route";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { getCreditAccount, readTripCredits, commitTripPlan } from "@/lib/trip-credits";
+
 
 // Initialize Gemini
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+const apiKey = process.env.GEMINI_API_KEY || "";
+const genAI = new GoogleGenerativeAI(apiKey);
 const model = genAI.getGenerativeModel({
   model: "gemini-3.5-flash-lite",
   generationConfig: {
@@ -260,69 +261,70 @@ Output Schema:
 }
 `;
 
-import { ConvexHttpClient } from "convex/browser";
-import { api } from "@/convex/_generated/api";
+function extractAndParseJson(text: string): Record<string, unknown> | null {
+  if (!text || typeof text !== "string") return null;
 
-// Initialize Convex Client
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+  const trimmed = text.trim();
+  // 1. Direct parse attempt
+  try {
+    return JSON.parse(trimmed);
+  } catch {}
+
+  // 2. Extract from markdown code blocks
+  const codeBlockMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+  if (codeBlockMatch && codeBlockMatch[1]) {
+    try {
+      return JSON.parse(codeBlockMatch[1].trim());
+    } catch {}
+  }
+
+  // 3. Extract outermost { ... }
+  const firstBrace = text.indexOf("{");
+  const lastBrace = text.lastIndexOf("}");
+  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+    const rawJson = text.substring(firstBrace, lastBrace + 1);
+    try {
+      return JSON.parse(rawJson);
+    } catch {
+      // 4. Try stripping trailing commas before closing braces/brackets
+      try {
+        const cleaned = rawJson.replace(/,\s*([}\]])/g, "$1");
+        return JSON.parse(cleaned);
+      } catch {}
+    }
+  }
+
+  return null;
+}
+
+type ChatMessage = { role: "user" | "assistant"; content: string };
 
 export async function POST(request: NextRequest) {
   try {
-    const { messages, isFinal } = await request.json();
-    const user = await currentUser();
-    // No longer using Clerk's "has" for premium check
-    // const { has } = await auth();
-    // const hasPremiumAccess = has({ plan: "monthly" });
-
-    const email = user?.primaryEmailAddress?.emailAddress;
-    let hasPremiumAccess = false;
-
-    if (email) {
-      // Fetch user from Convex to check subscription
-      const convexUser = await convex.query(api.user.GetUser, { email });
-      // Check if subscription column indicates premium (monthly or annually)
-      const subscription = convexUser?.subscription;
-      hasPremiumAccess = subscription === "monthly" || subscription === "annually";
+    const account = await getCreditAccount();
+    if (!account) return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+    let body;
+    try { body = await request.json(); } catch {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
     }
-
-    // Extract the last user message upfront (used for both generation detection and the chat call)
-    const lastMessage = messages[messages.length - 1];
-
-    // Determine if this is a trip-generation request.
-    // We validate server-side by checking both the client flag AND the message content
-    // to prevent a spoofed isFinal:true from draining credits with arbitrary messages.
-    const GENERATION_KEYWORDS = ["generate", "create my trip", "generate my", "make my trip", "plan my trip", "build my trip"];
-    const lastMessageContent = lastMessage.content?.toLowerCase() ?? "";
-    const messageIndicatesGeneration = GENERATION_KEYWORDS.some(kw => lastMessageContent.includes(kw));
-    // A generation request requires BOTH the client to signal isFinal AND the message to match a generation keyword.
-    // This prevents a malicious client from setting isFinal=true on an arbitrary message to consume credits.
-    const isGenerationRequest = Boolean(isFinal) && messageIndicatesGeneration;
-
-    // Select the appropriate Arcjet instance based on user type
-    const arcjetInstance = hasPremiumAccess ? ajPremium : ajFree;
-
-    console.log(`[TripGen] User: ${email}, Premium: ${hasPremiumAccess}, Generation: ${isGenerationRequest} (isFinal=${isFinal}, msgMatch=${messageIndicatesGeneration})`);
-
-    // Check rate limits for both free and premium users
-    const decision = await arcjetInstance.protect(request, {
-      userId: email ?? '',
-      requested: isGenerationRequest ? 1 : 0
-    }); // Deduct 1 token only when generating final trip
-
-    // Safe logging with type checking
-    const remaining = (decision.reason as any)?.remaining;
-    console.log(`[TripGen] Decision: ${decision.conclusion}, Remaining: ${remaining}`);
-
-    // Check if user has credits remaining
-    if (remaining === 0) {
-      console.log("[TripGen] Credit limit reached");
-      return NextResponse.json({
-        resp: hasPremiumAccess
-          ? "You've used all 100 premium credits. Please contact support for more."
-          : "No Free Credit Remaining",
-        ui: "limit"
-      });
+    const { messages, isFinal = false, requestId = crypto.randomUUID() } = body ?? {};
+    if (typeof requestId !== "string" || !/^[a-zA-Z0-9-]{8,100}$/.test(requestId)) {
+      return NextResponse.json({ error: "Invalid request ID" }, { status: 400 });
     }
+    if (typeof isFinal !== "boolean" || !Array.isArray(messages) || !messages.length || messages.length > 100 ||
+        messages.some((m: ChatMessage) => !m || !["user", "assistant"].includes(m.role) || typeof m.content !== "string" || m.content.length > 20000) ||
+        messages.at(-1).role !== "user" || !messages.at(-1).content.trim()) {
+      return NextResponse.json({ error: "Provide a valid conversation ending with a user message." }, { status: 400 });
+    }
+    const lastMessage: ChatMessage = messages[messages.length - 1];
+    const before = await readTripCredits(account, requestId);
+    if (before.tripPlan) return NextResponse.json({ trip_plan: before.tripPlan, credits: before.info });
+    const limitResponse = () => NextResponse.json({
+      error: "No trip credits remaining. Please check your plan.",
+      resp: "No trip credits remaining. Please check your plan.",
+      ui: "limit",
+    }, { status: 429 });
+    if (isFinal && before.info.remaining < 1) return limitResponse();
 
     // Separate the history (all messages except the last one, which we already have)
     const historyMessages = messages.slice(0, -1);
@@ -333,14 +335,17 @@ export async function POST(request: NextRequest) {
     // 3. Start the Chat Session with System Instructions
     // Sanitize history to remove messages with empty/null content which cause Gemini 400 errors
     const sanitizedHistory = historyMessages
-      .filter((msg: any) => msg.content && typeof msg.content === 'string' && msg.content.trim().length > 0)
-      .map((msg: any) => ({
+      .filter((msg: ChatMessage) => msg.content && typeof msg.content === 'string' && msg.content.trim().length > 0)
+      .map((msg: ChatMessage) => ({
         role: msg.role === "assistant" ? "model" : "user",
         parts: [{ text: msg.content }],
       }));
 
     const chat = model.startChat({
       history: sanitizedHistory,
+      generationConfig: {
+        responseMimeType: "application/json",
+      },
       systemInstruction: {
         role: 'system',
         parts: [{ text: activePrompt }]
@@ -349,17 +354,37 @@ export async function POST(request: NextRequest) {
 
     const userMessage = lastMessage.content || "Generate trip plan"; // Fallback safety
 
-    // 4. Send the message with retry logic
-    let result;
-    let lastError;
+    // 4. Send the message with retry logic and robust JSON extraction
+    let parsedJson: Record<string, unknown> | null = null;
+    let lastError: unknown;
     const maxRetries = 3;
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         console.log(`Attempt ${attempt}/${maxRetries} to send message to Gemini API...`);
-        result = await chat.sendMessage(userMessage);
+        const result = await chat.sendMessage(userMessage);
         console.log(`✅ Successfully received response from Gemini API`);
-        break; // Success, exit retry loop
+        const responseText = result.response.text();
+
+        parsedJson = extractAndParseJson(responseText);
+
+        if (!parsedJson) {
+          console.warn(`Attempt ${attempt}: Response was not valid JSON. Response length: ${responseText ? responseText.length : 0}`);
+          // For non-final conversational queries, fallback to returning the message text so user experience isn't broken
+          if (!isFinal && responseText && responseText.trim().length > 0) {
+            const cleanText = responseText.replace(/```(?:json)?|```/g, "").trim();
+            if (cleanText) {
+              parsedJson = {
+                resp: cleanText,
+                ui: "source",
+              };
+              break;
+            }
+          }
+          throw new Error("No valid JSON found in response");
+        }
+
+        break; // Successfully got and parsed JSON
       } catch (error) {
         lastError = error;
         console.error(`❌ Attempt ${attempt}/${maxRetries} failed:`, error instanceof Error ? error.message : error);
@@ -373,32 +398,32 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // If all retries failed, throw the last error
-    if (!result) {
-      throw new Error(`Failed to connect to Gemini API after ${maxRetries} attempts: ${lastError instanceof Error ? lastError.message : 'Unknown error'}`);
+    if (!parsedJson) {
+      throw lastError instanceof Error ? lastError : new Error("No valid JSON found in response");
     }
 
-    const responseText = result.response.text();
-
-    // 5. Return parsed JSON (Safe extraction)
-    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      throw new Error("No valid JSON found in response");
+    // Save the successful result and debit in one atomic transaction.
+    let credits = before.info;
+    if (parsedJson.trip_plan) {
+      const plan = parsedJson.trip_plan as { hotels?: unknown[]; itinerary?: Array<{ activities?: unknown[] }> };
+      if (!Array.isArray(plan.hotels) || !Array.isArray(plan.itinerary) ||
+          !plan.itinerary.length || plan.itinerary.some((day: { activities?: unknown }) => !day || !Array.isArray(day.activities))) {
+        throw new Error("The trip service returned an incomplete plan. Please try again.");
+      }
+      const charged = await commitTripPlan(account, requestId, parsedJson.trip_plan);
+      if (charged.denied) return limitResponse();
+      credits = charged.info;
+      parsedJson.trip_plan = charged.tripPlan;
+    } else if (isFinal) {
+      throw new Error("The trip service did not return a plan. Please try again.");
     }
-
-    const jsonStr = jsonMatch[0];
-    const parsedJson = JSON.parse(jsonStr);
-
-    console.log("✅ [TripGen] SUCCESS. Returning JSON.");
-    console.log(`[TripGen] Remaining Credits: ${remaining}`);
-
-    return NextResponse.json(parsedJson);
+    return NextResponse.json({ ...parsedJson, credits });
   } catch (e) {
     console.error("Error in AI Model API:", e);
     const errorMessage = e instanceof Error ? e.message : "Unknown error occurred";
 
     // Provide more helpful error messages
-    let userMessage = errorMessage;
+    let userMessage = errorMessage.includes("Credit service") ? errorMessage : "Trip generation is temporarily unavailable. Please try again.";
     if (errorMessage.includes("fetch failed") || errorMessage.includes("Failed to connect")) {
       userMessage = "Network connection issue. Please check your internet connection and try again.";
     } else if (errorMessage.includes("API key")) {
@@ -407,7 +432,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       error: userMessage,
-      details: errorMessage
-    });
+    }, { status: errorMessage.includes("Credit service") ? 503 : 502 });
   }
 }
