@@ -1,0 +1,21 @@
+.trip-itinerary { min-width: 0; width: 100%; container-type: inline-size; background: var(--tc-surface-solid); }
+.trip-day-nav { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 8px; padding: 12px 64px 12px 20px; overflow-x: auto; background: var(--tc-surface-solid); border-bottom: 1px solid var(--tc-line); }
+.trip-day-nav strong { font-size: 12px; color: var(--tc-muted); text-transform: uppercase; }
+.trip-day-nav button { flex: 0 0 auto; padding: 9px 12px; border-radius: 20px; font-size: 14px; white-space: nowrap; }
+.trip-day-nav button:hover, .trip-day-nav button:focus-visible { background: var(--tc-paper); color: var(--tc-orange); }
+.trip-timeline { padding: 24px clamp(12px, 3cqi, 36px); color: var(--tc-ink); }
+.trip-timeline-heading { padding-left: 28px; padding-bottom: 24px; }
+.trip-timeline-heading h2 { font-size: clamp(22px, 3.3cqi, 32px); line-height: 1.25; margin-bottom: 18px; }
+.trip-timeline-heading strong { color: var(--tc-orange); }
+.trip-facts { display: flex; flex-wrap: wrap; gap: 12px 20px; }
+.trip-facts span { display: inline-flex; gap: 8px; align-items: center; }
+.trip-timeline-track { position: relative; padding-bottom: 32px; }
+.trip-timeline-rail { position: absolute; top: 0; bottom: 0; left: 8px; width: 3px; background: var(--tc-line); border-radius: 4px; }
+.trip-timeline-glow { width: 3px; max-height: 100%; background: linear-gradient(to bottom, #ff8839, #ff5d22 70%, #ec4899); border-radius: 4px; box-shadow: 0 0 9px #ff762b70; }
+.trip-timeline-entry { position: relative; padding: 0 0 36px 32px; scroll-margin-top: 70px; }
+.trip-timeline-entry h3 { position: relative; font-size: clamp(22px, 3cqi, 30px); font-weight: 700; line-height: 1.3; margin-bottom: 20px; }
+.trip-timeline-entry h3 > span { position: absolute; left: -31px; top: 8px; width: 17px; height: 17px; border-radius: 50%; border: 3px solid var(--tc-surface-solid); background: var(--tc-orange); box-shadow: 0 0 0 1px var(--tc-line); }
+.trip-timeline-content { min-width: 0; }
+.trip-card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 18px; }
+.trip-card-grid > * { min-width: 0; }
+@media (max-width: 480px) { .trip-timeline { padding-inline: 12px; } .trip-timeline-entry { padding-left: 28px; } .trip-timeline-entry h3 > span { left: -27px; } }

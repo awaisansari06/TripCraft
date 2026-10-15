@@ -117,7 +117,7 @@ export default function FeaturesGrid() {
             Everything you need
           </h2>
           <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            From inspiration to detailed daily plans, we've got you covered.
+            From inspiration to detailed daily plans, we&apos;ve got you covered.
           </p>
         </div>
 

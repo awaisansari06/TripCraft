@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-import { ArrowDown, Globe2, Landmark, Plane, Send } from "lucide-react";
+import { Globe2, Landmark, Plane, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import GradientButton from "@/components/ui/gradient-button";
@@ -11,6 +11,7 @@ import AnimatedBorder from "@/components/ui/animated-border";
 import FloatingIcons from "@/components/hero/FloatingIcons";
 import FacePile from "@/components/ui/face-pile";
 import { useTypewriter } from 'react-simple-typewriter';
+import { TRIP_SUGGESTIONS } from '@/lib/trip-suggestions';
 
 const suggestions = [
     {
@@ -38,20 +39,7 @@ function Hero() {
     const router = useRouter();
 
     const [text] = useTypewriter({
-        words: [
-            "Honeymoon in Bali for 7 days...",
-            "Backpacking across Europe...",
-            "Weekend trip to Goa from Mumbai...",
-            "Hidden gems in Japan...",
-            "Family vacation in Singapore...",
-            "Solo trekking in Himachal Pradesh...",
-            "Luxury getaway in the Maldives...",
-            "Road trip from Bangalore to Coorg...",
-            "Cultural tour of Rajasthan...",
-            "Food exploration in Bangkok...",
-            "Northern Lights trip to Iceland...",
-            "Scuba diving in the Andamans..."
-        ],
+        words: TRIP_SUGGESTIONS,
         loop: true,
         delaySpeed: 2000,
     });
@@ -88,11 +76,11 @@ function Hero() {
             {/* Content */}
             <div className="relative z-10 flex w-full max-w-3xl flex-col items-center space-y-6 text-center px-4">
                 <h1 className="text-xl font-bold md:text-5xl text-neutral-800 dark:text-white">
-                    Hey, I'm your personal
+                    Hey, I&apos;m your personal
                     <span className="text-primary"> Trip Planner</span>
                 </h1>
                 <p className="text-lg text-gray-500 dark:text-gray-300">
-                    Tell me what you want, and I'll handle the rest: Flights, Hotels, Trip
+                    Tell me what you want, and I&apos;ll handle the rest: Flights, Hotels, Trip
                     Planner - all in seconds
                 </p>
 
@@ -115,7 +103,7 @@ function Hero() {
 
                     {/* Input Label */}
                     <p className="text-xs text-gray-400 mt-2 font-medium">
-                        Try: <span className="text-gray-600 dark:text-gray-400">"Goa trip for 3 days under ₹20k"</span>
+                        Try: <span className="text-gray-600 dark:text-gray-400">&quot;Goa trip for 3 days under ₹20k&quot;</span>
                     </p>
 
                     {/* Primary CTA Button */}

@@ -7,11 +7,26 @@ import InterestsUi from './InterestsUi';
 import TripStyleUi from './TripStyleUi';
 import TravelPaceUi from './TravelPaceUi';
 import HotelCardItem from './HotelCardItem';
+import type { Hotel } from './types';
+
+export interface TripFormData {
+    source?: string;
+    destination?: string;
+    groupSize?: string;
+    budget?: string;
+    tripDuration?: number | string;
+    interests?: string;
+    tripStyle?: string;
+    travelPace?: string;
+    locationInfo?: { name?: string };
+    hotels?: Hotel[];
+    [key: string]: unknown;
+}
 
 interface UiRendererProps {
     uiType: string;
-    onSelect: (value: any) => void;
-    tripData?: any;
+    onSelect: (value: string | number | string[]) => void;
+    tripData?: TripFormData;
     loading?: boolean;
     onGenerate?: () => void;
     onEdit?: () => void;
@@ -22,22 +37,22 @@ function UiRenderer({ uiType, onSelect, tripData, loading, onGenerate, onEdit, d
 
     switch (uiType) {
         case 'groupSize':
-            return <GroupSizeUi onSelect={onSelect} selected={tripData?.groupSize} disabled={disabled} />;
+            return <GroupSizeUi onSelect={onSelect as (v: string) => void} selected={typeof tripData?.groupSize === 'string' ? tripData.groupSize : undefined} disabled={disabled} />;
 
         case 'budget':
-            return <BudgetUi onSelect={onSelect} selected={tripData?.budget} disabled={disabled} />;
+            return <BudgetUi onSelect={onSelect as (v: string) => void} selected={typeof tripData?.budget === 'string' ? tripData.budget : undefined} disabled={disabled} />;
 
         case 'tripDuration':
-            return <TripDurationUi onSelect={onSelect} selected={tripData?.tripDuration} disabled={disabled} />;
+            return <TripDurationUi onSelect={onSelect as (v: number) => void} selected={typeof tripData?.tripDuration === 'number' ? tripData.tripDuration : undefined} disabled={disabled} />;
 
         case 'interests':
-            return <InterestsUi onSelect={onSelect} selected={tripData?.interests ? tripData.interests.split(',') : []} />;
+            return <InterestsUi onSelect={onSelect as (v: string[]) => void} selected={typeof tripData?.interests === 'string' ? tripData.interests.split(',') : []} />;
 
         case 'tripStyle':
-            return <TripStyleUi onSelect={onSelect} value={tripData?.tripStyle} />;
+            return <TripStyleUi onSelect={onSelect as (v: string) => void} value={typeof tripData?.tripStyle === 'string' ? tripData.tripStyle : undefined} />;
 
         case 'travelPace':
-            return <TravelPaceUi onSelect={onSelect} value={tripData?.travelPace} />;
+            return <TravelPaceUi onSelect={onSelect as (v: string) => void} value={typeof tripData?.travelPace === 'string' ? tripData.travelPace : undefined} />;
 
         case 'tripResult':
             return (
@@ -45,7 +60,7 @@ function UiRenderer({ uiType, onSelect, tripData, loading, onGenerate, onEdit, d
                     <h3 className="font-bold text-lg">Recommended Hotels</h3>
                     {tripData?.hotels?.length ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {tripData.hotels.map((hotel: any, index: number) => (
+                            {tripData.hotels.map((hotel: Hotel, index: number) => (
                                 <HotelCardItem key={index} hotel={hotel} />
                             ))}
                         </div>

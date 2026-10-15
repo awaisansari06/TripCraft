@@ -27,11 +27,9 @@ const activities = [
 ];
 
 export default function ActivityTicker() {
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(() => Math.floor(Math.random() * activities.length));
 
   useEffect(() => {
-    setIndex(Math.floor(Math.random() * activities.length));
-
     const t = setInterval(() => {
       setIndex((prev) => (prev + 1) % activities.length);
     }, 4000);

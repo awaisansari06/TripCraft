@@ -1,46 +1,64 @@
 "use client";
-
-import { PricingTable, useUser } from "@clerk/nextjs";
-import React from "react";
-import { Globe } from "lucide-react";
-
+import { PricingTable } from "@clerk/nextjs";
+import { Globe, Map, Bookmark, Sparkles } from "lucide-react";
+import SiteFooter from "../_components/SiteFooter";
 export default function Pricing() {
-  const { user } = useUser();
-
   return (
-    <main className="relative min-h-screen pb-20 bg-white dark:bg-black text-gray-900 dark:text-gray-100 transition-colors duration-300">
-      {/* ===== HERO ===== */}
-      <section className="relative overflow-hidden pt-24 pb-12">
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50 dark:from-orange-950/20 dark:via-pink-950/20 dark:to-purple-950/20 -z-10" />
-
-        <div className="relative max-w-5xl mx-auto px-4 text-center">
-          <h1 className="font-bold tracking-tight leading-tight text-[clamp(2.5rem,5vw,3.5rem)] text-gray-900 dark:text-white">
-            AI-Powered Trip Planning
-            <span className="block mt-2 bg-gradient-to-r from-orange-600 to-purple-600 bg-clip-text text-transparent">
-              Pick Your Perfect Plan
-            </span>
-          </h1>
-
-          <p className="mt-6 text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
-            Start for free. Upgrade when you’re ready for{" "}
-            <span className="text-orange-600 dark:text-orange-400 font-medium">unlimited trips</span>,
-            smarter itineraries, and premium travel insights.
+    <main className="tc-page" data-page-motion>
+      <section className="tc-page-hero">
+        <span className="tc-eyebrow">
+          <Globe size={16} /> AI-powered trip planning
+        </span>
+        <h1>
+          Your next adventure.
+          <br />
+          <em>Your perfect plan.</em>
+        </h1>
+        <p>
+          Start for free. Upgrade when you’re ready for unlimited trips, smarter
+          itineraries, and premium travel insights.
+        </p>
+      </section>
+      <section
+        className="tc-container tc-pricing"
+        aria-label="TripCraft subscription plans"
+      >
+        <PricingTable
+          appearance={{
+            variables: {
+              colorPrimary: "#f5692b",
+              colorBackground: "var(--tc-surface-solid)",
+              colorText: "var(--tc-ink)",
+              colorTextSecondary: "var(--tc-muted)",
+              colorNeutral: "var(--tc-ink)",
+              fontFamily: "var(--font-outfit), sans-serif",
+              borderRadius: "18px",
+            },
+          }}
+        />
+      </section>
+      <section className="tc-container tc-plan-details">
+        <div data-reveal data-stagger="0">
+          <Map />
+          <h2>Made around you</h2>
+          <p>
+            Personal itineraries shaped around your interests, budget, and pace.
           </p>
-
-          {/* Social Proof */}
-          <div className="mt-8 flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400 font-medium">
-            <Globe className="w-4 h-4 text-gray-400" />
-            Trusted by 10,000+ travelers worldwide 🌍
-          </div>
+        </div>
+        <div data-reveal data-stagger="1">
+          <Bookmark />
+          <h2>Keep your inspiration</h2>
+          <p>
+            Return to your saved trips and favorite places when you’re ready.
+          </p>
+        </div>
+        <div data-reveal data-stagger="2">
+          <Sparkles />
+          <h2>More time exploring</h2>
+          <p>Let your AI travel assistant help with the details.</p>
         </div>
       </section>
-
-      {/* ===== CLERK PRICING TABLE ===== */}
-      <section className="relative px-4 pb-20">
-        <div className="max-w-5xl mx-auto">
-          <PricingTable />
-        </div>
-      </section>
+      <SiteFooter />
     </main>
   );
 }

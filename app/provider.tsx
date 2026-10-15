@@ -2,10 +2,11 @@
 
 import React, { useEffect } from 'react';
 import Header from './_components/Header';
+import SiteMotion from './_components/SiteMotion';
 import { api } from '@/convex/_generated/api';
 import { useMutation } from 'convex/react';
 import { useUser } from '@clerk/nextjs';
-import { UserDetailContext } from '@/context/UserDetailContext';
+import { UserDetailContext, UserDetailType } from '@/context/UserDetailContext';
 import { useState } from 'react';
 import { useContext } from 'react';
 import { TripContextType, TripDetailContext } from '@/context/TripDetailContext';
@@ -19,35 +20,34 @@ function Provider({
 }>) {
 
   const createUser = useMutation(api.user.CreateNewUser);
-  const [userDetail, setUserDetail] = useState<any>();
+  const [userDetail, setUserDetail] = useState<UserDetailType>(null);
   const [tripDetailInfo, setTripDetailInfo] = useState<TripInfo | null>(null);
   const { user } = useUser();
 
-
   useEffect(() => {
-    user && CreateNewUser();
-  }, [user]);
-
-  const CreateNewUser = async () => {
+    let isSubscribed = true;
     if (user) {
-
-      // Save New User if Not exists
-      const result = await createUser({
+      void createUser({
         email: user?.primaryEmailAddress?.emailAddress ?? '',
         name: user?.fullName ?? '',
         imageUrl: user?.imageUrl ?? '',
-        subscription: (user?.publicMetadata?.subscription as string) || 'unset' // Pass subscription
+      }).then((result) => {
+        if (isSubscribed) {
+          setUserDetail(result as UserDetailType);
+        }
       });
-      setUserDetail(result);
     }
-  }
+    return () => {
+      isSubscribed = false;
+    };
+  }, [user, createUser]);
 
   return (
     <UserDetailContext.Provider value={{ userDetail, setUserDetail }}>
       <TripDetailContext.Provider value={{ tripDetailInfo, setTripDetailInfo }}>
         <div>
           <Header />
-          {children}</div>
+          <SiteMotion>{children}</SiteMotion></div>
       </TripDetailContext.Provider>
     </UserDetailContext.Provider>
   )

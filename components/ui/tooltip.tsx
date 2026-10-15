@@ -23,11 +23,22 @@ const Tooltip = ({ children }: { children: React.ReactNode }) => {
     )
 }
 
-const TooltipTrigger = ({ children, open, ...props }: any) => {
-    return React.cloneElement(children as React.ReactElement, { ...props })
+interface TooltipTriggerProps extends React.HTMLAttributes<HTMLElement> {
+    children: React.ReactElement;
+    open?: boolean;
 }
 
-const TooltipContent = ({ className, children, open, ...props }: any) => {
+const TooltipTrigger = ({ children, ...props }: TooltipTriggerProps) => {
+    return React.cloneElement(children, { ...props });
+}
+
+interface TooltipContentProps extends React.HTMLAttributes<HTMLDivElement> {
+    className?: string;
+    children: React.ReactNode;
+    open?: boolean;
+}
+
+const TooltipContent = ({ className, children, open, ...props }: TooltipContentProps) => {
     if (!open) return null
     return (
         <div

@@ -1,15 +1,18 @@
-import React from 'react'
+import Link from "next/link";
+import { ArrowUpRight, Sparkles } from "lucide-react";
 
-function DashboardHero() {
-    return (
-        <div className='mb-8'>
-            <h1 className='font-bold text-3xl text-gray-900 dark:text-white'>Welcome back 👋</h1>
-            <p className='text-gray-500 mt-2'>Here's a snapshot of your travel plans and recent activity.</p>
-
-            {/* Ambient background glow */}
-            <div className='absolute top-20 right-0 w-[500px] h-[500px] bg-linear-to-tr from-purple-100 to-orange-100 dark:from-purple-900/20 dark:to-orange-900/20 blur-[100px] -z-10 rounded-full opacity-60'></div>
-        </div>
-    )
+export default function DashboardHero() {
+  return (
+    <section className="dashboard-hero" aria-labelledby="dashboard-title" data-reveal>
+      <div className="dashboard-hero-copy">
+        <span className="tc-eyebrow"><Sparkles size={16} /> Your travel space</span>
+        <h1 id="dashboard-title">Your journeys,<br /><em>all in one place.</em></h1>
+        <p>Return to your plans, revisit the places you loved, and find the next adventure worth taking.</p>
+        <Link href="/create-new-trip" className="tc-button dashboard-hero-action">
+          Plan a new trip <ArrowUpRight size={18} />
+        </Link>
+      </div>
+      <span className="dashboard-hero-caption" aria-hidden="true">Made for the moments that move you.</span>
+    </section>
+  );
 }
-
-export default DashboardHero
