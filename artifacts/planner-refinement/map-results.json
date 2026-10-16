@@ -1,0 +1,22 @@
+[
+  {
+    "theme": "dark",
+    "width": 1440,
+    "liveMapIdle": true
+  },
+  {
+    "theme": "dark",
+    "width": 390,
+    "liveMapIdle": true
+  },
+  {
+    "theme": "light",
+    "width": 1440,
+    "liveMapIdle": true
+  },
+  {
+    "theme": "light",
+    "width": 390,
+    "liveMapIdle": true
+  }
+]

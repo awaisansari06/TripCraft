@@ -1,0 +1,29 @@
+[
+  {
+    "theme": "light",
+    "width": 1440,
+    "stress": false,
+    "path": "artifacts/export-auth/qa-light.pdf",
+    "printPreview": true,
+    "printAction": true,
+    "errors": []
+  },
+  {
+    "theme": "dark",
+    "width": 390,
+    "stress": false,
+    "path": "artifacts/export-auth/qa-dark.pdf",
+    "printPreview": true,
+    "printAction": true,
+    "errors": []
+  },
+  {
+    "theme": "light",
+    "width": 1280,
+    "stress": true,
+    "path": "artifacts/export-auth/qa-long-trip.pdf",
+    "printPreview": true,
+    "printAction": true,
+    "errors": []
+  }
+]

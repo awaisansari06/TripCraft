@@ -1,0 +1,13 @@
+✔ AI route validates auth/input, handles failure, charges successful results and reuses retries (151.8209ms)
+✔ credit status never substitutes full capacity for a service failure (15.7236ms)
+✔ profile returns only the authenticated user profile (10.0014ms)
+✔ place API validates requests, hides the provider key and verifies signed photos (29.2165ms)
+✔ credit refill and plan changes preserve usage without negative balances (12.185ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 829.4433

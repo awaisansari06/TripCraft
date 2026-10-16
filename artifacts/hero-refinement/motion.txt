@@ -1,0 +1,10 @@
+Error: UNKNOWN: unknown error, open 'A:\smart-journey\artifacts\landing-motion\dark-1280.png'
+    at async open (node:internal/fs/promises:642:25)
+    at async Object.writeFile (node:internal/fs/promises:1249:14)
+    at async _Page.screenshot (C:\Users\muham\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\node_modules\playwright-core\lib\coreBundle.js:61393:11)
+    at async A:\smart-journey\tests\landing-motion.cjs:109:7 {
+  errno: -4094,
+  code: 'UNKNOWN',
+  syscall: 'open',
+  path: 'A:\\smart-journey\\artifacts\\landing-motion\\dark-1280.png'
+}

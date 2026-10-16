@@ -1,0 +1,86 @@
+const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+(async () => {
+    const browser = await chromium.launch({channel:'msedge',headless:true});
+    const results=[];
+    for (const width of [390,1440]) {
+        const page=await browser.newPage({viewport:{width,height:900},reducedMotion:'no-preference'});
+        await page.addInitScript(()=>localStorage.setItem('theme','dark'));
+        const errors=[]; page.on('pageerror',error=>errors.push(error.message));
+        let calls=0, remaining=1;
+        const requestIds=[];
+        await page.route('**/api/credits',async route=>{await new Promise(resolve=>setTimeout(resolve,250));await route.fulfill({json:{isAuthenticated:true,isPremium:false,remaining,capacity:2,resetInfo:null}});});
+        await page.route('**/api/aimodel',async route=>{
+            assert.equal(route.request().postDataJSON().isFinal,true);
+            requestIds.push(route.request().postDataJSON().requestId);
+            calls++;
+            await new Promise(resolve=>setTimeout(resolve,300));
+            if(calls===1) return route.fulfill({status:503,json:{error:'The AI service is temporarily unavailable. Please try again.'}});
+            remaining=0;
+            await route.fulfill({json:{trip_plan:{destination:'Japan',origin:'Mumbai',group_size:'Couple',duration:'5 days',budget:'Medium',hotels:[],itinerary:[{day:1,activities:[]}]},credits:{isAuthenticated:true,isPremium:false,remaining:0,capacity:2,resetInfo:null}}});
+        });
+        await page.goto('http://127.0.0.1:3201/create-new-trip?tripId=fixture&fixture=final');
+        await page.locator('.chat-trip-summary').waitFor();
+        assert.equal(await page.getByText('Not selected',{exact:true}).count(),4);
+        await page.getByRole('link',{name:/Upgrade/}).waitFor();
+        const input=page.getByRole('textbox',{name:'Your message'});
+        await input.fill('First line'); await input.press('Shift+Enter'); await input.press('a');
+        assert.equal(await input.inputValue(),'First line\na');
+        await input.fill('');
+        await page.getByRole('button',{name:'Edit',exact:true}).click();
+        await page.getByRole('textbox',{name:'Destination',exact:true}).fill('Japan');
+        await page.getByRole('textbox',{name:'Starting from'}).fill('Mumbai');
+        await page.getByLabel('Travelers',{exact:true}).selectOption('Couple');
+        await page.getByLabel('Budget',{exact:true}).selectOption('Medium');
+        await page.getByRole('spinbutton',{name:'Duration in days'}).fill('5');
+        await page.getByRole('button',{name:'Save changes'}).click();
+        await page.getByRole('button',{name:'Generate plan',exact:true}).click();
+        await page.getByRole('button',{name:'Retry generation'}).waitFor();
+        assert.equal(calls,1);
+        await page.getByRole('button',{name:'Retry generation'}).click();
+        await page.getByText('Your trip is generated.',{exact:true}).waitFor();
+        assert.equal(calls,2);
+        assert.equal(requestIds[0],requestIds[1],'Retry preserves the request identity');
+        await page.getByText('0',{exact:true}).waitFor();
+        await page.getByRole('button',{name:'Conversation options'}).click();
+        await page.getByRole('menuitem',{name:'My trips'}).waitFor();
+        await page.keyboard.press('Escape');
+        assert.equal(await page.getByRole('button',{name:'Conversation options'}).evaluate(el=>el===document.activeElement),true);
+        const toggle=page.getByRole('button',{name:'Toggle light and dark theme'});
+        await toggle.click(); await page.waitForFunction(()=>!document.documentElement.classList.contains('dark'));
+        await page.waitForTimeout(250);
+        assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+        if(width===390){
+            await page.locator('.chat-history').evaluate(el=>{el.scrollTop=0;el.dispatchEvent(new Event('scroll'));});
+            await page.getByRole('button',{name:'Explore map',exact:true}).click();
+            await page.getByRole('button',{name:'Chat',exact:true}).click();
+            await page.waitForTimeout(100);
+            assert.ok(await page.locator('.chat-history').evaluate(el=>el.scrollTop<4),'Reader position survives panel switching');
+            const menu=page.getByRole('button',{name:'Open navigation menu'});
+            await menu.click(); await page.getByRole('dialog').waitFor(); await page.keyboard.press('Escape');
+            assert.equal(await menu.evaluate(el=>el===document.activeElement),true);
+            await input.fill('Draft survives resizing');
+            await page.setViewportSize({width:1280,height:900});
+            await page.waitForTimeout(150);
+            assert.equal(await input.inputValue(),'Draft survives resizing');
+        }
+        await page.emulateMedia({reducedMotion:'reduce'});
+        await page.waitForTimeout(100);
+        assert.equal(await page.evaluate(()=>document.getAnimations().filter(animation=>animation.playState==='running').length),0);
+        assert.deepEqual(errors,[]);
+        results.push({width,retry:true,creditsZero:true,keyboard:true,theme:true,reducedMotion:true,errors});
+        await page.close();
+    }
+    const page=await browser.newPage();
+    await page.route('**/api/credits',route=>route.fulfill({status:503,json:{error:'Service unavailable'}}));
+    await page.goto('http://127.0.0.1:3201/create-new-trip?tripId=fixture');
+    await page.getByText('Credit balance temporarily unavailable.').waitFor();
+    assert.equal(await page.locator('.chat-usage strong').count(),0,'Unavailable balance must not invent a number');
+    results.push({unavailableCredits:true});
+    await page.close();
+    fs.writeFileSync('artifacts/planner-refinement/edge-results.json',JSON.stringify(results,null,2));
+    console.log('Generation failure/retry, credits, keyboard, theme, reduced motion, reader position and breakpoint persistence passed.');
+    await browser.close();
+})().catch(error=>{console.error(error);process.exit(1)});
+

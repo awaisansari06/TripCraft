@@ -1,9 +1,2 @@
-import { SignUp } from '@clerk/nextjs'
-
-export default function Page() {
-  return (
-    <main className='tc-page flex items-center justify-center min-h-[calc(100dvh-var(--tc-nav-height))] w-full px-4 py-10'>
-        <SignUp />
-    </main>
-  )
-}
+import AuthScreen from '@/app/_components/AuthScreen';
+export default function Page() { return <AuthScreen mode="sign-up" />; }

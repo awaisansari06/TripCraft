@@ -39,12 +39,12 @@ export default function TripPromptInput({
     const start = () => {
       clearTimeout(timer);
       setTyping(!media.matches);
-      setText(media.matches ? TRIP_SUGGESTIONS[0] : "");
+      setText(TRIP_SUGGESTIONS[0]);
       if (!media.matches) {
         index = 0;
-        length = 0;
-        deleting = false;
-        timer = setTimeout(tick, 1450);
+        length = TRIP_SUGGESTIONS[0].length;
+        deleting = true;
+        timer = setTimeout(tick, 2000);
       }
     };
     start();
@@ -65,6 +65,7 @@ export default function TripPromptInput({
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         autoComplete="off"
+        required
         placeholder={focused ? "Where would you like to go?" : ""}
       />
       {!focused && !value && (

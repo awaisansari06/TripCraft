@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 import Header from './_components/Header';
 import SiteMotion from './_components/SiteMotion';
+import PageLoader from './_components/PageLoader';
 import { api } from '@/convex/_generated/api';
 import { useMutation } from 'convex/react';
 import { useUser } from '@clerk/nextjs';
@@ -46,8 +47,10 @@ function Provider({
     <UserDetailContext.Provider value={{ userDetail, setUserDetail }}>
       <TripDetailContext.Provider value={{ tripDetailInfo, setTripDetailInfo }}>
         <div>
+          <PageLoader />
           <Header />
-          <SiteMotion>{children}</SiteMotion></div>
+          <SiteMotion>{children}</SiteMotion>
+        </div>
       </TripDetailContext.Provider>
     </UserDetailContext.Provider>
   )

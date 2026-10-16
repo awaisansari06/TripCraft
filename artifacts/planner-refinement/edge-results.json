@@ -1,0 +1,23 @@
+[
+  {
+    "width": 390,
+    "retry": true,
+    "creditsZero": true,
+    "keyboard": true,
+    "theme": true,
+    "reducedMotion": true,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "retry": true,
+    "creditsZero": true,
+    "keyboard": true,
+    "theme": true,
+    "reducedMotion": true,
+    "errors": []
+  },
+  {
+    "unavailableCredits": true
+  }
+]

@@ -1,0 +1,1 @@
+Rotating suggestions, focus pause, preserved user input and reduced motion passed.

@@ -1,0 +1,130 @@
+
+> tripcraft@0.1.0 start
+> next start --port 3100
+
+▲ Next.js 16.1.4
+- Local:         http://localhost:3100
+- Network:       http://10.171.227.144:3100
+
+✓ Starting...
+✓ Ready in 2.8s
+Clerk: unable to resolve handshake: Error: fetch failed
+    at context.fetch (A:\smart-journey\node_modules\next\dist\server\web\sandbox\context.js:321:60)
+    at sP (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:80433)
+    at A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:79459
+    at th (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:14:2473)
+    at async sC (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:79446)
+    at async sj (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:83602)
+    at async sB.getCookiesFromHandshake (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:85646)
+    at async sB.resolveHandshake (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:85911)
+    at async h (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:32:5054)
+    at async A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:56:1242 {
+  
+}
+Clerk: unable to resolve handshake: Error: fetch failed
+    at context.fetch (A:\smart-journey\node_modules\next\dist\server\web\sandbox\context.js:321:60)
+    at sP (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:80433)
+    at A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:79459
+    at th (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:14:2473)
+    at async sC (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:79446)
+    at async sj (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:83602)
+    at async sB.getCookiesFromHandshake (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:85646)
+    at async sB.resolveHandshake (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:85911)
+    at async h (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:32:5054)
+    at async A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:56:1242 {
+  
+}
+Clerk: unable to resolve handshake: Error: fetch failed
+    at context.fetch (A:\smart-journey\node_modules\next\dist\server\web\sandbox\context.js:321:60)
+    at sP (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:80433)
+    at A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:79459
+    at th (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:14:2473)
+    at async sC (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:79446)
+    at async sj (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:83602)
+    at async sB.getCookiesFromHandshake (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:85646)
+    at async sB.resolveHandshake (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:85911)
+    at async h (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:32:5054)
+    at async A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:56:1242 {
+  
+}
+Clerk: Refreshing the session token resulted in an infinite redirect loop. This usually means that your Clerk instance keys do not match - make sure to copy the correct publishable and secret keys from the Clerk dashboard.
+Clerk: unable to resolve handshake: Error: fetch failed
+    at context.fetch (A:\smart-journey\node_modules\next\dist\server\web\sandbox\context.js:321:60)
+    at sP (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:80433)
+    at A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:79459
+    at th (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:14:2473)
+    at async sC (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:79446)
+    at async sj (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:83602)
+    at async sB.getCookiesFromHandshake (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:85646)
+    at async sB.resolveHandshake (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:85911)
+    at async h (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:32:5054)
+    at async A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:56:1242 {
+  
+}
+Clerk: unable to resolve handshake: Error: fetch failed
+    at context.fetch (A:\smart-journey\node_modules\next\dist\server\web\sandbox\context.js:321:60)
+    at sP (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:80433)
+    at A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:79459
+    at th (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:14:2473)
+    at async sC (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:79446)
+    at async sj (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:83602)
+    at async sB.getCookiesFromHandshake (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:85646)
+    at async sB.resolveHandshake (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:85911)
+    at async h (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:32:5054)
+    at async A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:56:1242 {
+  
+}
+Clerk: unable to resolve handshake: Error: fetch failed
+    at context.fetch (A:\smart-journey\node_modules\next\dist\server\web\sandbox\context.js:321:60)
+    at sP (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:80433)
+    at A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:79459
+    at th (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:14:2473)
+    at async sC (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:79446)
+    at async sj (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:83602)
+    at async sB.getCookiesFromHandshake (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:85646)
+    at async sB.resolveHandshake (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:85911)
+    at async h (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:32:5054)
+    at async A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:56:1242 {
+  
+}
+Clerk: Refreshing the session token resulted in an infinite redirect loop. This usually means that your Clerk instance keys do not match - make sure to copy the correct publishable and secret keys from the Clerk dashboard.
+Clerk: unable to resolve handshake: Error: fetch failed
+    at context.fetch (A:\smart-journey\node_modules\next\dist\server\web\sandbox\context.js:321:60)
+    at sP (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:80433)
+    at A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:79459
+    at th (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:14:2473)
+    at async sC (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:79446)
+    at async sj (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:83602)
+    at async sB.getCookiesFromHandshake (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:85646)
+    at async sB.resolveHandshake (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:85911)
+    at async h (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:32:5054)
+    at async A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:56:1242 {
+  
+}
+Clerk: unable to resolve handshake: Error: fetch failed
+    at context.fetch (A:\smart-journey\node_modules\next\dist\server\web\sandbox\context.js:321:60)
+    at sP (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:80433)
+    at A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:79459
+    at th (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:14:2473)
+    at async sC (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:79446)
+    at async sj (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:83602)
+    at async sB.getCookiesFromHandshake (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:85646)
+    at async sB.resolveHandshake (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:85911)
+    at async h (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:32:5054)
+    at async A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:56:1242 {
+  
+}
+Clerk: unable to resolve handshake: Error: fetch failed
+    at context.fetch (A:\smart-journey\node_modules\next\dist\server\web\sandbox\context.js:321:60)
+    at sP (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:80433)
+    at A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:79459
+    at th (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:14:2473)
+    at async sC (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:79446)
+    at async sj (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:83602)
+    at async sB.getCookiesFromHandshake (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:85646)
+    at async sB.resolveHandshake (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:25:85911)
+    at async h (A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:32:5054)
+    at async A:\smart-journey\.next\server\edge\chunks\[root-of-the-server]__17d5ab21._.js:56:1242 {
+  
+}
+Clerk: Refreshing the session token resulted in an infinite redirect loop. This usually means that your Clerk instance keys do not match - make sure to copy the correct publishable and secret keys from the Clerk dashboard.
