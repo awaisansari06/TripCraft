@@ -18,6 +18,7 @@ import { useTripDetail } from '@/app/provider';
 import MessageContent, { formatAnswer } from './MessageContent';
 import { useChatScroll } from './useChatScroll';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { tripSpecification } from '@/lib/trip-spec';
 
 type Message = {
     role: string,
@@ -37,6 +38,7 @@ function ChatBox() {
 
     // Convex Mutations
     const createTripDetail = useMutation(api.tripDetail.CreateTripDetail);
+    const deleteTrip = useMutation(api.tripDetail.DeleteTrip);
     const saveMessage = useMutation(api.chat.SendMessage);
 
     // Convex Queries (enabled only if we have a tripId)
@@ -46,6 +48,7 @@ function ChatBox() {
     useEffect(() => {
         if (tripIdParam) {
             setSessionId(tripIdParam);
+            setTripDetailInfo(null);
         } else {
             // Generate new Trip ID if none exists
             const newTripId = uuidv4();
@@ -56,14 +59,14 @@ function ChatBox() {
             setTripDetailInfo(null);
 
             // Update URL without reloading
-            const newUrl = `/create-new-trip?tripId=${newTripId}`;
+            const newUrl = `/create-new-trip?tripId=${newTripId}` + (query ? '&query=' + encodeURIComponent(query) : '');
             router.replace(newUrl);
         }
     }, [tripIdParam]);
 
     // Load data from DB
-    const dbMessages = useQuery(api.chat.GetMessages, sessionId ? { tripId: sessionId } : "skip");
-    const dbTrip = useQuery(api.tripDetail.GetTrip, sessionId ? { tripId: sessionId } : "skip");
+    const dbMessages = useQuery(api.chat.GetMessages, sessionId && userDetail ? { tripId: sessionId } : "skip");
+    const dbTrip = useQuery(api.tripDetail.GetTrip, sessionId && userDetail ? { tripId: sessionId } : "skip");
 
     const [messages, setMessages] = useState<Message[]>([]);
     const [userInput, setUserInput] = useState<string>("");
@@ -74,6 +77,8 @@ function ChatBox() {
     const [isFinal, setIsFinal] = useState(false);
     const [failedGeneration, setFailedGeneration] = useState(false);
     const [creditInfo, setCreditInfo] = useState<CreditInfo | null>(null);
+    const [deleting, setDeleting] = useState(false);
+    const [actionError, setActionError] = useState('');
 
     const { containerRef: messagesContainerRef, contentRef: conversationRef, following, showLatest, scrollToLatest } = useChatScroll();
     const initialized = useRef(false);
@@ -109,11 +114,12 @@ function ChatBox() {
     }, [dbTrip, dbMessages]);
 
     useEffect(() => {
-        if (query && !initialized.current) {
+        if (query && sessionId && userDetail && dbMessages !== undefined && !initialized.current) {
             initialized.current = true;
-            onSend(query);
+            if (dbMessages.length === 0) void onSend(query);
+            router.replace('/create-new-trip?tripId=' + sessionId);
         }
-    }, [query]);
+    }, [query, sessionId, userDetail, dbMessages]);
 
     useEffect(() => {
         if (isFinal && userInput) {
@@ -125,7 +131,7 @@ function ChatBox() {
 
     const onSend = async (msg?: string) => {
         const textToUse = msg || userInput;
-        if (!textToUse?.trim() || sending.current) return;
+        if (!textToUse?.trim() || sending.current || !sessionId || !userDetail || deleting) return;
         sending.current = true;
         following.current = true;
 
@@ -174,15 +180,17 @@ function ChatBox() {
             });
         }
 
-            if (pendingRequest.current?.text !== textToUse) {
-                pendingRequest.current = { text: textToUse, id: crypto.randomUUID() };
+            const tripSpec = isFinal ? tripSpecification(tripData) : undefined;
+            const requestKey = JSON.stringify({ text: textToUse, isFinal, tripSpec });
+            if (pendingRequest.current?.text !== requestKey) {
+                pendingRequest.current = { text: requestKey, id: crypto.randomUUID() };
             }
             const result = await axios.post("/api/aimodel", {
                 messages: [...messages, { role: "user", content: textToUse }],
                 isFinal: isFinal,
+                tripSpec,
                 requestId: pendingRequest.current.id
             });
-            pendingRequest.current = null;
             if (result.data.credits) setCreditInfo(result.data.credits);
 
             if (isFinal && result.data.trip_plan) {
@@ -190,12 +198,11 @@ function ChatBox() {
                 const tripPlan = result.data.trip_plan as TripInfo;
 
                 // Save to state
-                setTripData(previous => ({ ...previous, ...tripPlan }));
                 setTripDetailInfo(tripPlan);
 
                 // Save to DB (Convex)
                 if (userDetail && userDetail._id) {
-                    const tripId = uuidv4();
+                    const tripId = sessionId;
                     try {
                         await createTripDetail({
                             tripId: tripId,
@@ -222,6 +229,7 @@ function ChatBox() {
                         // Refresh credit display
                     } catch (dbError) {
                         console.error("Failed to save trip to Convex:", dbError);
+                        throw new Error("Your plan was generated but could not be saved. Retry generation to save it without using another credit.");
                     }
                 } else {
                     // Not logged in handling...
@@ -245,6 +253,7 @@ function ChatBox() {
                     }
                 }
 
+                setTripData(previous => ({ ...previous, ...tripPlan }));
                 setIsFinal(false);
             } else if (result.data.ui === "limit") {
                 const limitMsg = "🎯 You've used your 2 free trips! Upgrade to premium for unlimited trip planning. Visit our pricing page to continue.";
@@ -286,12 +295,14 @@ function ChatBox() {
                 }
             }
 
+            pendingRequest.current = null;
+
         } catch (error) {
             console.error(error);
             if (isFinal) setFailedGeneration(true);
 
             // Enhanced error handling with specific messages
-            let errorMessage = "Something went wrong. Please try again.";
+            let errorMessage = error instanceof Error && error.message.startsWith('Your plan was generated') ? error.message : "Something went wrong. Please try again.";
 
             if (axios.isAxiosError(error)) {
                 // Check for credit limit error
@@ -359,10 +370,17 @@ function ChatBox() {
         }
     };
 
-    const handleDeleteTrip = () => {
-        if (confirm("Are you sure you want to delete this trip?")) {
-            // Navigate to home after deletion
-            router.push('/');
+    const handleDeleteTrip = async () => {
+        if (!sessionId || loading || deleting || !confirm("Delete this trip and its conversation? This cannot be undone.")) return;
+        setDeleting(true);
+        setActionError('');
+        try {
+            await deleteTrip({ tripId: sessionId });
+            setTripDetailInfo(null);
+            router.push('/dashboard');
+        } catch {
+            setActionError('The trip could not be deleted. Please try again.');
+            setDeleting(false);
         }
     }
 
@@ -383,7 +401,7 @@ function ChatBox() {
                         <DropdownMenu.Portal>
                             <DropdownMenu.Content className="planner-menu" sideOffset={6} align="end">
                                 <DropdownMenu.Item onSelect={() => router.push('/dashboard')}><ArrowLeft size={16} />My trips</DropdownMenu.Item>
-                                <DropdownMenu.Item onSelect={handleDeleteTrip} className="planner-menu-danger"><Trash2 size={16} />Delete trip</DropdownMenu.Item>
+                                <DropdownMenu.Item disabled={loading || deleting} onSelect={() => void handleDeleteTrip()} className="planner-menu-danger"><Trash2 size={16} />{deleting ? 'Deleting…' : 'Delete trip'}</DropdownMenu.Item>
                             </DropdownMenu.Content>
                         </DropdownMenu.Portal>
                     </DropdownMenu.Root>
@@ -435,13 +453,14 @@ function ChatBox() {
             </div>
 
             <footer className="chat-footer">
+                {actionError && <p role="alert">{actionError}</p>}
                 <CreditDisplay latest={creditInfo} />
                 <form className="chat-composer" aria-busy={loading} onSubmit={event => { event.preventDefault(); if (!loading) onSend(); }}>
                     <label htmlFor="chat-message" className="sr-only">Your message</label>
                     <Textarea id="chat-message" name="message" rows={2} placeholder="Tell us about your trip…"
                         className="chat-composer-input" onChange={event => setUserInput(event.target.value)}
                         onKeyDown={handleKeyDown} value={userInput} aria-describedby="chat-keyboard-hint" />
-                    <button type="submit" className="chat-send" disabled={!userInput.trim() || loading} aria-label={loading ? 'Waiting for TripCraft' : 'Send message'}>
+                    <button type="submit" className="chat-send" disabled={!userInput.trim() || loading || deleting || !userDetail} aria-label={loading ? 'Waiting for TripCraft' : 'Send message'}>
                         {loading ? <Loader size={18} className="planner-spinner" aria-hidden="true" /> : <Send size={18} aria-hidden="true" />}
                     </button>
                 </form>

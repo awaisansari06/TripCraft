@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { getCreditAccount, readTripCredits, commitTripPlan } from "@/lib/trip-credits";
+import { reserveRequest, releaseRequest } from "@/lib/request-limits";
+import { tripSpecification } from "@/lib/trip-spec";
+
+export const maxDuration = 60;
 
 
 // Initialize Gemini
@@ -300,6 +304,7 @@ function extractAndParseJson(text: string): Record<string, unknown> | null {
 type ChatMessage = { role: "user" | "assistant"; content: string };
 
 export async function POST(request: NextRequest) {
+  let reservation: { userId: string; requestId: string } | undefined;
   try {
     const account = await getCreditAccount();
     if (!account) return NextResponse.json({ error: "Authentication required" }, { status: 401 });
@@ -307,7 +312,11 @@ export async function POST(request: NextRequest) {
     try { body = await request.json(); } catch {
       return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
     }
-    const { messages, isFinal = false, requestId = crypto.randomUUID() } = body ?? {};
+    const { messages, isFinal = false, requestId = crypto.randomUUID(), tripSpec } = body ?? {};
+    let specification;
+    try { specification = tripSpecification(tripSpec); } catch {
+      return NextResponse.json({ error: "Provide valid trip details (duration must be 1–30 days)." }, { status: 400 });
+    }
     if (typeof requestId !== "string" || !/^[a-zA-Z0-9-]{8,100}$/.test(requestId)) {
       return NextResponse.json({ error: "Invalid request ID" }, { status: 400 });
     }
@@ -325,12 +334,19 @@ export async function POST(request: NextRequest) {
       ui: "limit",
     }, { status: 429 });
     if (isFinal && before.info.remaining < 1) return limitResponse();
+    const limitUser = account.requestUserId ?? account.userId;
+    const limit = await reserveRequest(limitUser, "ai", requestId);
+    if (!limit.allowed) return NextResponse.json({ error: "A request is already running or you are sending too quickly. Please try again shortly." }, { status: 429, headers: { "Retry-After": String(limit.retryAfter) } });
+    reservation = { userId: limitUser, requestId };
+    // Another instance may have committed between the first read and our lease.
+    const reserved = await readTripCredits(account, requestId);
+    if (reserved.tripPlan) return NextResponse.json({ trip_plan: reserved.tripPlan, credits: reserved.info });
 
     // Separate the history (all messages except the last one, which we already have)
     const historyMessages = messages.slice(0, -1);
 
     // 2. Select Prompt
-    const activePrompt = isFinal ? FINAL_PROMPT : PROMPT;
+    const activePrompt = isFinal ? FINAL_PROMPT + "\nLatest confirmed trip details (these override earlier conversation answers; infer only missing fields from history):\n" + JSON.stringify(specification) : PROMPT;
 
     // 3. Start the Chat Session with System Instructions
     // Sanitize history to remove messages with empty/null content which cause Gemini 400 errors
@@ -362,7 +378,7 @@ export async function POST(request: NextRequest) {
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         console.log(`Attempt ${attempt}/${maxRetries} to send message to Gemini API...`);
-        const result = await chat.sendMessage(userMessage);
+        const result = await chat.sendMessage(userMessage, { timeout: 60000 });
         console.log(`✅ Successfully received response from Gemini API`);
         const responseText = result.response.text();
 
@@ -433,5 +449,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       error: userMessage,
     }, { status: errorMessage.includes("Credit service") ? 503 : 502 });
+  } finally {
+    if (reservation) await releaseRequest(reservation.userId, "ai", reservation.requestId).catch(error => console.error("Request lease cleanup failed:", error));
   }
 }

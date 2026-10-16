@@ -40,3 +40,32 @@ export const CommitPlan = mutation({
   },
 });
 
+// Shared, transactional limits work across every serverless instance. Only the
+// authenticated Next server can reserve/release paid provider work.
+const requestArgs = { secret: v.string(), userId: v.string(), scope: v.union(v.literal("ai"), v.literal("photo")), requestId: v.string() };
+export const ReserveRequest = mutation({
+  args: requestArgs,
+  handler: async (ctx, args) => {
+    authorize(args.secret, 2);
+    if (!/^[a-zA-Z0-9-]{8,100}$/.test(args.requestId)) throw new Error("Invalid request ID");
+    const now = Date.now();
+    const row = await ctx.db.query("RequestLimits").withIndex("by_user_scope", q => q.eq("userId", args.userId).eq("scope", args.scope)).unique();
+    if (args.scope === "ai" && row && row.leaseUntil > now) return { allowed: false, retryAfter: Math.max(1, Math.ceil((row.leaseUntil - now) / 1000)) };
+    const sameWindow = row && now - row.windowStart < 60000;
+    const count = sameWindow ? row.count : 0;
+    if (count >= (args.scope === "ai" ? 12 : 30)) return { allowed: false, retryAfter: Math.max(1, Math.ceil((row!.windowStart + 60000 - now) / 1000)) };
+    const next = { userId: args.userId, scope: args.scope, windowStart: sameWindow ? row.windowStart : now, count: count + 1, requestId: args.requestId, leaseUntil: args.scope === "ai" ? now + 210000 : 0 };
+    if (row) await ctx.db.patch(row._id, next);
+    else await ctx.db.insert("RequestLimits", next);
+    return { allowed: true, retryAfter: 0 };
+  },
+});
+export const ReleaseRequest = mutation({
+  args: requestArgs,
+  handler: async (ctx, args) => {
+    authorize(args.secret, 2);
+    const row = await ctx.db.query("RequestLimits").withIndex("by_user_scope", q => q.eq("userId", args.userId).eq("scope", args.scope)).unique();
+    if (row?.requestId === args.requestId) await ctx.db.patch(row._id, { leaseUntil: 0, requestId: undefined });
+  },
+});
+

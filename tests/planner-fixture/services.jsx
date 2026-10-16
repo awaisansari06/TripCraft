@@ -10,11 +10,18 @@ export const useTripDetail = () => useContext(TripDetailContext);
 export function useQuery(name, args) {
     if (args === 'skip') return undefined;
     const path = String(name[Symbol.for('functionName')] || '');
+    if (path.includes('GetSavedPlace')) return window.PLANNER_FIXTURE.savedPlace || null;
     return path.includes('GetMessages') ? window.PLANNER_FIXTURE.messages : null;
 }
 const mutations = new Map();
 export function useMutation(name) {
-    if (!mutations.has(name)) mutations.set(name, async args => { window.fixtureMutations.push(args); return 'fixture-id'; });
+    if (!mutations.has(name)) mutations.set(name, async args => {
+        const operation = String(name[Symbol.for('functionName')] || '');
+        window.fixtureMutations.push({ ...args, operation });
+        if (window.fixtureFailSave && operation.includes('CreateTripDetail')) throw new Error('Fixture save failure');
+        if (window.fixtureFailDelete && operation.includes('DeleteTrip')) throw new Error('Fixture delete failure');
+        return 'fixture-id';
+    });
     return mutations.get(name);
 }
 export const useUser = () => ({ isLoaded: true, user: { id: 'fixture-user' } });

@@ -1,3 +1,4 @@
+require('node:fs').mkdirSync('artifacts/landing-audit', { recursive: true });
 const BASE_URL = process.env.LANDING_URL || 'http://localhost:3102';
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const assert = require('node:assert/strict');
@@ -36,5 +37,3 @@ const fs = require('node:fs');
   fs.writeFileSync('artifacts/landing-audit/resilience.json', JSON.stringify({ initialSavedTheme: 'passed', systemPreference: 'passed', fallbackImage: 'passed', examplePrompt: 'passed', enterSubmit: 'passed', noJavaScriptVisibility: 'passed' }, null, 2));
   console.log('Passed initial theme, system preference, fallback, example, Enter, and no-JavaScript checks.');
 })().catch(error => { console.error(error); process.exit(1); });
-
-

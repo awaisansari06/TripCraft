@@ -2,6 +2,8 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
+    TripSessions: defineTable({ tripId: v.string(), uid: v.id("UserTable"), deleted: v.optional(v.boolean()) }).index("by_tripId", ["tripId"]),
+    RequestLimits: defineTable({ userId: v.string(), scope: v.string(), windowStart: v.number(), count: v.number(), requestId: v.optional(v.string()), leaseUntil: v.number() }).index("by_user_scope", ["userId", "scope"]),
     TripCreditAccounts: defineTable({
         userId: v.string(),
         remaining: v.number(),
@@ -14,11 +16,12 @@ export default defineSchema({
         tripPlan: v.any(),
     }).index("by_request", ["userId", "requestId"]),
     UserTable: defineTable({
+        clerkId: v.optional(v.string()),
         name: v.string(),
         imageUrl: v.string(),
         email: v.string(),
         subscription: v.optional(v.string()),
-    }),
+    }).index("by_clerk", ["clerkId"]),
     TripDetailTable: defineTable({
         tripId: v.string(),
         tripDetail: v.any(),

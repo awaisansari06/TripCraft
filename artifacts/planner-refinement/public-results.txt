@@ -1,1 +1,0 @@
-Shared navigation and public-page responsive checks passed across 30 theme/width/page combinations.
