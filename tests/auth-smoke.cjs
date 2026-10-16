@@ -1,0 +1,3 @@
+const{chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+(async()=>{const b=await chromium.launch({channel:'msedge',headless:true});const p=await b.newPage({viewport:{width:1440,height:900}});p.on('pageerror',e=>console.log('PAGEERROR',e.message));await p.addInitScript(()=>localStorage.setItem('theme','dark'));await p.goto('http://localhost:3107/sign-in',{waitUntil:'domcontentloaded'});await p.locator('.cl-formFieldInput').first().waitFor({timeout:60000});console.log((await p.locator('main').innerText()).slice(0,1800));await p.screenshot({path:'artifacts/export-auth/auth-smoke.png',fullPage:true});await b.close()})().catch(e=>{console.error(e);process.exit(1)});
+

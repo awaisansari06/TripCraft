@@ -1,0 +1,40 @@
+const BASE_URL = process.env.LANDING_URL || 'http://localhost:3102';
+const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+(async () => {
+  const browser = await chromium.launch({ channel: 'msedge', headless: true });
+  const context = await browser.newContext({ colorScheme: 'light', viewport: { width: 390, height: 900 } });
+  await context.addInitScript(() => {
+    localStorage.setItem('theme', 'dark');
+    document.addEventListener('DOMContentLoaded', () => window.initialTheme = document.documentElement.className, { once: true });
+  });
+  const page = await context.newPage();
+  await page.route('**/_next/image?**', route => route.request().url().includes('05-paris') ? route.abort() : route.continue());
+  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+  assert.equal(await page.evaluate(() => window.initialTheme), 'dark');
+  await page.waitForFunction(() => Array.from(document.querySelectorAll('#destinations img')).filter(img => img.src.includes('image-fallback.svg')).length === 2);
+  assert.ok(await page.locator('#destinations > div:last-child > a').first().isVisible());
+  await page.getByRole('button', { name: 'Goa weekend' }).click();
+  assert.equal(await page.getByRole('textbox', { name: 'Describe your dream trip' }).inputValue(), 'Plan a weekend in Goa');
+  await page.evaluate(() => document.querySelector('form').addEventListener('submit', () => window.plannerSubmitted = true));
+  await page.getByRole('textbox', { name: 'Describe your dream trip' }).press('Enter');
+  await page.waitForFunction(() => window.plannerSubmitted === true);
+  await context.close();
+  const noJs = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 900 } });
+  const staticPage = await noJs.newPage();
+  await staticPage.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+  assert.equal(await staticPage.locator('#destinations > div:last-child > a').count(), 6);
+  for (const card of await staticPage.locator('#destinations > div:last-child > a').all()) assert.ok(await card.isVisible());
+  await noJs.close();
+  const system = await browser.newContext({ colorScheme: 'dark' });
+  const systemPage = await system.newPage();
+  await systemPage.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+  await systemPage.waitForFunction(() => document.documentElement.className === 'dark');
+  await system.close();
+  await browser.close();
+  fs.writeFileSync('artifacts/landing-audit/resilience.json', JSON.stringify({ initialSavedTheme: 'passed', systemPreference: 'passed', fallbackImage: 'passed', examplePrompt: 'passed', enterSubmit: 'passed', noJavaScriptVisibility: 'passed' }, null, 2));
+  console.log('Passed initial theme, system preference, fallback, example, Enter, and no-JavaScript checks.');
+})().catch(error => { console.error(error); process.exit(1); });
+
+

@@ -3,9 +3,9 @@
   --paper: var(--tc-paper);
   --ink: var(--tc-ink);
   --muted: var(--tc-muted);
-  --card: #ffffff8c;
-  --line: #e7e5e0;
-  --orange: #ff6425;
+  --card: var(--card-background);
+  --line: var(--border-strong);
+  --orange: var(--tc-orange);
   background: var(--paper);
   color: var(--ink);
 }
@@ -14,8 +14,8 @@
   --paper: #0b1821;
   --ink: #f0f0eb;
   --muted: var(--tc-muted);
-  --card: #162633;
-  --line: #2a4050;
+  --card: var(--card-background);
+  --line: var(--border-strong);
 }
 .home {
   overflow: hidden;
@@ -1289,176 +1289,140 @@
     transition: none;
   }
 }
-/* Match the reference's compact editorial type and section proportions. */
-.home,
-.header {
-  font-family: var(--font-outfit), Arial, sans-serif;
+
+/* Landing-page layout and accessible theme surfaces. */
+.home { --accent: var(--tc-orange); --accent-foreground: #fff; }
+.heroLine { display: block; }
+.heroContent { width: 54%; }
+.hero h1 { font-size: clamp(42px, 5vw, 68px); }
+.heroContent > p { max-width: 440px; line-height: 1.6; }
+.prompt { background: var(--input-background); gap: 10px; box-shadow: 0 8px 25px var(--shadow-color); }
+.prompt button, .cta a, .newsletter button {
+  background: var(--tc-gradient);
+  color: var(--accent-foreground, #fff);
 }
-.steps {
-  grid-template-columns: 1fr 1.2fr 0.85fr;
-  gap: 6%;
+.prompt button:disabled { cursor: not-allowed; background: var(--foreground-secondary); }
+.prompt[aria-busy="true"] button { cursor: progress; }
+.prompt input { min-height: 44px; }
+.startLabel { font-size: 12px; letter-spacing: 1.2px; }
+.suggestions { flex-wrap: wrap; }
+.suggestions button { min-height: 44px; font-size: 14px; }
+.photo { background: var(--surface-muted); }
+.templateCard, .destinationCard { display: block; min-width: 0; }
+.threeGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+.templateCard:after, .destinationCard:after { inset: 0; background: var(--image-overlay); }
+.templateCard h3, .destinationCard h3 { color: #fff; text-shadow: 0 2px 8px #0008; }
+.templateCard:hover img, .templateCard:focus-visible img,
+.destinationCard:hover img, .destinationCard:focus-visible img { transform: scale(1.04); }
+.templates, .features, .destinations { padding-block: 48px; }
+.how { padding-block: 48px; background: var(--surface-muted); }
+.home h2 { font-size: clamp(30px, 3.4vw, 44px); line-height: 1.18; }
+.sectionHeading > a { color: var(--orange); font-size: 15px; min-height: 44px; }
+.steps { gap: 32px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.steps > svg { pointer-events: none; }
+.steps h3 { font-size: 19px; }
+.steps p { font-size: 16px; line-height: 1.6; max-width: none; }
+.stepTop > span, .stepTop b { background: var(--surface-muted); }
+.featureGrid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.65fr) minmax(0, 1fr); align-items: stretch; }
+.featureColumn { min-width: 0; }
+.feature, .itinerary { padding: 20px; background: var(--card-background); }
+.feature h3 { font-size: 18px; }
+.feature p, .builderTitle p { font-size: 15px; line-height: 1.6; }
+.featureColumn:last-child .feature { display: block; }
+.itinerary { box-shadow: 0 12px 35px var(--shadow-color); border-color: var(--border-strong); }
+.builderTitle { flex-wrap: wrap; }
+.sample { background: var(--surface-elevated); }
+.sample h4 { font-size: 16px; }
+.day { gap: 8px; flex-wrap: wrap; padding-block: 10px; }
+.day > div { flex: 1 1 130px; }
+.day b, .day strong, .day p { font-size: 14px; }
+.day p { line-height: 1.5; }
+.destinationCard { aspect-ratio: 1.5; }
+.destinationCard h3 { font-size: 20px; left: 20px; right: 20px; bottom: 20px; justify-content: space-between; }
+.cta { height: auto; min-height: 310px; margin-block: 16px; }
+.cta:after, :global(.dark) .cta:after { background: linear-gradient(90deg, #071521ed, #07152199 65%, #07152155); }
+.cta h2, .cta p { color: #fff; }
+.cta em { color: #ffb78e; }
+.cta > div { padding-block: 42px; }
+.cta img { object-position: center 65%; }
+.location { background: #071521cc; border-radius: 24px; padding: 10px 14px; font-family: inherit; font-size: 16px; }
+.footer { padding-top: 48px; }
+.footerGrid { grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 28px; }
+.newsletter { grid-column: 1 / -1; width: min(100%, 440px); }
+.footerGrid h3 { font-size: 17px; }
+.footerGrid > div > a:not(.brand) { font-size: 15px; min-height: 44px; display: flex; align-items: center; }
+.footerGrid > div > p, .newsletter label { font-size: 15px; line-height: 1.6; }
+.newsletter input { min-height: 48px; font-size: 16px; color: var(--ink); background: var(--input-background); }
+.newsletter button { min-height: 48px; font-size: 15px; }
+.copyright { font-size: 14px; line-height: 1.6; }
+.home :is(a, button, input):focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 4px; }
+.prompt:focus-within, .newsletter form:focus-within { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+.spinner { width: 18px; height: 18px; border: 2px solid #ffffff80; border-top-color: #fff; border-radius: 50%; animation: spin 700ms linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (max-width: 1024px) {
+  .destinations .threeGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hero { height: auto; min-height: 530px; }
+  .heroContent { width: 59%; padding-block: 48px; }
+  .heroImage { top: 20px; height: 470px; width: 48%; }
+  .hero h1 { font-size: clamp(40px, 5.3vw, 54px); }
+  .heroContent > p { font-size: 18px; max-width: 330px; }
+  .prompt { flex-wrap: wrap; max-width: 440px; padding: 10px; }
+  .prompt > :global(.tc-trip-input) { flex-basis: calc(100% - 55px); }
+  .prompt button { width: 100%; font-size: 15px; }
+  .featureGrid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); }
+  .featureColumn:last-child { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .templateCard { aspect-ratio: 0.9; }
+  .templateCard > div { left: 16px; right: 16px; bottom: 20px; }
+  .templateCard h3 { font-size: 20px; }
+  .templateCard span:not(.photo) { font-size: 14px; }
 }
-@media (min-width: 601px) and (max-width: 900px) {
-  .steps h3 {
-    font-size: 14px;
-    white-space: nowrap;
-  }
-  .feature p {
-    font-size: 10px;
-    line-height: 1.4;
-  }
-  .featureColumn:last-child .feature {
-    padding: 10px;
-  }
-  .featureGrid {
-    gap: 15px;
-  }
+@media (max-width: 768px) {
+  .hero { display: flex; flex-direction: column; }
+  .heroContent { order: -1; width: 89%; padding: 36px 0 0; }
+  .hero h1 { font-size: clamp(38px, 7vw, 54px); }
+  .heroContent > p { max-width: none; }
+  .heroImage { position: relative; align-self: flex-end; top: auto; right: -3%; width: 85%; height: 330px; margin: 28px 0 16px; }
+  .prompt { max-width: 560px; }
+  .heroPlane, .flightPath, .stamp { display: none; }
+  .sectionHeading { display: block; }
+  .sectionHeading > a { margin-top: 12px; white-space: normal; }
+  .steps { gap: 22px; padding: 0; }
+  .stepTop { gap: 8px; }
+  .steps h3 { font-size: 17px; }
+  .steps p { font-size: 15px; }
+  .featureGrid { gap: 18px; }
+  .featureColumn { gap: 18px; }
+  .featureColumn:last-child { grid-template-columns: 1fr; }
+  .featureColumn:last-child .feature { display: flex; gap: 16px; }
+  .featureColumn:last-child .icon { width: 44px; height: 44px; }
 }
 @media (max-width: 600px) {
-  .steps {
-    grid-template-columns: 1fr;
-    gap: 25px;
-  }
+  .threeGrid, .destinations .threeGrid, .templates .threeGrid { grid-template-columns: minmax(0, 1fr); }
+  .hero h1 .heroAccent { font-size: 0.8em; white-space: normal; }
+  .heroContent > p { font-size: 17px; }
+  .heroImage { height: 270px; width: 93%; }
+  .templateCard, .destinationCard { aspect-ratio: 1.4; }
+  .steps { grid-template-columns: 1fr; gap: 28px; }
+  .steps article { padding-left: 78px; }
+  .steps h3 { font-size: 19px; }
+  .steps p { font-size: 16px; }
+  .featureGrid { grid-template-columns: minmax(0, 1fr); }
+  .featureColumn { display: flex; flex-direction: column; }
+  .featureColumn:last-child { grid-column: auto; }
+  .itinerary { grid-row: auto; }
+  .feature h3, .builderTitle h3 { font-size: 19px; }
+  .feature p, .builderTitle p { font-size: 16px; }
+  .day > .photo { width: 58px; height: 44px; }
+  .day > div { flex-basis: 140px; }
+  .footerGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .footerGrid > div:first-child, .newsletter { grid-column: 1 / -1; }
+  .footerGrid h3 { font-size: 16px; }
+  .newsletter { max-width: none; }
+  .cta { width: 89%; min-height: 330px; border-radius: 24px; }
+  .cta p { font-size: 17px; }
 }
-
-/* Entrance and interaction motion stays local to the homepage. */
-.heroContent {
-  animation: heroEnter 650ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
-}
-.heroImage {
-  animation: photoEnter 850ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
-}
-.heroPlane {
-  animation: planeEnter 900ms ease-out 250ms both;
-}
-.motionReady [data-reveal] {
-  opacity: 0;
-  transform: translateY(20px);
-  transition:
-    opacity 550ms ease,
-    transform 550ms cubic-bezier(0.2, 0.75, 0.25, 1);
-}
-.motionReady [data-reveal].revealed {
-  opacity: 1;
-  transform: translateY(0);
-}
-.motionReady .threeGrid [data-reveal]:nth-child(2),
-.motionReady .steps [data-reveal]:nth-of-type(2),
-.motionReady .featureColumn [data-reveal]:nth-child(2) {
-  transition-delay: 70ms;
-}
-.motionReady .threeGrid [data-reveal]:nth-child(3),
-.motionReady .steps [data-reveal]:nth-of-type(3),
-.motionReady .featureColumn [data-reveal]:nth-child(3) {
-  transition-delay: 140ms;
-}
-.motionReady .threeGrid [data-reveal]:nth-child(4) {
-  transition-delay: 50ms;
-}
-.motionReady .threeGrid [data-reveal]:nth-child(5) {
-  transition-delay: 100ms;
-}
-.motionReady .threeGrid [data-reveal]:nth-child(6) {
-  transition-delay: 150ms;
-}
-.motionReady .templateCard.revealed:hover,
-.motionReady .destinationCard.revealed:hover {
-  transform: translateY(-5px);
-}
-.templateCard,
-.destinationCard,
-.feature,
-.itinerary,
-.suggestions button,
-.prompt button,
-.cta a,
-.newsletter button,
-.themeToggle,
-.signIn {
-  transition:
-    transform 220ms ease,
-    box-shadow 220ms ease,
-    border-color 220ms ease,
-    background-color 220ms ease;
-}
-.templateCard:hover,
-.destinationCard:hover {
-  box-shadow: 0 14px 30px #07111a30;
-}
-.feature:hover,
-.itinerary:hover {
-  border-color: #ff8b3380;
-  box-shadow: 0 10px 24px #07111a12;
-}
-.suggestions button:hover,
-.themeToggle:hover,
-.signIn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 7px 15px #07111a15;
-}
-.prompt button:hover:not(:disabled),
-.cta a:hover,
-.newsletter button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 18px #ff64254d;
-}
-.prompt button:active,
-.cta a:active,
-.newsletter button:active {
-  transform: translateY(0) scale(0.98);
-}
-.prompt button:disabled {
-  cursor: progress;
-  opacity: 0.85;
-}
-.spinner {
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  border: 2px solid #ffffff80;
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 700ms linear infinite;
-}
-@keyframes heroEnter {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-@keyframes photoEnter {
-  from {
-    opacity: 0;
-    translate: 28px 0;
-  }
-  to {
-    opacity: 1;
-    translate: 0 0;
-  }
-}
-@keyframes planeEnter {
-  from {
-    opacity: 0;
-    translate: -18px 10px;
-  }
-  to {
-    opacity: 1;
-    translate: 0 0;
-  }
-}
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* A coordinated entrance, with restrained depth and light on interaction. */
-.home {
-  --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+@media (prefers-reduced-motion: reduce) {
+  .home *, .home *::before, .home *::after { animation: none !important; transition: none !important; }
 }
 .scrollProgress {
   position: fixed;
@@ -1466,316 +1430,211 @@
   height: 3px;
   z-index: 100;
   pointer-events: none;
-  background: linear-gradient(90deg, #ffb36b, #ff6425, #ff9870);
-  box-shadow: 0 0 12px #ff642550;
+  background: var(--orange);
   transform-origin: left;
   transform: scaleX(var(--scroll-progress, 0));
 }
-.heroContent {
-  animation: none;
+.prompt button:disabled { color: var(--ink); background: var(--surface-muted); border: 1px solid var(--border-strong); }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .home [data-depth] { transition: transform 180ms ease, box-shadow 180ms ease; }
+  .home [data-depth]:hover { transform: perspective(1000px) rotateX(calc(var(--pointer-y, 0) * -1deg)) rotateY(calc(var(--pointer-x, 0) * 1deg)); }
 }
-.heroLine {
-  display: block;
-  overflow: visible;
+
+/* Motion is progressive enhancement: no hidden/waiting styles. */
+.home { --motion-ease: cubic-bezier(0.16, 1, 0.3, 1); }
+.heroImage > .photo { translate: 0 var(--hero-shift, 0px); }
+.templateCard, .destinationCard, .feature, .itinerary,
+.suggestions button, .prompt button, .cta a, .newsletter button {
+  transition: transform 200ms var(--motion-ease), box-shadow 200ms ease,
+    border-color 200ms ease, background-color 200ms ease, color 200ms ease;
 }
-.heroLine > span {
-  display: block;
-  animation: titleRise 1100ms var(--motion-ease) both;
+.templateCard img, .destinationCard img { transition: transform 250ms var(--motion-ease); }
+.sectionHeading > a svg, .cta a svg, .suggestions button > svg,
+.icon svg, .stepTop svg { transition: translate 200ms ease, transform 200ms ease; }
+.home :is(.templateCard, .destinationCard, .feature, .itinerary):focus-within {
+  box-shadow: 0 12px 28px var(--shadow-color);
+  border-color: var(--focus-ring);
 }
-.heroLine:nth-child(2) > span {
-  animation-delay: 110ms;
+.home :is(.suggestions button, .prompt button, .cta a, .newsletter button):focus-visible {
+  box-shadow: 0 0 0 5px var(--surface), 0 0 0 7px var(--focus-ring);
 }
-.heroLine:nth-child(3) > span {
-  animation-delay: 220ms;
-}
-.heroAccent > span {
-  background: linear-gradient(100deg, #ff934f, #ff5425 60%, #ff8544);
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.heroContent > p,
-.heroContent > .prompt,
-.heroContent > .startLabel,
-.heroContent > .suggestions {
-  animation: heroEnter 900ms var(--motion-ease) 320ms both;
-}
-.heroContent > .prompt {
-  animation-delay: 420ms;
-}
-.heroContent > .startLabel {
-  animation-delay: 500ms;
-}
-.heroContent > .suggestions {
-  animation-delay: 560ms;
-}
-.heroImage {
-  animation: coastReveal 1400ms var(--motion-ease) both;
-}
-.heroImage > .photo {
-  translate: 0 var(--hero-shift, 0px);
-}
-.heroPlane {
-  animation: planeEnter 1400ms var(--motion-ease) 500ms both;
-}
-.flightPath {
-  animation: routeReveal 1600ms var(--motion-ease) 500ms both;
-}
-.location {
-  left: 18%;
-  bottom: 16%;
-  white-space: nowrap;
-  padding: 10px 15px;
-  border: 1px solid #ffffff35;
-  border-radius: 24px;
-  background: #122a3a30;
-  backdrop-filter: blur(12px);
-}
-.motionReady [data-reveal] {
-  translate: 0 32px;
-  transform: none;
-  transition:
-    opacity 850ms var(--motion-ease),
-    translate 850ms var(--motion-ease),
-    transform 240ms ease-out,
-    box-shadow 350ms ease,
-    border-color 350ms ease;
-}
-.motionReady [data-reveal].revealed,
-.motionReady [data-reveal]:focus-within {
-  opacity: 1;
-  translate: 0 0;
-  transform: none;
-}
-.photo {
-  background: #b9b8ae20;
-}
-.photo::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(
-    110deg,
-    transparent 25%,
-    #ffffff30 45%,
-    transparent 65%
-  );
-  translate: -100% 0;
-  opacity: 0;
-}
-.photo[data-light-ready="false"]::after,
-:global(.dark) .photo[data-dark-ready="false"]::after {
-  opacity: 1;
-  animation: imageShimmer 1500ms ease-in-out infinite;
-}
-:global(.dark) .photo[data-dark-ready="true"]::after {
-  opacity: 0;
-  animation: none;
-}
-.photo[data-light-ready="true"] .lightPhoto,
-.photo[data-dark-ready="true"] .darkPhoto {
-  animation: imageResolve 700ms ease-out;
-}
-.templateCard img,
-.destinationCard img {
-  transition: transform 1100ms var(--motion-ease);
-}
-.templateCard > div,
-.destinationCard h3 {
-  transition: translate 650ms var(--motion-ease);
-}
-.templateCard::before,
-.destinationCard::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  border-radius: inherit;
-  opacity: 0;
-  transition: opacity 350ms ease;
-  background: radial-gradient(
-    circle at calc(50% + var(--pointer-x, 0) * 45%)
-      calc(50% + var(--pointer-y, 0) * 45%),
-    #ffffff38,
-    transparent 65%
-  );
-  box-shadow: inset 0 0 0 1px #ffffff40;
-}
-.prompt button,
-.cta a,
-.newsletter button {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-}
-.prompt button::after,
-.cta a::before,
-.newsletter button::after {
-  content: "";
-  position: absolute;
-  inset: -60% -20%;
-  background: linear-gradient(
-    110deg,
-    transparent 35%,
-    #ffffff40 50%,
-    transparent 65%
-  );
-  transform: translateX(-100%);
-  pointer-events: none;
-}
-.prompt button:hover::after,
-.cta a:hover::before,
-.newsletter button:hover::after {
-  animation: buttonSheen 800ms var(--motion-ease);
-}
-.sectionHeading > a svg,
-.cta a svg,
-.suggestions button > svg {
-  transition: translate 400ms var(--motion-ease);
-}
-.sectionHeading > a:hover svg,
-.cta a:hover svg,
-.suggestions button:hover > svg {
-  translate: 4px 0;
-}
-.icon svg,
-.stepTop svg {
-  transition: transform 600ms var(--motion-ease);
-}
-.feature:hover .icon svg {
-  transform: translateY(-3px) rotate(-7deg);
-}
-.steps article:hover .stepTop svg {
-  transform: scale(1.12);
-}
-.itinerary:global(.tc-revealed) .miniMap > svg:not(:first-child) {
-  animation: pinArrive 650ms var(--motion-ease) 350ms both;
-}
-.itinerary:global(.tc-revealed) .miniMap > svg:nth-child(3) {
-  animation-delay: 500ms;
-}
-.itinerary:global(.tc-revealed) .miniMap > svg:nth-child(4) {
-  animation-delay: 650ms;
-}
-@media (hover: hover) and (pointer: fine) {
-  .home [data-depth][data-hovering="true"] {
-    transform: perspective(1000px) rotateX(calc(var(--pointer-y, 0) * -3deg))
-      rotateY(calc(var(--pointer-x, 0) * 4deg)) translateY(-7px);
-    transition-delay: 0ms;
-    box-shadow:
-      0 24px 44px -18px #081e3b55,
-      0 8px 18px -12px #ff64254d;
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .home [data-depth]:hover {
+    transform: perspective(1000px) translateY(-6px)
+      rotateX(calc(var(--pointer-y, 0) * -1.5deg)) rotateY(calc(var(--pointer-x, 0) * 1.5deg));
+    box-shadow: 0 18px 36px var(--shadow-color), 0 0 24px var(--glow-soft);
   }
-  .templateCard:hover::before,
-  .destinationCard:hover::before {
-    opacity: 1;
-  }
-  .templateCard:hover img,
-  .destinationCard:hover img {
-    transform: scale(1.085);
-  }
-  .templateCard:hover > div,
-  .destinationCard:hover h3 {
-    translate: 0 -5px;
+  .templateCard:hover img, .destinationCard:hover img { transform: scale(1.065); }
+  .feature:hover .icon svg { transform: rotate(-8deg) translateY(-2px) scale(1.1); }
+  .steps article:hover .stepTop svg { transform: scale(1.15) rotate(6deg); }
+  .steps article:hover { transform: translateY(-4px); }
+  .home :is(.suggestions button, .prompt button:not(:disabled), .cta a, .newsletter button):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px var(--shadow-color), 0 0 16px var(--glow-soft);
   }
   .home [data-magnetic]:hover:not(:disabled) {
-    transform: translate(
-      calc(var(--pointer-x, 0) * 4px),
-      calc(var(--pointer-y, 0) * 3px - 2px)
-    );
+    transform: translate(calc(var(--pointer-x, 0) * 3px), calc(var(--pointer-y, 0) * 3px - 2px));
+  }
+  .sectionHeading > a:hover svg, .cta a:hover svg, .suggestions button:hover > svg,
+  .templateCard:hover span > svg, .destinationCard:hover h3 > svg {
+    translate: 5px 0;
+  }
+  .sample .day:hover {
+    transform: translateX(4px);
+    background: var(--surface-muted);
+    border-radius: 12px;
   }
 }
-@keyframes titleRise {
-  from {
-    transform: translateY(16px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+.home :is(.suggestions button, .prompt button:not(:disabled), .cta a, .newsletter button):active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: none;
 }
-@keyframes coastReveal {
-  from {
-    opacity: 0;
-    translate: 45px 10px;
-    clip-path: inset(0 0 0 25% round 40% 0 0 43%);
-  }
-  to {
-    opacity: 1;
-    translate: 0 0;
-    clip-path: inset(0 round 40% 0 0 43%);
-  }
+.heroPlane { animation: planeArrival 600ms var(--motion-ease) 120ms; }
+.flightPath path { animation: routeDraw 600ms ease-out 80ms; }
+.steps:has([data-revealed="true"]) > svg:not(.stepPlane) path { animation: routeDraw 600ms ease-out; }
+.steps:has([data-revealed="true"]) > .stepPlane { animation: planeArrival 600ms var(--motion-ease); }
+@keyframes planeArrival {
+  from { translate: -16px 8px; }
+  to { translate: 0 0; }
 }
-@keyframes routeReveal {
-  from {
-    clip-path: inset(0 100% 0 0);
-    opacity: 0;
-  }
-  to {
-    clip-path: inset(0);
-    opacity: 1;
-  }
+@keyframes routeDraw {
+  from { stroke-dashoffset: 52; }
+  to { stroke-dashoffset: 0; }
 }
-@keyframes imageShimmer {
-  to {
-    translate: 100% 0;
-  }
-}
-@keyframes imageResolve {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-@keyframes buttonSheen {
-  to {
-    transform: translateX(100%);
-  }
-}
-@keyframes pinArrive {
-  from {
-    opacity: 0;
-    translate: 0 -12px;
-    scale: 0.7;
-  }
-  to {
-    opacity: 1;
-    translate: 0 0;
-    scale: 1;
-  }
+@media (hover: none), (pointer: coarse) {
+  .heroImage > .photo { translate: none; }
+  .templateCard:hover img, .destinationCard:hover img { transform: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .home *,
-  .header * {
-    animation: none !important;
-    transition: none !important;
-    scroll-behavior: auto !important;
+  .home [data-depth], .home [data-magnetic], .home .heroImage > .photo { translate: none !important; }
+  .home :is(.templateCard, .destinationCard, .feature, .itinerary, button, a),
+  .templateCard img, .destinationCard img { transform: none !important; }
+}
+
+/* Accent light stays on decorative layers, never on content wrappers. */
+@property --tc-border-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+.home {
+  --glow-soft: color-mix(in srgb, var(--orange) 12%, transparent);
+  --glow-strong: color-mix(in srgb, var(--orange) 30%, transparent);
+  --border-glow: color-mix(in srgb, var(--orange) 85%, #ffdbb9);
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  top: 5%;
+  left: -8%;
+  width: 68%;
+  height: 85%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, var(--glow-soft), transparent 68%);
+  animation: heroGlow 2400ms ease-in-out 2;
+}
+.heroLine > span { display: block; }
+.scrollHint {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  min-height: 44px;
+  margin: 24px 0 0 5.5%;
+  font-size: 13px;
+  color: var(--muted);
+  z-index: 2;
+}
+.scrollHint svg { animation: scrollNudge 1200ms ease-in-out 2; }
+@media (min-width: 1025px) {
+  .scrollHint { position: absolute; bottom: 12px; margin-top: 0; }
+}
+@media (max-width: 768px) {
+  .scrollHint { order: 3; margin-top: 4px; }
+}
+.feature, .itinerary { position: relative; isolation: isolate; }
+:is(.templateCard, .destinationCard, .feature, .itinerary)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  pointer-events: none;
+  z-index: 3;
+  background: conic-gradient(from var(--tc-border-angle), transparent 10%, var(--border-glow) 25%, transparent 45%, transparent 65%, var(--glow-strong) 80%, transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+}
+:is(.templateCard, .destinationCard, .feature, .itinerary)[data-revealed="true"]::before {
+  animation: borderArrival 1100ms ease-out both;
+}
+.home :is(.templateCard, .destinationCard, .feature, .itinerary):focus-within::before {
+  opacity: 1;
+  animation: borderSweep 1200ms ease-out;
+}
+.home :is(.prompt, .suggestions button, .cta a, .newsletter form):focus-within {
+  box-shadow: 0 0 0 4px var(--glow-soft), 0 8px 24px var(--glow-soft);
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .home :is(.templateCard, .destinationCard, .feature, .itinerary):hover {
+    box-shadow: 0 14px 28px var(--shadow-color), 0 0 22px var(--glow-soft);
   }
-  .motionReady [data-reveal] {
+  .home :is(.templateCard, .destinationCard, .feature, .itinerary):hover::before {
     opacity: 1;
-    transform: none;
-    translate: none;
+    animation: borderSweep 1200ms ease-out;
   }
-  .home [data-depth],
-  .home [data-magnetic],
-  .home .photo,
-  .home .photo img,
-  .home .icon svg {
-    transform: none !important;
-    translate: none !important;
+  .home :is(.prompt button:not(:disabled), .cta a, .newsletter button):hover {
+    box-shadow: 0 6px 20px var(--glow-strong), 0 0 18px var(--glow-soft);
   }
-  .home .heroImage > .photo {
-    transform: rotate(-5deg) !important;
-  }
-  .scrollProgress,
-  .photo::after,
-  .prompt button::after,
-  .cta a::before,
-  .newsletter button::after {
-    display: none;
-  }
+}
+@keyframes borderSweep {
+  from { --tc-border-angle: 0deg; }
+  to { --tc-border-angle: 360deg; }
+}
+@keyframes borderArrival {
+  0% { --tc-border-angle: 0deg; opacity: 0; }
+  20% { opacity: 0.85; }
+  100% { --tc-border-angle: 240deg; opacity: 0; }
+}
+@keyframes heroGlow {
+  0%, 100% { opacity: 0.5; transform: scale(0.96); }
+  50% { opacity: 1; transform: scale(1.04); }
+}
+@keyframes scrollNudge {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home *, .home *::before, .home *::after { animation: none !important; }
+  .hero::before { opacity: 0.65; }
+  .scrollHint svg { translate: none; }
+}
+@media (forced-colors: active) {
+  .hero::before, :is(.templateCard, .destinationCard, .feature, .itinerary)::before { display: none; }
+}
+/* First-paint motion cannot rewind after hydration. Copy moves as one unit. */
+.hero::before { animation: none; opacity: 0.65; }
+@media (prefers-reduced-motion: no-preference) {
+  .heroContent { animation: heroArrival 600ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .heroImage img { animation: heroPhotoArrival 650ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .heroContent:focus-within { animation: none; }
+}
+@keyframes heroArrival {
+  from { translate: 0 10px; }
+  to { translate: 0 0; }
+}
+@keyframes heroPhotoArrival {
+  from { scale: 1.025; }
+  to { scale: 1; }
+}
+.prompt button:disabled {
+  color: var(--accent-foreground);
+  background: var(--tc-gradient);
+  border: 1px solid transparent;
+  box-shadow: none;
 }

@@ -1,0 +1,43 @@
+
+> tripcraft@0.1.0 build
+> next build --webpack
+
+▲ Next.js 16.1.4 (webpack)
+- Environments: .env.local, .env
+
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+✓ Compiled successfully in 77s
+  Running TypeScript ...
+  Collecting page data using 21 workers ...
+  Generating static pages using 21 workers (0/15) ...
+  Generating static pages using 21 workers (3/15) 
+  Generating static pages using 21 workers (7/15) 
+  Generating static pages using 21 workers (11/15) 
+✓ Generating static pages using 21 workers (15/15) in 7.5s
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/aimodel
+├ ƒ /api/arcjet
+├ ƒ /api/credits
+├ ƒ /api/google-place-detail
+├ ƒ /api/profile
+├ ○ /contact-us
+├ ○ /create-new-trip
+├ ○ /dashboard
+├ ○ /pricing
+├ ○ /privacy-policy
+├ ƒ /sign-in/[[...sign-in]]
+├ ƒ /sign-up/[[...sign-up]]
+└ ○ /terms-of-service
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

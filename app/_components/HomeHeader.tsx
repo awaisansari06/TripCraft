@@ -2,9 +2,9 @@
 import Link from "next/link";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
-import { SignedIn, SignedOut, UserButton, SignOutButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, UserButton, SignOutButton, useUser } from "@clerk/nextjs";
 import { useTheme } from "next-themes";
-import { Sun, Menu, X, ArrowUpRight } from "lucide-react";
+import { Sun, Moon, Menu, X, ArrowUpRight } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import Brand from "./Brand";
 
@@ -17,6 +17,7 @@ const subscribeHydration = () => () => {};
 export function HomeHeader() {
   const hydrated = useSyncExternalStore(subscribeHydration, () => true, () => false);
   const pathname = usePathname();
+  const { isLoaded } = useUser();
   const { resolvedTheme, setTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -62,9 +63,10 @@ export function HomeHeader() {
               setTheme(resolvedTheme === "dark" ? "light" : "dark")
             }
           >
-            <Sun size={21} />
+            <Sun size={21} className="tc-theme-sun" />
+            <Moon size={21} className="tc-theme-moon" />
           </button>
-          {!hydrated ? <span aria-hidden="true" style={{ width: 80, height: 44 }} /> : <>
+          {!hydrated || !isLoaded ? <span aria-hidden="true" className="tc-auth-placeholder" /> : <>
           <SignedOut>
             <Link className="tc-nav-account" href="/sign-in">
               Sign in

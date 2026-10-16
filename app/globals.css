@@ -279,11 +279,3 @@
     break-inside: avoid;
   }
 }
-
-/* Aggressively hide the entire Clerk Footer Block */
-.cl-footer,
-.cl-footerAction,
-.cl-internal-251fsc,
-.cl-internal-1dauvpw {
-  display: none !important;
-}

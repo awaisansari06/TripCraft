@@ -28,7 +28,7 @@ export function useHomepageMotion(ref: RefObject<HTMLElement | null>) {
         );
         root.style.setProperty(
           "--hero-shift",
-          `${Math.min(window.scrollY, 600) * 0.09}px`,
+          `${finePointer.matches ? Math.min(window.scrollY, 600) * 0.045 : 0}px`,
         );
       };
       const onScroll = () => {

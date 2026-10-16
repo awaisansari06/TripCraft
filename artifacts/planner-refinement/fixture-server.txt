@@ -1,0 +1,1 @@
+Isolated planner UI fixture: http://127.0.0.1:3201 — external account/model/database transports are mocked; production components are unchanged.

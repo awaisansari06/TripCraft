@@ -1,0 +1,182 @@
+[
+  {
+    "theme": "light",
+    "width": 320,
+    "mode": "sign-in",
+    "liveClerk": true,
+    "fields": true,
+    "returnPath": true,
+    "errors": []
+  },
+  {
+    "theme": "light",
+    "width": 320,
+    "mode": "sign-up",
+    "liveClerk": true,
+    "fields": true,
+    "returnPath": true,
+    "errors": []
+  },
+  {
+    "theme": "light",
+    "width": 390,
+    "mode": "sign-in",
+    "liveClerk": true,
+    "fields": true,
+    "returnPath": true,
+    "errors": []
+  },
+  {
+    "theme": "light",
+    "width": 390,
+    "mode": "sign-up",
+    "liveClerk": true,
+    "fields": true,
+    "returnPath": true,
+    "errors": []
+  },
+  {
+    "theme": "light",
+    "width": 768,
+    "mode": "sign-in",
+    "liveClerk": true,
+    "fields": true,
+    "returnPath": true,
+    "errors": []
+  },
+  {
+    "theme": "light",
+    "width": 768,
+    "mode": "sign-up",
+    "liveClerk": true,
+    "fields": true,
+    "returnPath": true,
+    "errors": []
+  },
+  {
+    "theme": "light",
+    "width": 1024,
+    "mode": "sign-in",
+    "liveClerk": true,
+    "fields": true,
+    "returnPath": true,
+    "errors": []
+  },
+  {
+    "theme": "light",
+    "width": 1024,
+    "mode": "sign-up",
+    "liveClerk": true,
+    "fields": true,
+    "returnPath": true,
+    "errors": []
+  },
+  {
+    "theme": "light",
+    "width": 1440,
+    "mode": "sign-in",
+    "liveClerk": true,
+    "fields": true,
+    "returnPath": true,
+    "errors": []
+  },
+  {
+    "theme": "light",
+    "width": 1440,
+    "mode": "sign-up",
+    "liveClerk": true,
+    "fields": true,
+    "returnPath": true,
+    "errors": []
+  },
+  {
+    "theme": "dark",
+    "width": 320,
+    "mode": "sign-in",
+    "liveClerk": true,
+    "fields": true,
+    "returnPath": true,
+    "errors": []
+  },
+  {
+    "theme": "dark",
+    "width": 320,
+    "mode": "sign-up",
+    "liveClerk": true,
+    "fields": true,
+    "returnPath": true,
+    "errors": []
+  },
+  {
+    "theme": "dark",
+    "width": 390,
+    "mode": "sign-in",
+    "liveClerk": true,
+    "fields": true,
+    "returnPath": true,
+    "errors": []
+  },
+  {
+    "theme": "dark",
+    "width": 390,
+    "mode": "sign-up",
+    "liveClerk": true,
+    "fields": true,
+    "returnPath": true,
+    "errors": []
+  },
+  {
+    "theme": "dark",
+    "width": 768,
+    "mode": "sign-in",
+    "liveClerk": true,
+    "fields": true,
+    "returnPath": true,
+    "errors": []
+  },
+  {
+    "theme": "dark",
+    "width": 768,
+    "mode": "sign-up",
+    "liveClerk": true,
+    "fields": true,
+    "returnPath": true,
+    "errors": []
+  },
+  {
+    "theme": "dark",
+    "width": 1024,
+    "mode": "sign-in",
+    "liveClerk": true,
+    "fields": true,
+    "returnPath": true,
+    "errors": []
+  },
+  {
+    "theme": "dark",
+    "width": 1024,
+    "mode": "sign-up",
+    "liveClerk": true,
+    "fields": true,
+    "returnPath": true,
+    "errors": []
+  },
+  {
+    "theme": "dark",
+    "width": 1440,
+    "mode": "sign-in",
+    "liveClerk": true,
+    "fields": true,
+    "returnPath": true,
+    "errors": []
+  },
+  {
+    "theme": "dark",
+    "width": 1440,
+    "mode": "sign-up",
+    "liveClerk": true,
+    "fields": true,
+    "returnPath": true,
+    "errors": []
+  }
+]

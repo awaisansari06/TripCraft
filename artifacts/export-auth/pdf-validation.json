@@ -1,0 +1,20 @@
+[
+  {
+    "case": "light",
+    "pages": 4,
+    "allPagesHaveText": true,
+    "allSectionsPresent": true
+  },
+  {
+    "case": "dark",
+    "pages": 4,
+    "allPagesHaveText": true,
+    "allSectionsPresent": true
+  },
+  {
+    "case": "long-trip",
+    "pages": 14,
+    "allPagesHaveText": true,
+    "allSectionsPresent": true
+  }
+]

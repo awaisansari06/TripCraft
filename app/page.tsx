@@ -5,9 +5,11 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import { motion } from "framer-motion";
 
 import {
   ArrowRight,
+  ArrowDown,
   Bookmark,
   Building,
   ChevronRight,
@@ -25,6 +27,8 @@ import { useHomepageMotion } from "./_components/useHomepageMotion";
 import SiteFooter from "./_components/SiteFooter";
 import TripPromptInput from "./_components/TripPromptInput";
 
+const MotionLink = motion.create(Link);
+
 function Photo({
   asset,
   alt = "",
@@ -36,33 +40,20 @@ function Photo({
   className?: string;
   priority?: boolean;
 }) {
-  const [lightReady, setLightReady] = useState(false);
-  const [darkReady, setDarkReady] = useState(false);
+  const [failed, setFailed] = useState({ light: false, dark: false });
   return (
-    <span
-      className={`${s.photo} ${className}`}
-      data-light-ready={lightReady}
-      data-dark-ready={darkReady}
-    >
+    <span className={`${s.photo} ${className}`}>
       <Image
-        src={`/light/${asset}-light.png`}
-        alt={alt}
-        fill
-        sizes="(max-width: 600px) 100vw, 50vw"
-        priority={priority}
-        className={s.lightPhoto}
-        onLoad={() => setLightReady(true)}
-        onError={() => setLightReady(true)}
+        src={failed.light ? '/image-fallback.svg' : `/light/${asset}-light.png`}
+        alt={alt} fill sizes="(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 40vw"
+        priority={priority} loading={priority ? undefined : "eager"} className={s.lightPhoto}
+        onError={() => setFailed(previous => ({ ...previous, light: true }))}
       />
       <Image
-        src={`/dark/${asset}-dark.png`}
-        alt=""
-        fill
-        sizes="(max-width: 600px) 100vw, 50vw"
-        priority={priority}
-        className={s.darkPhoto}
-        onLoad={() => setDarkReady(true)}
-        onError={() => setDarkReady(true)}
+        src={failed.dark ? '/image-fallback.svg' : `/dark/${asset}-dark.png`}
+        alt={alt} fill sizes="(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 40vw"
+        priority={priority} loading={priority ? undefined : "eager"} className={s.darkPhoto}
+        onError={() => setFailed(previous => ({ ...previous, dark: true }))}
       />
     </span>
   );
@@ -115,10 +106,15 @@ export default function Home() {
             alt="The colorful villages and blue waters of the Amalfi Coast"
             priority
           />
-          <span className={s.location}>
+          <motion.span
+            className={s.location}
+            whileHover={{ scale: 1.06, y: -2 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: "spring", stiffness: 400, damping: 22 }}
+          >
             <MapPin size={20} />
             Amalfi Coast, Italy
-          </span>
+          </motion.span>
         </div>
         <svg className={s.flightPath} viewBox="0 0 240 130" aria-hidden="true">
           <path d="M15 16 C130 0 85 100 230 112" />
@@ -139,8 +135,10 @@ export default function Home() {
           <p>Tell us your dream trip. We’ll plan the details.</p>
           <form
             className={s.prompt}
+            aria-busy={isPlanning}
             onSubmit={(e) => {
               e.preventDefault();
+              if (isPlanning || !query.trim()) return;
               setIsPlanning(true);
               router.push(
                 user
@@ -151,35 +149,65 @@ export default function Home() {
           >
             <Plane aria-hidden="true" />
             <TripPromptInput value={query} onChange={setQuery} />
-            <button type="submit" disabled={isPlanning} data-magnetic>
+            <motion.button
+              type="submit"
+              disabled={isPlanning || !query.trim()}
+              data-magnetic
+              whileHover={{ scale: 1.03, y: -2 }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            >
               {isPlanning ? (
                 <span className={s.spinner} aria-hidden="true" />
               ) : (
                 <Send size={20} />
               )}
               {isPlanning ? "Planning..." : "Plan my trip"}
-            </button>
+            </motion.button>
           </form>
-          <div className={s.startLabel}>Start planning free</div>
+          <div className={s.startLabel}>Try an example</div>
           <div className={s.suggestions}>
-            <button onClick={() => setQuery("Plan a weekend in Goa")}>
+            <motion.button
+              onClick={() => setQuery("Plan a weekend in Goa")}
+              whileHover={{ scale: 1.04, y: -3 }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            >
               <Photo asset="02-beach-weekend" />
               Goa weekend
               <ChevronRight size={14} />
-            </button>
-            <button onClick={() => setQuery("Plan a trip to Japan")}>
+            </motion.button>
+            <motion.button
+              onClick={() => setQuery("Plan a trip to Japan")}
+              whileHover={{ scale: 1.04, y: -3 }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            >
               <Photo asset="07-tokyo" />
               Explore Japan
               <ChevronRight size={14} />
-            </button>
+            </motion.button>
           </div>
         </div>
-        <div className={s.stamp} aria-hidden="true">
+        <motion.div
+          className={s.stamp}
+          aria-hidden="true"
+          whileHover={{ rotate: [-6, 3, -4], scale: 1.08 }}
+          transition={{ type: "spring", stiffness: 350, damping: 20 }}
+        >
           ITALY
           <br />
           <span>✧</span>
           <small>POSTE ITALIANE</small>
-        </div>
+        </motion.div>
+        <motion.a
+          className={s.scrollHint}
+          href="#templates"
+          whileHover={{ y: 3, scale: 1.04 }}
+          transition={{ type: "spring", stiffness: 400, damping: 20 }}
+        >
+          <span>Scroll to explore</span><ArrowDown size={16} aria-hidden="true" />
+        </motion.a>
         <Leaves />
       </section>
       <section className={`${s.container} ${s.templates}`} id="templates">
@@ -196,13 +224,16 @@ export default function Home() {
         </div>
         <div className={s.threeGrid}>
           {templates.map(([asset, title, prompt], index) => (
-            <Link
+            <MotionLink
               className={s.templateCard}
               data-depth
               href={tripLink(prompt)}
               key={asset}
               data-reveal
               data-stagger={index}
+              whileHover={{ y: -8, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 350, damping: 22 }}
             >
               <Photo asset={asset} alt={title} />
               <div>
@@ -211,7 +242,7 @@ export default function Home() {
                   Try this trip <ArrowRight />
                 </span>
               </div>
-            </Link>
+            </MotionLink>
           ))}
         </div>
       </section>
@@ -240,25 +271,34 @@ export default function Home() {
               },
               {
                 Icon: Map,
-                title: "Shape your itinerary & budget",
+                title: "Shape your itinerary and budget",
                 text: "Our AI builds a personalized plan with the best places, stays and experiences.",
               },
               {
                 Icon: MapPin,
-                title: "Explore your map & save",
+                title: "Explore your map and save",
                 text: "View your trip on an interactive map and save it for later.",
               },
             ].map(({ Icon, title, text }, i) => (
-              <article key={title} data-reveal data-stagger={i}>
+              <motion.article
+                key={title}
+                data-reveal
+                data-stagger={i}
+                whileHover={{ y: -6, scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 350, damping: 24 }}
+              >
                 <div className={s.stepTop}>
-                  <span>
+                  <motion.span
+                    whileHover={{ scale: 1.15, rotate: 6 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                  >
                     <Icon />
-                  </span>
-                  <b>0{i + 1}</b>
+                  </motion.span>
+                  <motion.b whileHover={{ scale: 1.12 }}>0{i + 1}</motion.b>
                 </div>
                 <h3>{title}</h3>
                 <p>{text}</p>
-              </article>
+              </motion.article>
             ))}
             <Plane className={s.stepPlane} aria-hidden="true" />
           </div>
@@ -280,15 +320,26 @@ export default function Home() {
             />
             <Feature
               Icon={Gem}
+              stagger={1}
               title="Hidden gems"
               text="Discover unique places you won’t find in typical guidebooks."
             />
           </div>
-          <article className={s.itinerary} data-reveal data-depth>
+          <motion.article
+            className={s.itinerary}
+            data-reveal
+            data-depth
+            whileHover={{ y: -6 }}
+            transition={{ type: "spring", stiffness: 350, damping: 24 }}
+          >
             <div className={s.builderTitle}>
-              <span className={s.icon}>
+              <motion.span
+                className={s.icon}
+                whileHover={{ scale: 1.15, rotate: 6 }}
+                transition={{ type: "spring", stiffness: 400, damping: 20 }}
+              >
                 <Map />
-              </span>
+              </motion.span>
               <div>
                 <h3>Smart itinerary builder</h3>
                 <p>
@@ -327,17 +378,22 @@ export default function Home() {
                   "Boat tour and blue grotto",
                 ],
               ].map(([asset, title, text], i) => (
-                <div className={s.day} key={title}>
+                <motion.div
+                  className={s.day}
+                  key={title}
+                  whileHover={{ x: 6, scale: 1.015 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 24 }}
+                >
                   <Photo asset={asset} />
                   <b>Day {i + 1}</b>
                   <div>
                     <strong>{title}</strong>
                     <p>{text}</p>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
-          </article>
+          </motion.article>
           <div className={s.featureColumn}>
             <Feature
               Icon={Coins}
@@ -346,11 +402,13 @@ export default function Home() {
             />
             <Feature
               Icon={Users}
+              stagger={1}
               title="Group trip planning"
               text="Plan together with friends and family, all in one place."
             />
             <Feature
               Icon={Bookmark}
+              stagger={2}
               title="Save trips for later"
               text="Keep your favorite trips and come back to them anytime."
             />
@@ -372,26 +430,14 @@ export default function Home() {
         </div>
         <div className={s.threeGrid}>
           {destinations.map(([asset, title], index) => (
-            <Link
-              href={tripLink(`Trip to ${title}`)}
-              className={s.destinationCard}
-              data-depth
-              key={asset}
-              data-reveal
-              data-stagger={index % 3}
-            >
-              <Photo asset={asset} alt={title} />
-              <h3>
-                {title} <ArrowRight />
-              </h3>
-            </Link>
+            <DestinationCard key={asset} asset={asset} title={title} stagger={index % 3} />
           ))}
         </div>
       </section>
       <section className={s.cta} data-reveal>
         <Photo
-          asset="01-amalfi-hero"
-          alt="A sunny escape on the Amalfi Coast"
+          asset="12-capri-itinerary"
+          alt="The coast and blue waters of Capri"
         />
         <div>
           <h2>
@@ -400,9 +446,15 @@ export default function Home() {
             <em>starts here.</em>
           </h2>
           <p>A great trip begins with an idea.</p>
-          <Link href="/create-new-trip" data-magnetic>
+          <MotionLink
+            href="/create-new-trip"
+            data-magnetic
+            whileHover={{ scale: 1.04, y: -2 }}
+            whileTap={{ scale: 0.96 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+          >
             Start planning free <ArrowRight size={18} />
-          </Link>
+          </MotionLink>
         </div>
       </section>
       <SiteFooter />
@@ -414,20 +466,51 @@ function Feature({
   Icon,
   title,
   text,
+  stagger = 0,
 }: {
   Icon: typeof Map;
   title: string;
   text: string;
+  stagger?: number;
 }) {
   return (
-    <article className={s.feature} data-reveal data-depth>
-      <span className={s.icon}>
+    <motion.article
+      className={s.feature}
+      data-reveal
+      data-depth
+      data-stagger={stagger}
+      whileHover={{ y: -6, scale: 1.02 }}
+      transition={{ type: "spring", stiffness: 350, damping: 24 }}
+    >
+      <motion.span
+        className={s.icon}
+        whileHover={{ scale: 1.15, rotate: -8 }}
+        transition={{ type: "spring", stiffness: 400, damping: 20 }}
+      >
         <Icon />
-      </span>
+      </motion.span>
       <div>
         <h3>{title}</h3>
         <p>{text}</p>
       </div>
-    </article>
+    </motion.article>
+  );
+}
+
+function DestinationCard({ asset, title, stagger }: { asset: string; title: string; stagger: number }) {
+  return (
+    <MotionLink
+      href={tripLink(`Trip to ${title}`)}
+      className={s.destinationCard}
+      data-depth
+      data-reveal
+      data-stagger={stagger}
+      whileHover={{ y: -8, scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ type: "spring", stiffness: 350, damping: 22 }}
+    >
+      <Photo asset={asset} alt={title} />
+      <h3>{title} <ArrowRight aria-hidden="true" /></h3>
+    </MotionLink>
   );
 }
