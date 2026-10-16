@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useId } from 'react';
 import { GlassModal } from "@/components/GlassModal";
 import { Button } from "@/components/ui/button";
 import Image from 'next/image';
@@ -23,6 +23,8 @@ function TripItemModal({ isOpen, onClose, item }: Props) {
 
     // Notes & Favorites State
     const [note, setNote] = useState("");
+    const [noteError, setNoteError] = useState('');
+    const noteId = useId();
 
     // Convex Hooks
     const savePlace = useMutation(api.savedPlaces.SavePlace);
@@ -45,33 +47,33 @@ function TripItemModal({ isOpen, onClose, item }: Props) {
 
     // Auto-save Note Logic (Debounced)
     useEffect(() => {
-        const timer = setTimeout(() => {
+        if (savedPlace === undefined || !isOpen) return;
+        const timer = setTimeout(async () => {
             // Only save if logged in, item exists, and note is different from DB
-            if (userDetail && item && note.trim() !== (savedPlace?.notes || "")) {
+            if (userDetail && item && note !== (savedPlace?.notes || "")) {
 
                 // If note empty and not saved, do nothing. 
                 // If note has text:
-                if (note.trim()) {
+                if (note.trim() || savedPlace) {
                     if (!savedPlace) {
                         // First save the place, then the note
-                        savePlace({
+                        try { await savePlace({
                             userId: userDetail.email,
                             placeName: item.title,
                             placeType: item.type,
-                            metadata: item
-                        }).then(() => {
-                            updateNote({ userId: userDetail.email, placeName: item.title, note: note });
-                        });
+                            metadata: item,
+                            note,
+                        }); setNoteError(''); } catch { setNoteError('Your note could not be saved. Please edit it to try again.'); }
                     } else {
                         // Update existing note
-                        updateNote({ userId: userDetail.email, placeName: item.title, note: note });
+                        try { await updateNote({ userId: userDetail.email, placeName: item.title, note }); setNoteError(''); }
+                        catch { setNoteError('Your note could not be saved. Please edit it to try again.'); }
                     }
                 }
             }
         }, 1000);
         return () => clearTimeout(timer);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [note]);
+    }, [note, userDetail, item, savedPlace, savePlace, updateNote, isOpen]);
 
     const handleToggleSave = async (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -96,7 +98,6 @@ function TripItemModal({ isOpen, onClose, item }: Props) {
     // Reset index when item opens/changes
     useEffect(() => {
         setActiveIndex(0);
-        if (!savedPlace) setNote(""); // Ensure note cleared on new item
     }, [item]);
 
     // Keyboard Navigation
@@ -288,6 +289,14 @@ function TripItemModal({ isOpen, onClose, item }: Props) {
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">About this experience</h3>
                         <p className="leading-relaxed">{item.description}</p>
                     </div>
+                    {userDetail && <div className="space-y-2">
+                        <label htmlFor={noteId} className="block text-sm font-medium">Your private notes</label>
+                        <textarea id={noteId} rows={3} value={note} disabled={savedPlace === undefined}
+                            onChange={event => setNote(event.target.value)} placeholder="What would you like to remember?"
+                            className="w-full rounded-xl border border-[var(--border-strong)] bg-[var(--input-background)] p-3 text-base text-[var(--foreground)] focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]" />
+                        <p className="text-xs text-[var(--foreground-secondary)]">Notes save automatically. Adding a note saves this place.</p>
+                        {noteError && <p role="alert" className="text-sm">{noteError}</p>}
+                    </div>}
                 </div>
 
                 {/* 3. Sticky Footer Actions */}

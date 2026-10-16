@@ -1,3 +1,4 @@
+require('node:fs').mkdirSync('artifacts/planner-refinement', { recursive: true });
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -13,6 +14,8 @@ const fs = require('node:fs');
         await page.route('**/api/credits',async route=>{await new Promise(resolve=>setTimeout(resolve,250));await route.fulfill({json:{isAuthenticated:true,isPremium:false,remaining,capacity:2,resetInfo:null}});});
         await page.route('**/api/aimodel',async route=>{
             assert.equal(route.request().postDataJSON().isFinal,true);
+            assert.equal(route.request().postDataJSON().tripSpec.destination,'Japan');
+            assert.equal(route.request().postDataJSON().tripSpec.tripDuration,'5');
             requestIds.push(route.request().postDataJSON().requestId);
             calls++;
             await new Promise(resolve=>setTimeout(resolve,300));
@@ -42,6 +45,8 @@ const fs = require('node:fs');
         await page.getByText('Your trip is generated.',{exact:true}).waitFor();
         assert.equal(calls,2);
         assert.equal(requestIds[0],requestIds[1],'Retry preserves the request identity');
+        const saved=await page.evaluate(()=>window.fixtureMutations.find(m=>m.operation.includes('CreateTripDetail')));
+        assert.equal(saved.tripId,'fixture','Saved plan keeps the conversation URL identity');
         await page.getByText('0',{exact:true}).waitFor();
         await page.getByRole('button',{name:'Conversation options'}).click();
         await page.getByRole('menuitem',{name:'My trips'}).waitFor();
@@ -83,4 +88,3 @@ const fs = require('node:fs');
     console.log('Generation failure/retry, credits, keyboard, theme, reduced motion, reader position and breakpoint persistence passed.');
     await browser.close();
 })().catch(error=>{console.error(error);process.exit(1)});
-

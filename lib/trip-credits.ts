@@ -8,13 +8,22 @@ export async function getCreditAccount() {
   const user = await currentUser();
   const email = user?.primaryEmailAddress?.emailAddress;
   if (!user || !email) return null;
-  const { has } = await auth();
+  const { has, getToken } = await auth();
   let isPremium = has({ plan: "monthly" }) || has({ plan: "annually" });
   if (!isPremium) {
-    const record = await client().query(api.user.GetUser, { email });
-    isPremium = record?.subscription === "monthly" || record?.subscription === "annually";
+    try {
+      const token = await getToken({ template: "convex" });
+      if (token) {
+        const authenticated = client();
+        authenticated.setAuth(token);
+        const record = await authenticated.query(api.user.GetUser, { email });
+        isPremium = record?.subscription === "monthly" || record?.subscription === "annually";
+      }
+    } catch (err) {
+      console.warn("[TripCredits] Unable to verify database subscription status, defaulting to standard tier:", err);
+    }
   }
-  return { userId: email, isPremium, capacity: isPremium ? 100 : 2 };
+  return { userId: email, requestUserId: user.id, isPremium, capacity: isPremium ? 100 : 2 };
 }
 export type CreditAccount = NonNullable<Awaited<ReturnType<typeof getCreditAccount>>>;
 function credentials(account: CreditAccount) {

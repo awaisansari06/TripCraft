@@ -1,28 +1,34 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { ownEmail } from "./access";
 
 export const SavePlace = mutation({
     args: {
         userId: v.string(), // We'll stick to string assuming user email or auth ID
         placeName: v.string(),
         placeType: v.string(),
-        metadata: v.any()
+        metadata: v.any(),
+        note: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
+        await ownEmail(ctx, args.userId);
         // Check if already saved
         const existing = await ctx.db.query("SavedPlacesTable")
             .withIndex("by_user", (q) => q.eq("userId", args.userId))
             .filter((q) => q.eq(q.field("placeName"), args.placeName))
             .first();
 
-        if (existing) return existing._id;
+        if (existing) {
+            if (args.note !== undefined) await ctx.db.patch(existing._id, { notes: args.note });
+            return existing._id;
+        }
 
         const newId = await ctx.db.insert("SavedPlacesTable", {
             userId: args.userId,
             placeName: args.placeName,
             placeType: args.placeType,
             metadata: args.metadata,
-            notes: ""
+            notes: args.note ?? ""
         });
         return newId;
     }
@@ -34,6 +40,7 @@ export const RemovePlace = mutation({
         placeName: v.string()
     },
     handler: async (ctx, args) => {
+        await ownEmail(ctx, args.userId);
         const existing = await ctx.db.query("SavedPlacesTable")
             .withIndex("by_user", (q) => q.eq("userId", args.userId))
             .filter((q) => q.eq(q.field("placeName"), args.placeName))
@@ -52,6 +59,7 @@ export const UpdateNote = mutation({
         note: v.string()
     },
     handler: async (ctx, args) => {
+        await ownEmail(ctx, args.userId);
         const existing = await ctx.db.query("SavedPlacesTable")
             .withIndex("by_user", (q) => q.eq("userId", args.userId))
             .filter((q) => q.eq(q.field("placeName"), args.placeName))
@@ -74,6 +82,7 @@ export const GetSavedPlace = query({
         placeName: v.string()
     },
     handler: async (ctx, args) => {
+        await ownEmail(ctx, args.userId);
         const existing = await ctx.db.query("SavedPlacesTable")
             .withIndex("by_user", (q) => q.eq("userId", args.userId))
             .filter((q) => q.eq(q.field("placeName"), args.placeName))
@@ -87,6 +96,7 @@ export const GetSavedPlaces = query({
         userId: v.string()
     },
     handler: async (ctx, args) => {
+        await ownEmail(ctx, args.userId);
         const savedPlaces = await ctx.db.query("SavedPlacesTable")
             .withIndex("by_user", (q) => q.eq("userId", args.userId))
             .order("desc")

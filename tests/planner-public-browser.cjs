@@ -1,3 +1,4 @@
+require('node:fs').mkdirSync('artifacts/planner-refinement', { recursive: true });
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
@@ -29,4 +30,3 @@ for(const theme of ['light','dark'])for(const width of [320,390,768,1024,1440]){
 }
 await browser.close();fs.writeFileSync('artifacts/planner-refinement/public-regressions.json',JSON.stringify(results,null,2));console.log('Shared navigation and public-page responsive checks passed across 30 theme/width/page combinations.');
 })().catch(e=>{console.error(e);process.exit(1)});
-

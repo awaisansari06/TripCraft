@@ -12,6 +12,7 @@ export default function SiteMotion({ children }: { children: ReactNode }) {
     const root = ref.current;
     if (!root || !window.IntersectionObserver) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const landing = pathname === "/";
     const active = new Map<HTMLElement, () => void>();
     const seen = new WeakSet<Element>();
     const inside = new WeakSet<Element>();
@@ -41,23 +42,21 @@ export default function SiteMotion({ children }: { children: ReactNode }) {
       (entries) => {
         entries.forEach(
           ({ target, isIntersecting, intersectionRatio, boundingClientRect }) => {
-            // Generous hysteresis buffer (120px) so scrolling near an edge never jitters or retriggers
+            // Rearm at the observer's actual exit boundary. Waiting for a
+            // farther position would never receive another threshold callback.
             if (!isIntersecting) {
-              if (
-                boundingClientRect.bottom < -120 ||
-                boundingClientRect.top > window.innerHeight + 120
-              ) {
+              if (landing) return;
                 inside.delete(target);
                 active.get(target as HTMLElement)?.();
-              }
               return;
             }
 
             // Require an authentic foothold in viewport before entrance
             if (
-              intersectionRatio <
+              !landing && intersectionRatio <
               Math.min(
-                0.08,
+                0.5,
+                Math.max(0.08, 20 / Math.max(1, boundingClientRect.height)),
                 (window.innerHeight / Math.max(1, boundingClientRect.height)) * 0.5
               )
             )
@@ -68,6 +67,7 @@ export default function SiteMotion({ children }: { children: ReactNode }) {
             inside.add(target);
 
             const element = target as HTMLElement;
+            if (landing) observer.unobserve(element);
             element.dataset.revealed = "true";
 
             if (reduced.matches || element.contains(document.activeElement)) return;
@@ -75,12 +75,14 @@ export default function SiteMotion({ children }: { children: ReactNode }) {
 
             const index = Math.max(0, Math.min(Number(element.dataset.stagger) || 0, 3));
             const isInteractiveForm = element.matches("form") || Boolean(element.querySelector("form"));
-            const shouldFade = !isInteractiveForm;
+            const shouldFade = !isInteractiveForm && !element.matches('section, footer') && !element.querySelector('section');
 
             // Gentle, elegant 10px glide that complements scrolling rather than fighting it
             const isEnteringFromTop =
               scrollDirection === "up" || boundingClientRect.top < 0;
-            const yOffset = isEnteringFromTop ? -10 : 10;
+            // Keep landing content in place: a fade cannot shift the observer
+            // boundary or compound with the cards' existing hover transforms.
+            const yOffset = landing ? 0 : isEnteringFromTop ? -10 : 10;
 
             let cancel: (() => void) | undefined;
             let timer: ReturnType<typeof setTimeout> | undefined;
@@ -100,17 +102,17 @@ export default function SiteMotion({ children }: { children: ReactNode }) {
 
             try {
               element.dataset.revealing = "true";
-              element.style.willChange = "transform, opacity";
+              element.style.willChange = landing ? "opacity" : "transform, opacity";
 
               const controls = animate(
                 element,
                 {
-                  translate: [`0 ${yOffset}px`, "0 0"],
-                  ...(shouldFade ? { opacity: [0.6, 1] } : {}),
+                  ...(!landing ? { translate: [`0 ${yOffset}px`, "0 0"] } : {}),
+                  ...(shouldFade ? { opacity: [landing ? 0.85 : 0.6, 1] } : {}),
                 },
                 {
                   duration: 0.44,
-                  delay: index * 0.04,
+                  delay: landing ? 0 : index * 0.04,
                   ease: [0.16, 1, 0.3, 1],
                 }
               );
@@ -124,7 +126,9 @@ export default function SiteMotion({ children }: { children: ReactNode }) {
           }
         );
       },
-      { threshold: [0, 0.08, 0.5], rootMargin: "20px 0px" }
+      landing
+        ? { threshold: 0, rootMargin: "80px 0px" }
+        : { threshold: [0, 0.08, 0.25, 0.5], rootMargin: "20px 0px" }
     );
 
     const observe = () =>
@@ -149,6 +153,15 @@ export default function SiteMotion({ children }: { children: ReactNode }) {
         .forEach((target) => {
           if (!seen.has(target)) {
             seen.add(target);
+            // Hydration and restored scroll positions must not animate content
+            // that the browser has already painted in the viewport.
+            if (landing) {
+              const bounds = target.getBoundingClientRect();
+              if (bounds.top < window.innerHeight && bounds.bottom > 0) {
+                target.dataset.revealed = "true";
+                return;
+              }
+            }
             observer.observe(target);
           }
         });

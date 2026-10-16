@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
 import { createHmac, timingSafeEqual } from "node:crypto";
+import { reserveRequest } from "@/lib/request-limits";
 
 const resourcePattern = /^places\/[a-zA-Z0-9_-]+\/photos\/[a-zA-Z0-9_-]+$/;
 const sign = (photo: string, expires: string, key: string) => createHmac("sha256", key).update(photo + ":" + expires).digest("hex");
 
 export async function POST(request: NextRequest) {
-  if (!await currentUser()) return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+  const user = await currentUser();
+  if (!user) return NextResponse.json({ error: "Authentication required" }, { status: 401 });
   let body;
   try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 }); }
   if (typeof body?.placeName !== "string" || !body.placeName.trim() || body.placeName.length > 300) {
@@ -15,6 +17,8 @@ export async function POST(request: NextRequest) {
   const key = process.env.GOOGLE_PLACE_API_KEY;
   if (!key) return NextResponse.json({ error: "Place photos are unavailable." }, { status: 503 });
   try {
+    const limit = await reserveRequest(user.id, "photo", crypto.randomUUID());
+    if (!limit.allowed) return NextResponse.json({ error: "Too many photo lookups. Please try again shortly." }, { status: 429, headers: { "Retry-After": String(limit.retryAfter) } });
     const response = await fetch("https://places.googleapis.com/v1/places:searchText", {
       method: "POST", headers: { "Content-Type": "application/json", "X-Goog-Api-Key": key, "X-Goog-FieldMask": "places.photos" },
       body: JSON.stringify({ textQuery: body.placeName.trim() }), signal: AbortSignal.timeout(15000),

@@ -1,1 +1,0 @@
-Motion, hover/press/focus, theme geometry, touch, reduced-motion, and failure visibility checks passed at every width in both themes.

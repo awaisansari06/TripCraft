@@ -7,9 +7,19 @@ const { NextRequest } = require('next/server');
 
 // Execute the real route code, replacing external billing/auth/model transports.
 function load(file, mocks = {}, globals = {}) {
+  mocks = {
+    '@/lib/request-limits': { reserveRequest: async () => ({ allowed: true }), releaseRequest: async () => {} },
+    '@/lib/trip-spec': loadSpec(),
+    ...mocks,
+  };
   const js = ts.transpileModule(fs.readFileSync(file, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
   const module = { exports: {} };
   vm.runInNewContext(js, { module, exports: module.exports, require: name => mocks[name] ?? require(name), console: { log() {}, error() {} }, process, Error, Buffer, URL, URLSearchParams, AbortSignal, crypto: require('node:crypto').webcrypto, setTimeout, ...globals }, { filename: file });
+  return module.exports;
+}
+function loadSpec() {
+  const module = { exports: {} };
+  vm.runInNewContext(ts.transpileModule(fs.readFileSync('lib/trip-spec.ts', 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText, { module, exports: module.exports });
   return module.exports;
 }
 const request = body => new NextRequest('http://localhost/api/aimodel', { method: 'POST', body: typeof body === 'string' ? body : JSON.stringify(body) });
@@ -115,4 +125,34 @@ test('credit refill and plan changes preserve usage without negative balances', 
   assert.equal(availableCredits(state, 2, 1000 + CREDIT_REFILL_MS).remaining, 1);
   assert.equal(availableCredits(state, 100, 1001).remaining, 98);
   assert.equal(availableCredits({ remaining: 99, capacity: 100, updatedAt: 1000 }, 2, 1001).remaining, 2);
+});
+
+test('AI uses edited canonical details, rejects invalid duration and stops before provider work when limited', async () => {
+  let prompt = '', calls = 0, releases = 0, allowed = true;
+  const route = load('app/api/aimodel/route.tsx', {
+    '@/lib/trip-credits': {
+      getCreditAccount: async () => ({ userId: 'test', capacity: 2 }),
+      readTripCredits: async () => ({ info: { remaining: 2 }, tripPlan: null }),
+      commitTripPlan: async (_, id, result) => ({ denied: false, info: { remaining: 1 }, tripPlan: result }),
+    },
+    '@/lib/request-limits': {
+      reserveRequest: async () => ({ allowed, retryAfter: 10 }),
+      releaseRequest: async () => { releases++; },
+    },
+    '@google/generative-ai': { GoogleGenerativeAI: class { getGenerativeModel() { return { startChat: options => {
+      prompt = options.systemInstruction.parts[0].text;
+      return { sendMessage: async () => { calls++; return { response: { text: () => JSON.stringify({ trip_plan: plan }) } }; } };
+    } }; } } },
+  });
+  const edited = { ...conversation, tripSpec: { source: 'Mumbai', destination: 'Kyoto', tripDuration: 7, budget: 'High' } };
+  assert.equal((await route.POST(request(edited))).status, 200);
+  assert.ok(prompt.includes('override earlier conversation answers'));
+  assert.ok(prompt.includes('"destination":"Kyoto"'));
+  assert.ok(prompt.includes('"tripDuration":"7"'));
+  assert.equal(releases, 1);
+  assert.equal((await route.POST(request({ ...edited, tripSpec: { tripDuration: 31 } }))).status, 400);
+  allowed = false;
+  const denied = await route.POST(request(edited));
+  assert.equal(denied.status, 429); assert.equal(denied.headers.get('retry-after'), '10');
+  assert.equal(calls, 1); assert.equal(releases, 1);
 });

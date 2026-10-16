@@ -5,7 +5,7 @@ import Header from './_components/Header';
 import SiteMotion from './_components/SiteMotion';
 import PageLoader from './_components/PageLoader';
 import { api } from '@/convex/_generated/api';
-import { useMutation } from 'convex/react';
+import { useMutation, useConvexAuth } from 'convex/react';
 import { useUser } from '@clerk/nextjs';
 import { UserDetailContext, UserDetailType } from '@/context/UserDetailContext';
 import { useState } from 'react';
@@ -14,7 +14,7 @@ import { TripContextType, TripDetailContext } from '@/context/TripDetailContext'
 import { TripInfo } from './create-new-trip/_components/types';
 
 
-function Provider({
+function AccountProvider({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -24,10 +24,11 @@ function Provider({
   const [userDetail, setUserDetail] = useState<UserDetailType>(null);
   const [tripDetailInfo, setTripDetailInfo] = useState<TripInfo | null>(null);
   const { user } = useUser();
+  const { isAuthenticated } = useConvexAuth();
 
   useEffect(() => {
     let isSubscribed = true;
-    if (user) {
+    if (user && isAuthenticated) {
       void createUser({
         email: user?.primaryEmailAddress?.emailAddress ?? '',
         name: user?.fullName ?? '',
@@ -36,12 +37,12 @@ function Provider({
         if (isSubscribed) {
           setUserDetail(result as UserDetailType);
         }
-      });
+      }).catch(error => console.error('Unable to initialize your account:', error));
     }
     return () => {
       isSubscribed = false;
     };
-  }, [user, createUser]);
+  }, [user, isAuthenticated, createUser]);
 
   return (
     <UserDetailContext.Provider value={{ userDetail, setUserDetail }}>
@@ -56,7 +57,12 @@ function Provider({
   )
 }
 
-export default Provider
+export default function Provider({ children }: { children: React.ReactNode }) {
+  const { user } = useUser();
+  const { isAuthenticated } = useConvexAuth();
+  // Account changes discard cached trips/profile before rendering another user.
+  return <AccountProvider key={(user?.id ?? 'signed-out') + ':' + isAuthenticated}>{children}</AccountProvider>;
+}
 
 export const useUserDetail = () => {
   return useContext(UserDetailContext);
