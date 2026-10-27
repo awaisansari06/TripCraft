@@ -24,12 +24,18 @@ for (const filename of ['.env', '.env.local']) {
             '@clerk/nextjs':service, 'next/link':path.join(__dirname,'link.jsx'), 'next/image':path.join(__dirname,'image.jsx')
         }
     });
-    const cssdir = path.join(root,'.next/static/css');
+    const appBase = process.env.APP_BASE_URL || 'http://localhost:3000';
+    const appHtml = await (await fetch(appBase + '/')).text();
+    const css = [...appHtml.matchAll(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/g)].map(match => appBase + match[1]);
     http.createServer((req,res) => {
         const url = new URL(req.url,'http://localhost');
         if (url.pathname === '/' || url.pathname === '/create-new-trip') {
-            const css = fs.existsSync(cssdir) ? fs.readdirSync(cssdir).filter(name=>name.endsWith('.css')).map(name=>'/_next/static/css/'+name) : [];
             const fixture = {theme:url.searchParams.get('theme')||'dark',messages:[{role:'assistant',content:'Let’s plan your next adventure. **Where are you starting from?**',ui:'source',timestamp:'09:00 PM'}]};
+            if (url.searchParams.get('fixture') === 'empty-conversation') fixture.messages = [];
+            if (url.searchParams.get('fixture') === 'legacy') {
+                fixture.messages = [];
+                fixture.legacyTrip = {tripDetail:{destination:'Kyoto',locationInfo:{name:'Kyoto'},hotels:[],itinerary:[]}};
+            }
             if (url.searchParams.get('fixture') === 'final') fixture.messages = [{role:'assistant',content:'Review your trip before generating.',ui:'final',timestamp:'09:00 PM'}];
             if (url.searchParams.get('fixture') === 'interests') fixture.messages = [{role:'assistant',content:'A few personal touches make a trip yours. **What do you love to explore?**',ui:'interests',timestamp:'09:00 PM'}];
             if (url.searchParams.get('fixture') === 'notes') fixture.savedPlace = { notes: 'Remember the old note' };

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { MapPin, Star } from "lucide-react";
 import type { Hotel } from "./types";
 
 type Props = {
@@ -12,15 +13,13 @@ function HotelCardItem({ hotel, onSelect }: Props) {
     const [photoUrls, setPhotoUrls] = useState<string[]>([]);
 
     useEffect(() => {
-        if (hotel?.hotel_name) GetGooglePlaceDetail();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [hotel?.hotel_name]);
-
-    const GetGooglePlaceDetail = async () => {
+        if (!hotel?.hotel_name) return;
+        const controller = new AbortController();
+        const getPhotos = async () => {
         try {
             const result = await axios.post("/api/google-place-detail", {
                 placeName: hotel?.hotel_name,
-            });
+            }, { signal: controller.signal });
 
             if (result?.data?.error) return;
 
@@ -34,7 +33,10 @@ function HotelCardItem({ hotel, onSelect }: Props) {
         } catch {
             // Silently fail - use fallback image
         }
-    };
+        };
+        void getPhotos();
+        return () => controller.abort();
+    }, [hotel?.hotel_name]);
 
     const imageSrc =
         (photoUrls.length > 0 ? photoUrls[0] : null) ||
@@ -44,10 +46,14 @@ function HotelCardItem({ hotel, onSelect }: Props) {
 
     return (
         <div
+            role="button"
+            tabIndex={0}
+            aria-label={`View details for ${hotel?.hotel_name}`}
+            onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onSelect?.(imageSrc, photoUrls.length > 0 ? photoUrls : [imageSrc]); } }}
             onClick={() => onSelect?.(imageSrc, photoUrls.length > 0 ? photoUrls : [imageSrc])}
-            className="hover:scale-[1.02] transition-all cursor-pointer border border-gray-100 dark:border-zinc-800 rounded-2xl shadow-sm bg-white dark:bg-zinc-900 overflow-hidden group"
+            className="tc-place-card group"
         >
-            <div className="relative h-[180px] w-full bg-gray-100 dark:bg-zinc-800">
+            <div className="tc-place-card-image">
                 <Image
                     src={imageSrc}
                     alt={hotel?.hotel_name || "Hotel Image"}
@@ -61,14 +67,14 @@ function HotelCardItem({ hotel, onSelect }: Props) {
 
             <div className="p-4 flex flex-col gap-2 min-h-[160px] justify-between">
                 <div>
-                    <h2 className="font-bold text-lg text-gray-900 dark:text-white line-clamp-1">{hotel?.hotel_name}</h2>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 mt-1">
-                        📍 {hotel?.hotel_address}
+                    <h3 className="tc-place-card-title">{hotel?.hotel_name}</h3>
+                    <p className="tc-place-location">
+                        <MapPin size={13} aria-hidden="true" /> {hotel?.hotel_address}
                     </p>
                 </div>
                 <div className="flex flex-wrap gap-2 justify-between items-center mt-2">
-                    <p className="text-sm text-green-600 dark:text-green-400 font-semibold">💵 {hotel?.price_per_night}</p>
-                    <p className="text-sm font-bold text-amber-500 dark:text-amber-400">⭐ {hotel?.rating}</p>
+                    <p className="tc-place-price"> {hotel?.price_per_night}</p>
+                    <p className="tc-place-rating"><Star size={14} aria-hidden="true" /> {hotel?.rating}</p>
                 </div>
             </div>
         </div>

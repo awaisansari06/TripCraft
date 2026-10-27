@@ -50,3 +50,6 @@ next-env.d.ts
 
 # Generated browser-test bundles
 /tmp/
+
+# Safe variable names/placeholders are intentionally versioned.
+!.env.example

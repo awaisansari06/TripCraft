@@ -113,10 +113,10 @@ export default function FeaturesGrid() {
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-3xl font-bold text-foreground mb-4">
             Everything you need
           </h2>
-          <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <p className="text-muted-foreground max-w-2xl mx-auto">
             From inspiration to detailed daily plans, we&apos;ve got you covered.
           </p>
         </div>
@@ -134,11 +134,11 @@ export default function FeaturesGrid() {
                   {feature.icon}
                 </div>
 
-                <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">
+                <h3 className="text-xl font-bold mb-2 text-foreground">
                   {feature.title}
                 </h3>
 
-                <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-4 grow">
+                <p className="text-muted-foreground text-sm leading-relaxed mb-4 grow">
                   {feature.desc}
                 </p>
 
@@ -157,14 +157,14 @@ export default function FeaturesGrid() {
       {/* Feature Modal */}
       <Dialog open={!!activeFeature} onOpenChange={() => setActiveFeature(null)}>
         {activeFeature && (
-          <DialogContent className="max-w-lg rounded-2xl bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 text-gray-900 dark:text-white">
+          <DialogContent className="max-w-lg rounded-2xl bg-card border border-border text-foreground">
             <DialogHeader>
-              <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-white">
+              <DialogTitle className="text-2xl font-bold text-foreground">
                 {FEATURES[activeFeature].title}
               </DialogTitle>
             </DialogHeader>
 
-            <p className="text-gray-600 dark:text-gray-300 mb-6">
+            <p className="text-muted-foreground mb-6">
               {FEATURES[activeFeature].desc}
             </p>
 

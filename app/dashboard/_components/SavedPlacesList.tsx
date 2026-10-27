@@ -1,4 +1,5 @@
 "use client";
+import TripCardSkeleton from "./TripCardSkeleton";
 
 import React, { useContext, useState } from 'react';
 import { useQuery } from 'convex/react';
@@ -32,7 +33,7 @@ function SavedPlacesList() {
 
             {savedPlaces === undefined ? (
                 <div className="dashboard-card-grid" role="status" aria-label="Loading saved places">
-                    {[0, 1, 2].map((item) => <div className="dashboard-loading-card" key={item} />)}
+                    {[0, 1, 2].map((item) => <TripCardSkeleton key={item} />)}
                 </div>
             ) : savedPlaces.length === 0 ? (
                 <div className="dashboard-saved-empty">

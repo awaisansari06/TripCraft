@@ -48,8 +48,8 @@ export default function TripTemplates() {
         <section className="py-10 bg-transparent">
             <div className="max-w-5xl mx-auto px-6">
                 <div className="text-center mb-12">
-                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Start with a template</h2>
-                    <p className="text-gray-500 dark:text-gray-400 mt-2">Kickstart your planning with curated ideas</p>
+                    <h2 className="text-3xl font-bold text-foreground">Start with a template</h2>
+                    <p className="text-muted-foreground mt-2">Kickstart your planning with curated ideas</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

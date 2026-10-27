@@ -19,8 +19,8 @@ export async function getCreditAccount() {
         const record = await authenticated.query(api.user.GetUser, { email });
         isPremium = record?.subscription === "monthly" || record?.subscription === "annually";
       }
-    } catch (err) {
-      console.warn("[TripCredits] Unable to verify database subscription status, defaulting to standard tier:", err);
+    } catch {
+      console.warn("[TripCredits] Unable to verify database subscription status, defaulting to standard tier.");
     }
   }
   return { userId: email, requestUserId: user.id, isPremium, capacity: isPremium ? 100 : 2 };
@@ -47,8 +47,8 @@ export async function readTripCredits(account: CreditAccount, requestId?: string
   try {
     const state = await client().query(api.credits.ReadBalance, { ...credentials(account), requestId });
     return { info: info(account, state), tripPlan: state.tripPlan };
-  } catch (err) {
-    console.error("[TripCredits] Failed to read trip credits from Convex:", err);
+  } catch {
+    console.error("[TripCredits] Failed to read trip credits from Convex.");
     throw new Error("Credit service is temporarily unavailable. Please try again.");
   }
 }
@@ -56,8 +56,8 @@ export async function commitTripPlan(account: CreditAccount, requestId: string, 
   try {
     const state = await client().mutation(api.credits.CommitPlan, { ...credentials(account), requestId, tripPlan });
     return { info: info(account, state), denied: state.denied, tripPlan: state.tripPlan };
-  } catch (err) {
-    console.error("[TripCredits] Failed to commit trip plan in Convex:", err);
+  } catch {
+    console.error("[TripCredits] Failed to commit trip plan in Convex.");
     throw new Error("Credit service is temporarily unavailable. Please try again.");
   }
 }

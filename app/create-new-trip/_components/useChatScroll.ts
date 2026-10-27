@@ -6,6 +6,7 @@ export function useChatScroll() {
     const containerRef = useRef<HTMLDivElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
     const following = useRef(true);
+    const followLatest = useCallback(() => { following.current = true; }, []);
     const [showLatest, setShowLatest] = useState(false);
     const scrollToLatest = useCallback(() => {
         following.current = true;
@@ -40,5 +41,5 @@ export function useChatScroll() {
         update();
         return () => { observer.disconnect(); cancelAnimationFrame(frame); container.removeEventListener('scroll', onScroll); };
     }, []);
-    return { containerRef, contentRef, following, showLatest, scrollToLatest };
+    return { containerRef, contentRef, followLatest, showLatest, scrollToLatest };
 }

@@ -22,7 +22,7 @@ function TripItemModal({ isOpen, onClose, item }: Props) {
     const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
     // Notes & Favorites State
-    const [note, setNote] = useState("");
+    const [noteDraft, setNoteDraft] = useState<{ place: string; value: string } | null>(null);
     const [noteError, setNoteError] = useState('');
     const noteId = useId();
 
@@ -36,14 +36,10 @@ function TripItemModal({ isOpen, onClose, item }: Props) {
         (userDetail && item) ? { userId: userDetail.email, placeName: item.title } : "skip"
     );
 
-    // Sync note state when savedPlace loads
-    useEffect(() => {
-        if (savedPlace) {
-            setNote(savedPlace.notes || "");
-        } else if (!savedPlace) {
-            setNote(""); // Reset if not saved
-        }
-    }, [savedPlace]);
+    // Use server notes until this place is edited, without overwriting an
+    // in-progress draft when the subscription receives an update.
+    const note = noteDraft && noteDraft.place === item?.title ? noteDraft.value : savedPlace?.notes || "";
+    const setNote = (value: string) => setNoteDraft({ place: item?.title ?? "", value });
 
     // Auto-save Note Logic (Debounced)
     useEffect(() => {
@@ -95,22 +91,26 @@ function TripItemModal({ isOpen, onClose, item }: Props) {
         }
     };
 
-    // Reset index when item opens/changes
-    useEffect(() => {
+    // Reset the carousel before rendering another place, rather than after paint.
+    const [previousItem, setPreviousItem] = useState(item);
+    if (item !== previousItem) {
+        setPreviousItem(item);
         setActiveIndex(0);
-    }, [item]);
+        setNoteDraft(null);
+        setNoteError('');
+    }
 
     // Keyboard Navigation
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (!isOpen) return;
-            if (e.key === 'ArrowRight') handleNext();
-            if (e.key === 'ArrowLeft') handlePrev();
+            const count = item?.images?.length ?? 0;
+            if (!isOpen || !count || /INPUT|TEXTAREA|SELECT/.test((e.target as HTMLElement)?.tagName)) return;
+            if (e.key === 'ArrowRight') setActiveIndex(previous => (previous + 1) % count);
+            if (e.key === 'ArrowLeft') setActiveIndex(previous => (previous - 1 + count) % count);
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isOpen, activeIndex]);
+    }, [isOpen, item]);
 
     if (!item) return null;
 
@@ -144,13 +144,14 @@ function TripItemModal({ isOpen, onClose, item }: Props) {
         <GlassModal
             isOpen={isOpen}
             onClose={onClose}
-            className="sm:max-w-2xl bg-white/95 dark:bg-zinc-950/95"
+            accessibleTitle={item?.title || "Place details"}
+            className="tc-place-dialog sm:max-w-2xl"
         >
-            <div className="flex flex-col max-h-[85vh] h-full bg-white dark:bg-zinc-950">
+            <div className="flex flex-col max-h-[85vh] h-full bg-card">
 
                 {/* 1. Header / Image Carousel (Fixed Height) */}
                 <div
-                    className="relative w-full h-[220px] md:h-[300px] shrink-0 bg-gray-100 dark:bg-zinc-900 overflow-hidden group"
+                    className="relative w-full h-[220px] md:h-[300px] shrink-0 bg-muted overflow-hidden group"
                     onTouchStart={handleTouchStart}
                     onTouchMove={handleTouchMove}
                     onTouchEnd={handleTouchEnd}
@@ -207,21 +208,24 @@ function TripItemModal({ isOpen, onClose, item }: Props) {
                         <div className="p-2 bg-black/20 backdrop-blur-md rounded-full text-white hover:bg-black/40 transition-colors cursor-pointer active:scale-95">
                             <Share2 className="h-4 w-4" />
                         </div>
-                        <div
+                        <button
+                            type="button"
+                            aria-label={savedPlace ? "Remove saved place" : "Save place"}
                             onClick={handleToggleSave}
                             className={`p-2 backdrop-blur-md rounded-full transition-colors cursor-pointer active:scale-95 ${savedPlace ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-black/20 text-white hover:bg-black/40'
                                 }`}
                         >
                             <Heart className={`h-4 w-4 ${savedPlace ? 'fill-current' : ''}`} />
-                        </div>
-                        <div
+                        </button>
+                        <button
+                            type="button"
                             onClick={onClose}
                             className="p-2 bg-black/20 backdrop-blur-md rounded-full text-white hover:bg-red-500/80 transition-colors cursor-pointer active:scale-95"
                             role="button"
                             aria-label="Close modal"
                         >
                             <X className="h-4 w-4" />
-                        </div>
+                        </button>
                     </div>
                 </div>
 
@@ -235,10 +239,10 @@ function TripItemModal({ isOpen, onClose, item }: Props) {
                                     {item.context}
                                 </p>
                             )}
-                            <h2 className="text-2xl font-bold font-display text-gray-900 dark:text-gray-100">
+                            <h2 className="text-2xl font-bold text-foreground">
                                 {item.title}
                             </h2>
-                            <p className="text-sm text-gray-500 mt-1 flex items-center gap-1">
+                            <p className="text-sm text-muted-foreground mt-1 flex items-center gap-1">
                                 <MapPin className="h-4 w-4 text-primary" /> {item.subtitle}
                             </p>
                         </div>
@@ -257,22 +261,22 @@ function TripItemModal({ isOpen, onClose, item }: Props) {
 
                         {item.type === 'hotel' ? (
                             <>
-                                <div className="p-3 bg-gray-50 dark:bg-zinc-900 rounded-xl border border-gray-100 dark:border-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer group/chip">
+                                <div className="p-3 bg-muted rounded-xl border border-border hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer group/chip">
                                     <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Price per night</p>
                                     <p className="text-lg font-bold text-primary group-hover/chip:scale-105 transition-transform origin-left">{item.price}</p>
                                 </div>
-                                <div className="p-3 bg-gray-50 dark:bg-zinc-900 rounded-xl border border-gray-100 dark:border-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer group/chip">
+                                <div className="p-3 bg-muted rounded-xl border border-border hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer group/chip">
                                     <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Rating Category</p>
                                     <p className="text-lg font-bold text-gray-700 dark:text-gray-200 group-hover/chip:scale-105 transition-transform origin-left">Excellent</p>
                                 </div>
                             </>
                         ) : (
                             <>
-                                <div className="p-3 bg-gray-50 dark:bg-zinc-900 rounded-xl border border-gray-100 dark:border-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer group/chip">
+                                <div className="p-3 bg-muted rounded-xl border border-border hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer group/chip">
                                     <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Entrance</p>
                                     <p className="text-lg font-bold text-primary group-hover/chip:scale-105 transition-transform origin-left">{item.price}</p>
                                 </div>
-                                <div className="p-3 bg-gray-50 dark:bg-zinc-900 rounded-xl border border-gray-100 dark:border-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer group/chip">
+                                <div className="p-3 bg-muted rounded-xl border border-border hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer group/chip">
                                     <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Duration</p>
                                     <p className="text-lg font-bold text-gray-700 dark:text-gray-200 group-hover/chip:scale-105 transition-transform origin-left">{item.duration || 'Flexible'}</p>
                                 </div>
@@ -285,8 +289,8 @@ function TripItemModal({ isOpen, onClose, item }: Props) {
                     </div>
 
                     {/* Description */}
-                    <div className="prose prose-sm dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">About this experience</h3>
+                    <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
+                        <h3 className="text-lg font-semibold text-foreground mb-2">About this experience</h3>
                         <p className="leading-relaxed">{item.description}</p>
                     </div>
                     {userDetail && <div className="space-y-2">
@@ -300,11 +304,11 @@ function TripItemModal({ isOpen, onClose, item }: Props) {
                 </div>
 
                 {/* 3. Sticky Footer Actions */}
-                <div className="sticky bottom-0 p-4 border-t border-gray-100 dark:border-zinc-800 bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md flex flex-col gap-3 z-10 shrink-0">
+                <div className="sticky bottom-0 p-4 border-t border-border bg-card flex flex-col gap-3 z-10 shrink-0">
                     <div className="flex gap-3">
                         <Button
                             variant="outline"
-                            className="flex-1 h-12 text-base rounded-xl border-gray-200 dark:border-zinc-800 hover:bg-gray-50 dark:hover:bg-zinc-900 active:scale-95 transition-all duration-200"
+                            className="flex-1 h-12 text-base rounded-xl border-border hover:bg-gray-50 dark:hover:bg-zinc-900 active:scale-95 transition-all duration-200"
                             onClick={onClose}
                         >
                             Close
@@ -314,7 +318,7 @@ function TripItemModal({ isOpen, onClose, item }: Props) {
                             target="_blank"
                             className="flex-[2]"
                         >
-                            <Button className="w-full h-12 text-base rounded-xl font-semibold shadow-lg shadow-blue-500/20 bg-linear-to-r from-primary to-blue-600 hover:to-primary transition-all duration-300 bg-size-[200%_auto] hover:bg-right">
+                            <Button className="w-full tc-button">
                                 <MapPin className="h-4 w-4 mr-2" /> View on Map
                             </Button>
                         </Link>

@@ -79,7 +79,7 @@ function Hero() {
                     Hey, I&apos;m your personal
                     <span className="text-primary"> Trip Planner</span>
                 </h1>
-                <p className="text-lg text-gray-500 dark:text-gray-300">
+                <p className="text-lg text-muted-foreground">
                     Tell me what you want, and I&apos;ll handle the rest: Flights, Hotels, Trip
                     Planner - all in seconds
                 </p>
@@ -103,7 +103,7 @@ function Hero() {
 
                     {/* Input Label */}
                     <p className="text-xs text-gray-400 mt-2 font-medium">
-                        Try: <span className="text-gray-600 dark:text-gray-400">&quot;Goa trip for 3 days under ₹20k&quot;</span>
+                        Try: <span className="text-muted-foreground">&quot;Goa trip for 3 days under ₹20k&quot;</span>
                     </p>
 
                     {/* Primary CTA Button */}
@@ -124,7 +124,7 @@ function Hero() {
                         <button
                             key={index}
                             onClick={() => onSelectOption(item.title)}
-                            className="h-10 px-6 flex items-center gap-2 rounded-full border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-sm font-medium text-gray-600 dark:text-gray-300 shadow-sm hover:shadow-md hover:bg-white/70 hover:scale-[1.03] hover:text-primary hover:border-primary/50 active:scale-95 transition-all duration-300"
+                            className="h-10 px-6 flex items-center gap-2 rounded-full border border-border bg-card text-sm font-medium text-muted-foreground shadow-sm hover:shadow-md hover:bg-white/70 hover:scale-[1.03] hover:text-primary hover:border-primary/50 active:scale-95 transition-all duration-300"
                         >
                             {item.icon}
                             <span>{item.title}</span>
@@ -134,18 +134,18 @@ function Hero() {
 
                 {/* Trust / Stats */}
                 <div className="flex flex-col items-center gap-6 mt-6">
-                    <div className="flex flex-wrap justify-center gap-8 text-sm font-semibold text-gray-600 dark:text-gray-300 md:gap-16 md:text-base">
+                    <div className="flex flex-wrap justify-center gap-8 text-sm font-semibold text-muted-foreground md:gap-16 md:text-base">
                         <div className="flex flex-col items-center gap-1">
-                            <span className="text-xl font-bold text-gray-900 dark:text-white">10K+</span>
-                            <span className="text-gray-500 dark:text-gray-400">Trips planned</span>
+                            <span className="text-xl font-bold text-foreground">10K+</span>
+                            <span className="text-muted-foreground">Trips planned</span>
                         </div>
                         <div className="flex flex-col items-center gap-1">
-                            <span className="text-xl font-bold text-gray-900 dark:text-white">1K+</span>
-                            <span className="text-gray-500 dark:text-gray-400">Happy Users</span>
+                            <span className="text-xl font-bold text-foreground">1K+</span>
+                            <span className="text-muted-foreground">Happy Users</span>
                         </div>
                         <div className="flex flex-col items-center gap-1">
-                            <span className="text-xl font-bold text-gray-900 dark:text-white">Instant</span>
-                            <span className="text-gray-500 dark:text-gray-400">AI Generation</span>
+                            <span className="text-xl font-bold text-foreground">Instant</span>
+                            <span className="text-muted-foreground">AI Generation</span>
                         </div>
                     </div>
 

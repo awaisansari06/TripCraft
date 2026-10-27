@@ -3,6 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { getCreditAccount, readTripCredits, commitTripPlan } from "@/lib/trip-credits";
 import { reserveRequest, releaseRequest } from "@/lib/request-limits";
 import { tripSpecification } from "@/lib/trip-spec";
+import { readJsonBody } from "@/lib/request-body";
 
 export const maxDuration = 60;
 
@@ -11,7 +12,7 @@ export const maxDuration = 60;
 const apiKey = process.env.GEMINI_API_KEY || "";
 const genAI = new GoogleGenerativeAI(apiKey);
 const model = genAI.getGenerativeModel({
-  model: "gemini-3.5-flash-lite",
+  model: process.env.GEMINI_MODEL || "gemini-3.5-flash-lite",
   generationConfig: {
     responseMimeType: "application/json", // Ensures strict JSON response
   },
@@ -308,11 +309,13 @@ export async function POST(request: NextRequest) {
   try {
     const account = await getCreditAccount();
     if (!account) return NextResponse.json({ error: "Authentication required" }, { status: 401 });
-    let body;
-    try { body = await request.json(); } catch {
-      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    const parsedBody = await readJsonBody(request, 2 * 1024 * 1024);
+    if (!parsedBody.ok) return NextResponse.json({ error: parsedBody.error }, { status: parsedBody.status });
+    const body = parsedBody.value;
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return NextResponse.json({ error: "Provide a valid conversation." }, { status: 400 });
     }
-    const { messages, isFinal = false, requestId = crypto.randomUUID(), tripSpec } = body ?? {};
+    const { messages, isFinal = false, requestId = crypto.randomUUID(), tripSpec } = body as Record<string, unknown>;
     let specification;
     try { specification = tripSpecification(tripSpec); } catch {
       return NextResponse.json({ error: "Provide valid trip details (duration must be 1–30 days)." }, { status: 400 });
@@ -377,9 +380,7 @@ export async function POST(request: NextRequest) {
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        console.log(`Attempt ${attempt}/${maxRetries} to send message to Gemini API...`);
         const result = await chat.sendMessage(userMessage, { timeout: 60000 });
-        console.log(`✅ Successfully received response from Gemini API`);
         const responseText = result.response.text();
 
         parsedJson = extractAndParseJson(responseText);
@@ -403,12 +404,11 @@ export async function POST(request: NextRequest) {
         break; // Successfully got and parsed JSON
       } catch (error) {
         lastError = error;
-        console.error(`❌ Attempt ${attempt}/${maxRetries} failed:`, error instanceof Error ? error.message : error);
+        console.error("Trip generation attempt failed", { attempt, maxRetries });
 
         if (attempt < maxRetries) {
           // Exponential backoff: 1s, 2s, 4s
           const delayMs = Math.pow(2, attempt - 1) * 1000;
-          console.log(`⏳ Retrying in ${delayMs}ms...`);
           await new Promise(resolve => setTimeout(resolve, delayMs));
         }
       }
@@ -435,11 +435,11 @@ export async function POST(request: NextRequest) {
     }
     return NextResponse.json({ ...parsedJson, credits });
   } catch (e) {
-    console.error("Error in AI Model API:", e);
+    console.error("Trip generation request failed.");
     const errorMessage = e instanceof Error ? e.message : "Unknown error occurred";
 
     // Provide more helpful error messages
-    let userMessage = errorMessage.includes("Credit service") ? errorMessage : "Trip generation is temporarily unavailable. Please try again.";
+    let userMessage = errorMessage.includes("Credit service") ? "Credit service is temporarily unavailable. Please try again." : "Trip generation is temporarily unavailable. Please try again.";
     if (errorMessage.includes("fetch failed") || errorMessage.includes("Failed to connect")) {
       userMessage = "Network connection issue. Please check your internet connection and try again.";
     } else if (errorMessage.includes("API key")) {
@@ -450,6 +450,6 @@ export async function POST(request: NextRequest) {
       error: userMessage,
     }, { status: errorMessage.includes("Credit service") ? 503 : 502 });
   } finally {
-    if (reservation) await releaseRequest(reservation.userId, "ai", reservation.requestId).catch(error => console.error("Request lease cleanup failed:", error));
+    if (reservation) await releaseRequest(reservation.userId, "ai", reservation.requestId).catch(() => console.error("Request lease cleanup failed."));
   }
 }

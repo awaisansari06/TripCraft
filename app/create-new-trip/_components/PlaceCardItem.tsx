@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Ticket, Clock, Star } from "lucide-react";
 import type { Activity } from "./types";
 
 type Props = {
@@ -12,15 +13,13 @@ function PlaceCardItem({ activity, onSelect }: Props) {
     const [photoUrls, setPhotoUrls] = useState<string[]>([]);
 
     useEffect(() => {
-        if (activity?.place_name) GetGooglePlaceDetail();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activity?.place_name]);
-
-    const GetGooglePlaceDetail = async () => {
+        if (!activity?.place_name) return;
+        const controller = new AbortController();
+        const getPhotos = async () => {
         try {
             const result = await axios.post("/api/google-place-detail", {
                 placeName: activity?.place_name,
-            });
+            }, { signal: controller.signal });
 
             if (result?.data?.error) return;
 
@@ -34,7 +33,10 @@ function PlaceCardItem({ activity, onSelect }: Props) {
         } catch {
             // Silently fail - use fallback image
         }
-    };
+        };
+        void getPhotos();
+        return () => controller.abort();
+    }, [activity?.place_name]);
 
     const imageSrc =
         (photoUrls.length > 0 ? photoUrls[0] : null) ||
@@ -44,10 +46,14 @@ function PlaceCardItem({ activity, onSelect }: Props) {
 
     return (
         <div
+            role="button"
+            tabIndex={0}
+            aria-label={`View details for ${activity?.place_name}`}
+            onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onSelect(imageSrc, photoUrls.length > 0 ? photoUrls : [imageSrc]); } }}
             onClick={() => onSelect(imageSrc, photoUrls.length > 0 ? photoUrls : [imageSrc])}
-            className="hover:scale-[1.02] transition-all cursor-pointer border border-gray-100 dark:border-zinc-800 rounded-2xl shadow-sm bg-white dark:bg-zinc-900 overflow-hidden group"
+            className="tc-place-card group"
         >
-            <div className="relative h-[180px] w-full bg-gray-100 dark:bg-zinc-800">
+            <div className="tc-place-card-image">
                 <Image
                     src={imageSrc}
                     alt={activity?.place_name || "Place Image"}
@@ -61,17 +67,17 @@ function PlaceCardItem({ activity, onSelect }: Props) {
 
             <div className="p-4 flex flex-col gap-2 min-h-[160px] justify-between">
                 <div>
-                    <h2 className="font-bold text-lg text-gray-900 dark:text-white line-clamp-1">{activity?.place_name}</h2>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 mt-1">
+                    <h3 className="tc-place-card-title">{activity?.place_name}</h3>
+                    <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
                         {activity?.place_details}
                     </p>
                 </div>
                 <div className="flex flex-col gap-1 mt-2">
                     <div className="flex flex-wrap gap-2 justify-between items-center">
-                        <p className="text-sm text-blue-600 dark:text-blue-400 font-medium truncate">🎫 {activity?.ticket_pricing}</p>
-                        <p className="text-sm text-amber-500 dark:text-amber-400 font-bold break-words">⭐ {activity?.best_time_to_visit ? activity.best_time_to_visit : "Top Pick"}</p>
+                        <p className="tc-place-price"><Ticket size={14} aria-hidden="true" /> {activity?.ticket_pricing}</p>
+                        <p className="tc-place-rating"><Star size={14} aria-hidden="true" /> {activity?.best_time_to_visit ? activity.best_time_to_visit : "Top Pick"}</p>
                     </div>
-                    <p className="text-xs text-orange-600 dark:text-orange-400 font-medium truncate">⏰ {activity?.time_travel_each_location}</p>
+                    <p className="tc-place-location"><Clock size={13} aria-hidden="true" /> {activity?.time_travel_each_location}</p>
                 </div>
             </div>
         </div>

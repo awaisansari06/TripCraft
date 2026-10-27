@@ -10,16 +10,18 @@ function load(file, mocks = {}, globals = {}) {
   mocks = {
     '@/lib/request-limits': { reserveRequest: async () => ({ allowed: true }), releaseRequest: async () => {} },
     '@/lib/trip-spec': loadSpec(),
+    '@/lib/request-body': loadUtility('lib/request-body.ts'),
     ...mocks,
   };
   const js = ts.transpileModule(fs.readFileSync(file, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
   const module = { exports: {} };
-  vm.runInNewContext(js, { module, exports: module.exports, require: name => mocks[name] ?? require(name), console: { log() {}, error() {} }, process, Error, Buffer, URL, URLSearchParams, AbortSignal, crypto: require('node:crypto').webcrypto, setTimeout, ...globals }, { filename: file });
+  vm.runInNewContext(js, { module, exports: module.exports, require: name => mocks[name] ?? require(name), console: { log() {}, error() {}, warn() {} }, process, Error, Buffer, URL, URLSearchParams, AbortSignal, crypto: require('node:crypto').webcrypto, setTimeout, ...globals }, { filename: file });
   return module.exports;
 }
-function loadSpec() {
+function loadSpec() { return loadUtility('lib/trip-spec.ts'); }
+function loadUtility(file) {
   const module = { exports: {} };
-  vm.runInNewContext(ts.transpileModule(fs.readFileSync('lib/trip-spec.ts', 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText, { module, exports: module.exports });
+  vm.runInNewContext(ts.transpileModule(fs.readFileSync(file, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText, { module, exports: module.exports, require });
   return module.exports;
 }
 const request = body => new NextRequest('http://localhost/api/aimodel', { method: 'POST', body: typeof body === 'string' ? body : JSON.stringify(body) });
@@ -42,6 +44,11 @@ test('AI route validates auth/input, handles failure, charges successful results
   account = { userId: 'test', capacity: 2 };
   assert.equal((await routes.POST(request('{'))).status, 400);
   assert.equal((await routes.POST(request({ messages: [] }))).status, 400);
+  for (const invalid of ['null', '[]', '"not a conversation"']) {
+    assert.equal((await routes.POST(request(invalid))).status, 400);
+  }
+  assert.equal((await routes.POST(request('x'.repeat(2 * 1024 * 1024 + 1)))).status, 413);
+  assert.equal(modelCalls, 0, 'Invalid and oversized bodies must not reach the model');
   assert.equal((await routes.POST(request({ ...conversation, isFinal: 'yes' }))).status, 400);
   balance = 0;
   assert.equal((await routes.POST(request(conversation))).status, 429);
@@ -81,6 +88,25 @@ test('credit status never substitutes full capacity for a service failure', asyn
   assert.equal((await route.GET()).status, 503);
 });
 
+test('AI retries release their lease and never return upstream error details', async () => {
+  let calls = 0, releases = 0;
+  const route = load('app/api/aimodel/route.tsx', {
+    '@/lib/trip-credits': {
+      getCreditAccount: async () => ({ userId: 'test', requestUserId: 'test', capacity: 2 }),
+      readTripCredits: async () => ({ info: { remaining: 2 }, tripPlan: null }),
+    },
+    '@/lib/request-limits': {
+      reserveRequest: async () => ({ allowed: true }),
+      releaseRequest: async () => { releases++; },
+    },
+    '@google/generative-ai': { GoogleGenerativeAI: class { getGenerativeModel() { return { startChat: () => ({ sendMessage: async () => { calls++; throw new Error('Credit service: private upstream diagnostics'); } }) }; } } },
+  }, { setTimeout: callback => callback() });
+  const response = await route.POST(request(conversation));
+  assert.equal(response.status, 503);
+  assert.equal((await response.json()).error, 'Credit service is temporarily unavailable. Please try again.');
+  assert.equal(calls, 3); assert.equal(releases, 1);
+});
+
 test('profile returns only the authenticated user profile', async () => {
   let user = null;
   const route = load('app/api/profile/route.ts', { '@clerk/nextjs/server': { currentUser: async () => user } });
@@ -106,6 +132,8 @@ test('place API validates requests, hides the provider key and verifies signed p
     authenticated = true;
     assert.equal((await route.POST(request({ placeName: '' }))).status, 400);
     assert.equal((await route.POST(request('{'))).status, 400);
+    assert.equal((await route.POST(request('null'))).status, 400);
+    assert.equal((await route.POST(request('x'.repeat(16 * 1024 + 1)))).status, 413);
     const response = await route.POST(request({ placeName: 'Goa' }));
     const urls = await response.json();
     assert(!urls[0].includes(process.env.GOOGLE_PLACE_API_KEY));

@@ -3,29 +3,24 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useUser } from "@clerk/nextjs";
 import { motion } from "framer-motion";
 
 import {
   ArrowRight,
-  ArrowDown,
   Bookmark,
   Building,
-  ChevronRight,
   Coins,
   Gem,
   Map,
   MapPin,
   MessageSquare,
   Plane,
-  Send,
   Users,
 } from "lucide-react";
 import s from "./home.module.css";
 import { useHomepageMotion } from "./_components/useHomepageMotion";
 import SiteFooter from "./_components/SiteFooter";
-import TripPromptInput from "./_components/TripPromptInput";
+import Hero from "@/components/Hero";
 
 const MotionLink = motion.create(Link);
 
@@ -89,127 +84,13 @@ function Leaves({ className = "" }: { className?: string }) {
 }
 
 export default function Home() {
-  const [query, setQuery] = useState("");
-  const [isPlanning, setIsPlanning] = useState(false);
-  const { user } = useUser();
-  const router = useRouter();
   const homeRef = useRef<HTMLElement>(null);
   useHomepageMotion(homeRef);
 
   return (
-    <main className={s.home} ref={homeRef}>
+    <main className={`${s.home} tripcraft-landing`} ref={homeRef}>
       <div className={s.scrollProgress} aria-hidden="true" />
-      <section className={s.hero}>
-        <div className={s.heroImage}>
-          <Photo
-            asset="01-amalfi-hero"
-            alt="The colorful villages and blue waters of the Amalfi Coast"
-            priority
-          />
-          <motion.span
-            className={s.location}
-            whileHover={{ scale: 1.06, y: -2 }}
-            whileTap={{ scale: 0.97 }}
-            transition={{ type: "spring", stiffness: 400, damping: 22 }}
-          >
-            <MapPin size={20} />
-            Amalfi Coast, Italy
-          </motion.span>
-        </div>
-        <svg className={s.flightPath} viewBox="0 0 240 130" aria-hidden="true">
-          <path d="M15 16 C130 0 85 100 230 112" />
-        </svg>
-        <Plane className={s.heroPlane} aria-hidden="true" />
-        <div className={s.heroContent}>
-          <h1>
-            <span className={s.heroLine}>
-              <span>Your next</span>
-            </span>
-            <span className={s.heroLine}>
-              <span>adventure,</span>
-            </span>
-            <span className={`${s.heroLine} ${s.heroAccent}`}>
-              <span>beautifully planned.</span>
-            </span>
-          </h1>
-          <p>Tell us your dream trip. We’ll plan the details.</p>
-          <form
-            className={s.prompt}
-            aria-busy={isPlanning}
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (isPlanning || !query.trim()) return;
-              setIsPlanning(true);
-              router.push(
-                user
-                  ? tripLink(query)
-                  : `/sign-in?redirect_url=${encodeURIComponent(tripLink(query))}`,
-              );
-            }}
-          >
-            <Plane aria-hidden="true" />
-            <TripPromptInput value={query} onChange={setQuery} />
-            <motion.button
-              type="submit"
-              disabled={isPlanning || !query.trim()}
-              data-magnetic
-              whileHover={{ scale: 1.03, y: -2 }}
-              whileTap={{ scale: 0.96 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            >
-              {isPlanning ? (
-                <span className={s.spinner} aria-hidden="true" />
-              ) : (
-                <Send size={20} />
-              )}
-              {isPlanning ? "Planning..." : "Plan my trip"}
-            </motion.button>
-          </form>
-          <div className={s.startLabel}>Try an example</div>
-          <div className={s.suggestions}>
-            <motion.button
-              onClick={() => setQuery("Plan a weekend in Goa")}
-              whileHover={{ scale: 1.04, y: -3 }}
-              whileTap={{ scale: 0.96 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            >
-              <Photo asset="02-beach-weekend" />
-              Goa weekend
-              <ChevronRight size={14} />
-            </motion.button>
-            <motion.button
-              onClick={() => setQuery("Plan a trip to Japan")}
-              whileHover={{ scale: 1.04, y: -3 }}
-              whileTap={{ scale: 0.96 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            >
-              <Photo asset="07-tokyo" />
-              Explore Japan
-              <ChevronRight size={14} />
-            </motion.button>
-          </div>
-        </div>
-        <motion.div
-          className={s.stamp}
-          aria-hidden="true"
-          whileHover={{ rotate: [-6, 3, -4], scale: 1.08 }}
-          transition={{ type: "spring", stiffness: 350, damping: 20 }}
-        >
-          ITALY
-          <br />
-          <span>✧</span>
-          <small>POSTE ITALIANE</small>
-        </motion.div>
-        <motion.a
-          className={s.scrollHint}
-          href="#templates"
-          whileHover={{ y: 3, scale: 1.04 }}
-          transition={{ type: "spring", stiffness: 400, damping: 20 }}
-        >
-          <span>Scroll to explore</span><ArrowDown size={16} aria-hidden="true" />
-        </motion.a>
-        <Leaves />
-      </section>
+      <Hero />
       <section className={`${s.container} ${s.templates}`} id="templates">
         <div className={s.sectionHeading} data-reveal>
           <div>
@@ -231,9 +112,9 @@ export default function Home() {
               key={asset}
               data-reveal
               data-stagger={index}
-              whileHover={{ y: -8, scale: 1.02 }}
+              whileHover={{ y: -3 }}
               whileTap={{ scale: 0.98 }}
-              transition={{ type: "spring", stiffness: 350, damping: 22 }}
+              transition={{ duration: .2, ease: "easeOut" }}
             >
               <Photo asset={asset} alt={title} />
               <div>
@@ -284,17 +165,17 @@ export default function Home() {
                 key={title}
                 data-reveal
                 data-stagger={i}
-                whileHover={{ y: -6, scale: 1.02 }}
-                transition={{ type: "spring", stiffness: 350, damping: 24 }}
+                whileHover={{ y: -2 }}
+                transition={{ duration: .2, ease: "easeOut" }}
               >
                 <div className={s.stepTop}>
                   <motion.span
-                    whileHover={{ scale: 1.15, rotate: 6 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                    whileHover={{ scale: 1.03 }}
+                    transition={{ duration: .2, ease: "easeOut" }}
                   >
                     <Icon />
                   </motion.span>
-                  <motion.b whileHover={{ scale: 1.12 }}>0{i + 1}</motion.b>
+                  <motion.b whileHover={{ scale: 1.03 }}>0{i + 1}</motion.b>
                 </div>
                 <h3>{title}</h3>
                 <p>{text}</p>
@@ -329,14 +210,14 @@ export default function Home() {
             className={s.itinerary}
             data-reveal
             data-depth
-            whileHover={{ y: -6 }}
-            transition={{ type: "spring", stiffness: 350, damping: 24 }}
+            whileHover={{ y: -2 }}
+            transition={{ duration: .2, ease: "easeOut" }}
           >
             <div className={s.builderTitle}>
               <motion.span
                 className={s.icon}
-                whileHover={{ scale: 1.15, rotate: 6 }}
-                transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                whileHover={{ scale: 1.03 }}
+                transition={{ duration: .2, ease: "easeOut" }}
               >
                 <Map />
               </motion.span>
@@ -381,8 +262,8 @@ export default function Home() {
                 <motion.div
                   className={s.day}
                   key={title}
-                  whileHover={{ x: 6, scale: 1.015 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 24 }}
+                  whileHover={{ x: 2 }}
+                  transition={{ duration: .2, ease: "easeOut" }}
                 >
                   <Photo asset={asset} />
                   <b>Day {i + 1}</b>
@@ -449,9 +330,9 @@ export default function Home() {
           <MotionLink
             href="/create-new-trip"
             data-magnetic
-            whileHover={{ scale: 1.04, y: -2 }}
+            whileHover={{ y: -1 }}
             whileTap={{ scale: 0.96 }}
-            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            transition={{ duration: .2, ease: "easeOut" }}
           >
             Start planning free <ArrowRight size={18} />
           </MotionLink>
@@ -479,13 +360,13 @@ function Feature({
       data-reveal
       data-depth
       data-stagger={stagger}
-      whileHover={{ y: -6, scale: 1.02 }}
-      transition={{ type: "spring", stiffness: 350, damping: 24 }}
+      whileHover={{ y: -2 }}
+      transition={{ duration: .2, ease: "easeOut" }}
     >
       <motion.span
         className={s.icon}
         whileHover={{ scale: 1.15, rotate: -8 }}
-        transition={{ type: "spring", stiffness: 400, damping: 20 }}
+        transition={{ duration: .2, ease: "easeOut" }}
       >
         <Icon />
       </motion.span>
@@ -505,9 +386,9 @@ function DestinationCard({ asset, title, stagger }: { asset: string; title: stri
       data-depth
       data-reveal
       data-stagger={stagger}
-      whileHover={{ y: -8, scale: 1.02 }}
+      whileHover={{ y: -3 }}
       whileTap={{ scale: 0.98 }}
-      transition={{ type: "spring", stiffness: 350, damping: 22 }}
+      transition={{ duration: .2, ease: "easeOut" }}
     >
       <Photo asset={asset} alt={title} />
       <h3>{title} <ArrowRight aria-hidden="true" /></h3>
