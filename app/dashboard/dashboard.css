@@ -1,8 +1,8 @@
 /* Product workspace: shared foundations, denser information layout. */
 .tc-dashboard { padding: 0; }
 .dashboard-shell { width: min(var(--tc-container), calc(100% - 2 * var(--tc-gutter))); margin-inline: auto; padding: clamp(24px, 4vw, 40px) 0 var(--tc-section-gap); }
-.dashboard-hero { position: relative; isolation: isolate; min-height: 340px; display: flex; align-items: center; overflow: hidden; padding: clamp(28px, 4vw, 52px); border: 1px solid var(--app-line); border-radius: var(--tc-radius-feature); background: linear-gradient(90deg, var(--app-paper) 0%, var(--app-paper) 32%, color-mix(in srgb, var(--app-paper) 88%, transparent) 57%, transparent 88%), url('/light/01-amalfi-hero-light.png') center right / cover; box-shadow: var(--tc-shadow); }
-.dark .dashboard-hero { background-image: linear-gradient(90deg, var(--app-paper) 0%, var(--app-paper) 32%, color-mix(in srgb, var(--app-paper) 88%, transparent) 57%, transparent 88%), url('/dark/01-amalfi-hero-dark.png'); }
+.dashboard-hero { position: relative; isolation: isolate; min-height: 340px; display: flex; align-items: center; overflow: hidden; padding: clamp(28px, 4vw, 52px); border: 1px solid var(--app-line); border-radius: var(--tc-radius-feature); background: linear-gradient(90deg, var(--app-paper) 0%, var(--app-paper) 32%, color-mix(in srgb, var(--app-paper) 88%, transparent) 57%, transparent 88%), url('/illustrations/light/amalfi-coast-positano-light.webp') center right / cover; box-shadow: var(--tc-shadow); }
+.dark .dashboard-hero { background-image: linear-gradient(90deg, var(--app-paper) 0%, var(--app-paper) 32%, color-mix(in srgb, var(--app-paper) 88%, transparent) 57%, transparent 88%), url('/illustrations/dark/amalfi-coast-positano-dark.webp'); }
 .dashboard-hero-copy { position: relative; z-index: 1; max-width: 570px; }
 .dashboard-hero h1 { margin: 16px 0; font-size: clamp(36px, 4.4vw, 56px); font-weight: 650; line-height: 1.08; }
 .dashboard-hero h1 em { color: var(--app-accent); font-style: normal; }
@@ -70,8 +70,8 @@
 @keyframes dashboard-pulse { to { opacity: .55; } }
 @media (max-width: 1000px) { .dashboard-action-grid, .dashboard-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 600px) {
-  .dashboard-hero { min-height: 400px; align-items: flex-start; padding: 28px 24px; border-radius: var(--tc-radius-card); background-image: linear-gradient(180deg, var(--app-paper) 0%, color-mix(in srgb, var(--app-paper) 97%, transparent) 47%, color-mix(in srgb, var(--app-paper) 20%, transparent) 100%), url('/light/01-amalfi-hero-light.png'); background-position: 65% center; }
-  .dark .dashboard-hero { background-image: linear-gradient(180deg, var(--app-paper) 0%, color-mix(in srgb, var(--app-paper) 97%, transparent) 47%, color-mix(in srgb, var(--app-paper) 32%, transparent) 100%), url('/dark/01-amalfi-hero-dark.png'); }
+  .dashboard-hero { min-height: 400px; align-items: flex-start; padding: 28px 24px; border-radius: var(--tc-radius-card); background-image: linear-gradient(180deg, var(--app-paper) 0%, color-mix(in srgb, var(--app-paper) 97%, transparent) 47%, color-mix(in srgb, var(--app-paper) 20%, transparent) 100%), url('/illustrations/light/amalfi-coast-positano-light.webp'); background-position: 65% center; }
+  .dark .dashboard-hero { background-image: linear-gradient(180deg, var(--app-paper) 0%, color-mix(in srgb, var(--app-paper) 97%, transparent) 47%, color-mix(in srgb, var(--app-paper) 32%, transparent) 100%), url('/illustrations/dark/amalfi-coast-positano-dark.webp'); }
   .dashboard-hero h1 { font-size: clamp(32px, 8vw, 42px); }
   .dashboard-hero p { font-size: 15px; }
   .dashboard-hero-caption { display: none; }

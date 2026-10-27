@@ -7,10 +7,6 @@
 .prompt::placeholder { color: #8d857b; opacity: 1; }
 .card:focus-within { box-shadow: 0 0 0 2px rgb(144 88 49 / .3); }
 .plan { grid-column: 3; grid-row: 3; color: #fafafa; border: none; cursor: pointer; font-family: inherit; font-weight: 500; text-transform: none; transition: background 160ms, transform 160ms; width: 164px; min-height: 48px; padding: 10px 16px; display: flex; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(110deg, #050505 30%, #54240f); border-radius: 999px; font-size: 14px; letter-spacing: .02em; }
-.upload { grid-column: 1; grid-row: 3; width: 44px; height: 44px; background: transparent; border: 1px solid rgb(255 255 255 / .7); border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #1a1a1a; backdrop-filter: blur(14px); transition: transform 160ms; }
-.upload:hover { background-color: rgb(255 255 255 / .08); }
-.upload:focus-visible { outline: 2px solid white; outline-offset: 2px; }
-.fileName { grid-column: 1 / -1; grid-row: 4; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; font-size: 12px; color: #905831; }
 @media (max-width: 600px) {
   .body { padding-top: clamp(28px, 6svh, 48px); }
   .card { padding: 18px; border-radius: 28px; gap: 14px 8px; }
@@ -62,7 +58,7 @@
 :global(.dark) .hero::before { opacity: 1; }
 :global(.dark) .topFade { opacity: 0; }
 :global(.dark) .hero::after { background: linear-gradient(transparent, var(--app-paper)); }
-.body h1, .headlineAccent, .subtitle, .prompt, .promptLabel, .fileName { transition: color 320ms ease; }
+.body h1, .headlineAccent, .subtitle, .prompt, .promptLabel { transition: color 320ms ease; }
 .prompt::placeholder { transition: color 320ms ease; }
 :global(.dark) .body h1 { color: var(--night-ink); }
 :global(.dark) .headlineAccent { color: var(--night-accent); }
@@ -86,14 +82,11 @@
 :global(.dark) .prompt::placeholder { color: #aaa8a2; }
 :global(.dark) .promptLabel { color: #c4beb4; }
 :global(.dark) .promptLabel span { color: #a6a6a0; }
-:global(.dark) .fileName { color: #d1af83; }
-:global(.dark) .upload { color: #d5c7b5; border-color: rgb(230 215 195 / .19); background: #2d3235; backdrop-filter: none; }
-:global(.dark) .upload:hover { background: #383d3f; border-color: rgb(230 215 195 / .36); }
 .plan svg { transition: transform 220ms ease; }
 .plan:hover svg { transform: translateX(3px); }
 :global(.dark) .plan { color: #22272a; background: #e5d5bf; box-shadow: 0 2px 8px rgb(0 0 0 / .12), inset 0 1px 0 rgb(255 255 255 / .3); }
 :global(.dark) .plan:hover { background: #f0e4d2; }
-.plan:focus-visible, .upload:focus-visible { outline: 2px solid var(--app-accent); outline-offset: 4px; }
+.plan:focus-visible { outline: 2px solid var(--app-accent); outline-offset: 4px; }
 /* Contain the original complete landscape on narrow screens, in both grades. */
 @media (max-width: 767px), (max-aspect-ratio: 6/5) {
   .scene video { top: auto; bottom: 0; height: auto; aspect-ratio: 16 / 9; object-fit: contain; }
@@ -103,7 +96,7 @@
 @media (prefers-reduced-motion: reduce) {
   .hero, .hero::before, .hero::after, .scene .nightScene, .topFade,
   .body h1, .headlineAccent, .subtitle, .card, .prompt, .prompt::placeholder,
-  .promptLabel, .fileName, .plan, .plan svg, .upload { transition: none !important; }
+  .promptLabel, .plan, .plan svg { transition: none !important; }
   .plan:hover svg, .plan:active { transform: none; }
 }
 /* Fade the panel's tonal lining instead of abruptly swapping gradients. */

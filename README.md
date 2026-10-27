@@ -28,6 +28,6 @@ See [deployment instructions](docs/deployment.md), [production audit](docs/produ
 
 ## Existing product boundaries
 
-Contact currently prepares and copies a message draft; it does not send email. Newsletter enrollment is coming soon. Hero upload currently selects an inspiration file and confirms selection; document ingestion is not implemented. Preserve these honest states when integrating external services.
+Contact currently prepares and copies a message draft; it does not send email. Newsletter enrollment is coming soon. The hero chatbox accepts text; its upload control has been removed. Preserve these honest states when integrating external services.
 
 Keep all private credentials server-side. Public `NEXT_PUBLIC_` configuration is embedded during compilation. Never commit `.env.local` or use development Clerk credentials for a production release. No hosting destination or production domain is assumed by the repository.

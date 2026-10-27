@@ -1,0 +1,214 @@
+{
+  "generator": "Built-in image_gen",
+  "styleReference": "amalfi-coast-positano-light",
+  "palette": {
+    "light": [
+      "#F8F5EF",
+      "#F1EBE2",
+      "#B84A19",
+      "muted olive",
+      "dusty slate"
+    ],
+    "dark": [
+      "#151A20",
+      "#19222B",
+      "#B8B1A8",
+      "#C87850",
+      "#D1AF83"
+    ]
+  },
+  "assets": [
+    {
+      "asset": "01-amalfi-hero",
+      "theme": "dark",
+      "file": "/illustrations/dark/amalfi-coast-positano-dark.webp",
+      "alt": "Vintage illustration of Positano's hillside houses, tiled church dome and boats on the Amalfi Coast.",
+      "prompt": "Use case: lighting-weather/style-transfer. Create the DARK-THEME NIGHT counterpart of this exact TripCraft illustration. Preserve its entire composition, landmarks, viewpoint, crop, object positions, linework and drawing style; do not introduce or remove subjects. Change only time-of-day, lighting and palette. Ink-charcoal sky #151A20 with subtle #19222B slate undertones, matte charcoal/slate landscape shadows, muted warm limestone #B8B1A8, subdued burnt clay #C87850, shadowed olive foliage, tiny restrained antique-gold #D1AF83 window or lamp accents where appropriate. Keep fine engraved architectural detail legible and tactile paper grain. True quiet nighttime, no orange sunset, no saturated blue or purple, no excessive amber, no global dark overlay, no neon or glowing outlines. Night is atmospheric but the subject remains clearly readable. No text, labels, borders, collage, photography or 3D. One single landscape image with exactly the reference geometry and aspect ratio.",
+      "reference": "amalfi-coast-positano-light"
+    },
+    {
+      "asset": "01-amalfi-hero",
+      "theme": "light",
+      "file": "/illustrations/light/amalfi-coast-positano-light.webp",
+      "alt": "Vintage illustration of Positano's hillside houses, tiled church dome and boats on the Amalfi Coast.",
+      "prompt": "Create one full-bleed landscape illustration of Positano on the Amalfi Coast for TripCraft, a premium vintage travel-journal website. Refined hand-inked architectural contours, fine engraving and matte gouache on subtle parchment grain. Stacked cliffside houses and a tiled church dome on the right, a calm bay on the left, modest olive and lemon foliage. Warm ivory #F8F5EF, sandstone, restrained terracotta #B84A19, muted olive and dusty slate water. Soft daylight. No lettering, frames, collage, photography, glossy 3D, saturated cyan, purple or excessive orange. Wide 16:9 composition, crop-safe landmarks.",
+      "reference": null
+    },
+    {
+      "asset": "02-beach-weekend",
+      "theme": "dark",
+      "file": "/illustrations/dark/goa-palm-beach-dark.webp",
+      "alt": "Vintage illustration of a palm-lined Goa beach with gentle waves, coastal rocks and a distant headland.",
+      "prompt": "Use case: lighting-weather/style-transfer. Create the DARK-THEME NIGHT counterpart of this exact TripCraft illustration. Preserve its entire composition, landmarks, viewpoint, crop, object positions, linework and drawing style; do not introduce or remove subjects. Change only time-of-day, lighting and palette. Ink-charcoal sky #151A20 with subtle #19222B slate undertones, matte charcoal/slate landscape shadows, muted warm limestone #B8B1A8, subdued burnt clay #C87850, shadowed olive foliage, tiny restrained antique-gold #D1AF83 window or lamp accents where appropriate. Keep fine engraved architectural detail legible and tactile paper grain. True quiet nighttime, no orange sunset, no saturated blue or purple, no excessive amber, no global dark overlay, no neon or glowing outlines. Night is atmospheric but the subject remains clearly readable. No text, labels, borders, collage, photography or 3D. One single landscape image with exactly the reference geometry and aspect ratio. Preserve the existing cloud shapes; no need to add a visible moon. Keep foreground detail readable in soft moonlight rather than near-black.",
+      "reference": "goa-palm-beach-light"
+    },
+    {
+      "asset": "02-beach-weekend",
+      "theme": "light",
+      "file": "/illustrations/light/goa-palm-beach-light.webp",
+      "alt": "Vintage illustration of a palm-lined Goa beach with gentle waves, coastal rocks and a distant headland.",
+      "prompt": "Reference image is a STYLE AND PALETTE REFERENCE ONLY. Generate ONE entirely new full-bleed landscape travel illustration, 4:3 aspect ratio, for the same TripCraft collection. Match its fine hand-inked engraved contours, delicate crosshatching, matte gouache forms, subtle parchment grain, refined vintage travel-journal editorial style. Light palette: warm ivory #F8F5EF, pale sandstone, muted terracotta #B84A19 in small areas, desaturated olive/sage, dusty slate-blue. Soft natural daylight, restrained saturation. Detailed and recognizable, calm and readable at card size. Keep focal subjects inside the central crop-safe area. No text, labels, frame, collage, photography, glossy 3D, neon, saturated cyan, purple or amber wash. Do not repeat Amalfi architecture except where the subject specifically requires it. SUBJECT: A quiet Goa beach: gently curling surf on pale sand, three elegant coconut palms on the right, weathered coastal rocks, distant low headland, soft cream sky and a small calm sea. Spacious coastal composition without people or buildings dominating.",
+      "reference": "amalfi-coast-positano-light"
+    },
+    {
+      "asset": "03-food-tour",
+      "theme": "dark",
+      "file": "/illustrations/dark/italian-pasta-food-tour-dark.webp",
+      "alt": "Vintage illustration of tomato and basil tagliatelle on a ceramic plate overlooking an Italian coastal village.",
+      "prompt": "Use case: lighting-weather/style-transfer. Create the DARK-THEME NIGHT counterpart of this exact TripCraft illustration. Preserve its entire composition, landmarks, viewpoint, crop, object positions, linework and drawing style; do not introduce or remove subjects. Change only time-of-day, lighting and palette. Ink-charcoal sky #151A20 with subtle #19222B slate undertones, matte charcoal/slate landscape shadows, muted warm limestone #B8B1A8, subdued burnt clay #C87850, shadowed olive foliage, tiny restrained antique-gold #D1AF83 window or lamp accents where appropriate. Keep fine engraved architectural detail legible and tactile paper grain. True quiet nighttime, no orange sunset, no saturated blue or purple, no excessive amber, no global dark overlay, no neon or glowing outlines. Night is atmospheric but the subject remains clearly readable. No text, labels, borders, collage, photography or 3D. One single landscape image with exactly the reference geometry and aspect ratio. Preserve the existing cloud shapes; no need to add a visible moon. The pasta, ceramic plate and foreground table must stay warmly and clearly readable under restrained off-frame evening restaurant lighting, without adding candles, objects or people.",
+      "reference": "italian-pasta-food-tour-light"
+    },
+    {
+      "asset": "03-food-tour",
+      "theme": "light",
+      "file": "/illustrations/light/italian-pasta-food-tour-light.webp",
+      "alt": "Vintage illustration of tomato and basil tagliatelle on a ceramic plate overlooking an Italian coastal village.",
+      "prompt": "Reference image is a STYLE AND PALETTE REFERENCE ONLY. Generate ONE entirely new full-bleed landscape travel illustration, 4:3 aspect ratio, for the same TripCraft collection. Match its fine hand-inked engraved contours, delicate crosshatching, matte gouache forms, subtle parchment grain, refined vintage travel-journal editorial style. Light palette: warm ivory #F8F5EF, pale sandstone, muted terracotta #B84A19 in small areas, desaturated olive/sage, dusty slate-blue. Soft natural daylight, restrained saturation. Detailed and recognizable, calm and readable at card size. Keep focal subjects inside the central crop-safe area. No text, labels, frame, collage, photography, glossy 3D, neon, saturated cyan, purple or amber wash. Do not repeat Amalfi architecture except where the subject specifically requires it. SUBJECT: Italian coastal food experience: close editorial view of a handmade ivory ceramic bowl of tagliatelle with tomato and basil on a rustic table, olive-oil carafe, simple linen napkin, modest plant; a softly drawn Mediterranean village and sea behind it. Appetizing, tactile food illustration, not a photograph. Plate stays fully recognizable in central crop.",
+      "reference": "amalfi-coast-positano-light"
+    },
+    {
+      "asset": "04-mountain-escape",
+      "theme": "dark",
+      "file": "/illustrations/dark/alpine-mountain-lake-dark.webp",
+      "alt": "Vintage illustration of jagged alpine peaks, a mountain lake and a winding trail through pine-covered hills.",
+      "prompt": "Use case: lighting-weather/style-transfer. Create the DARK-THEME NIGHT counterpart of this exact TripCraft illustration. Preserve its entire composition, landmarks, viewpoint, crop, object positions, linework and drawing style; do not introduce or remove subjects. Change only time-of-day, lighting and palette. Ink-charcoal sky #151A20 with subtle #19222B slate undertones, matte charcoal/slate landscape shadows, muted warm limestone #B8B1A8, subdued burnt clay #C87850, shadowed olive foliage, tiny restrained antique-gold #D1AF83 window or lamp accents where appropriate. Keep fine engraved architectural detail legible and tactile paper grain. True quiet nighttime, no orange sunset, no saturated blue or purple, no excessive amber, no global dark overlay, no neon or glowing outlines. Night is atmospheric but the subject remains clearly readable. No text, labels, borders, collage, photography or 3D. One single landscape image with exactly the reference geometry and aspect ratio. Preserve the existing cloud shapes; no need to add a visible moon. Keep foreground detail readable in soft moonlight rather than near-black.",
+      "reference": "alpine-mountain-lake-light"
+    },
+    {
+      "asset": "04-mountain-escape",
+      "theme": "light",
+      "file": "/illustrations/light/alpine-mountain-lake-light.webp",
+      "alt": "Vintage illustration of jagged alpine peaks, a mountain lake and a winding trail through pine-covered hills.",
+      "prompt": "Reference image is a STYLE AND PALETTE REFERENCE ONLY. Generate ONE entirely new full-bleed landscape travel illustration, 4:3 aspect ratio, for the same TripCraft collection. Match its fine hand-inked engraved contours, delicate crosshatching, matte gouache forms, subtle parchment grain, refined vintage travel-journal editorial style. Light palette: warm ivory #F8F5EF, pale sandstone, muted terracotta #B84A19 in small areas, desaturated olive/sage, dusty slate-blue. Soft natural daylight, restrained saturation. Detailed and recognizable, calm and readable at card size. Keep focal subjects inside the central crop-safe area. No text, labels, frame, collage, photography, glossy 3D, neon, saturated cyan, purple or amber wash. Do not repeat Amalfi architecture except where the subject specifically requires it. SUBJECT: An alpine mountain escape: recognizable dramatic Dolomite-like jagged limestone peaks, layered sage foothills and olive pine woods, a small still lake in the valley, a winding hiking path through a subdued grassy foreground. Quiet ivory sky with fine engraved clouds. No excessive flowers or vivid green.",
+      "reference": "amalfi-coast-positano-light"
+    },
+    {
+      "asset": "05-paris",
+      "theme": "dark",
+      "file": "/illustrations/dark/paris-eiffel-tower-seine-dark.webp",
+      "alt": "Vintage illustration of the Eiffel Tower, a stone bridge and boats on the River Seine in Paris.",
+      "prompt": "Use case: lighting-weather/style-transfer. Create the DARK-THEME NIGHT counterpart of this exact TripCraft illustration. Preserve its entire composition, landmarks, viewpoint, crop, object positions, linework and drawing style; do not introduce or remove subjects. Change only time-of-day, lighting and palette. Ink-charcoal sky #151A20 with subtle #19222B slate undertones, matte charcoal/slate landscape shadows, muted warm limestone #B8B1A8, subdued burnt clay #C87850, shadowed olive foliage, tiny restrained antique-gold #D1AF83 window or lamp accents where appropriate. Keep fine engraved architectural detail legible and tactile paper grain. True quiet nighttime, no orange sunset, no saturated blue or purple, no excessive amber, no global dark overlay, no neon or glowing outlines. Night is atmospheric but the subject remains clearly readable. No text, labels, borders, collage, photography or 3D. One single landscape image with exactly the reference geometry and aspect ratio. Preserve the existing cloud shapes; no need to add a visible moon. Keep foreground detail readable in soft moonlight rather than near-black.",
+      "reference": "paris-eiffel-tower-seine-light"
+    },
+    {
+      "asset": "05-paris",
+      "theme": "light",
+      "file": "/illustrations/light/paris-eiffel-tower-seine-light.webp",
+      "alt": "Vintage illustration of the Eiffel Tower, a stone bridge and boats on the River Seine in Paris.",
+      "prompt": "Reference image is a STYLE AND PALETTE REFERENCE ONLY. Generate ONE entirely new full-bleed landscape travel illustration, 4:3 aspect ratio, for the same TripCraft collection. Match its fine hand-inked engraved contours, delicate crosshatching, matte gouache forms, subtle parchment grain, refined vintage travel-journal editorial style. Light palette: warm ivory #F8F5EF, pale sandstone, muted terracotta #B84A19 in small areas, desaturated olive/sage, dusty slate-blue. Soft natural daylight, restrained saturation. Detailed and recognizable, calm and readable at card size. Keep focal subjects inside the central crop-safe area. No text, labels, frame, collage, photography, glossy 3D, neon, saturated cyan, purple or amber wash. Do not repeat Amalfi architecture except where the subject specifically requires it. SUBJECT: Paris seen from the Seine: unmistakable Eiffel Tower slightly right of center, an elegant stone bridge, limestone riverfront buildings, a small riverboat, and a modest leafy branch framing the left. Graceful believable architecture, soft cream clouds and dusty slate river, subtle muted terracotta details.",
+      "reference": "amalfi-coast-positano-light"
+    },
+    {
+      "asset": "06-new-york",
+      "theme": "dark",
+      "file": "/illustrations/dark/new-york-brooklyn-bridge-dark.webp",
+      "alt": "Vintage illustration of Brooklyn Bridge and the Manhattan skyline across New York's East River.",
+      "prompt": "Use case: lighting-weather/style-transfer. Create the DARK-THEME NIGHT counterpart of this exact TripCraft illustration. Preserve its entire composition, landmarks, viewpoint, crop, object positions, linework and drawing style; do not introduce or remove subjects. Change only time-of-day, lighting and palette. Ink-charcoal sky #151A20 with subtle #19222B slate undertones, matte charcoal/slate landscape shadows, muted warm limestone #B8B1A8, subdued burnt clay #C87850, shadowed olive foliage, tiny restrained antique-gold #D1AF83 window or lamp accents where appropriate. Keep fine engraved architectural detail legible and tactile paper grain. True quiet nighttime, no orange sunset, no saturated blue or purple, no excessive amber, no global dark overlay, no neon or glowing outlines. Night is atmospheric but the subject remains clearly readable. No text, labels, borders, collage, photography or 3D. One single landscape image with exactly the reference geometry and aspect ratio. Preserve existing clouds and keep any architectural illumination restrained and desaturated. No huge moon, no dramatic new sun, no neon signage. Soft readable midnight editorial illustration, not blackened artwork.",
+      "reference": "new-york-brooklyn-bridge-light"
+    },
+    {
+      "asset": "06-new-york",
+      "theme": "light",
+      "file": "/illustrations/light/new-york-brooklyn-bridge-light.webp",
+      "alt": "Vintage illustration of Brooklyn Bridge and the Manhattan skyline across New York's East River.",
+      "prompt": "Reference image is a STYLE AND PALETTE REFERENCE ONLY. Generate ONE entirely new full-bleed landscape travel illustration, 4:3 aspect ratio, for the same TripCraft collection. Match its fine hand-inked engraved contours, delicate crosshatching, matte gouache forms, subtle parchment grain, refined vintage travel-journal editorial style. Light palette: warm ivory #F8F5EF, pale sandstone, muted terracotta #B84A19 in small areas, desaturated olive/sage, dusty slate-blue. Soft natural daylight, restrained saturation. Detailed and recognizable, calm and readable at card size. Keep focal subjects inside the central crop-safe area. No text, labels, frame, collage, photography, glossy 3D, neon, saturated cyan, purple or amber wash. Do not repeat Amalfi architecture except where the subject specifically requires it. SUBJECT: New York from Brooklyn waterfront: recognizable Brooklyn Bridge leading from its stone tower at the left toward the Manhattan skyline, One World Trade Center visible to the right; calm East River in foreground. Detailed fine architectural engraving, warm limestone bridge, restrained slate buildings, ivory sky. No oversized flags or lettering.",
+      "reference": "amalfi-coast-positano-light"
+    },
+    {
+      "asset": "07-tokyo",
+      "theme": "dark",
+      "file": "/illustrations/dark/tokyo-pagoda-cherry-blossoms-dark.webp",
+      "alt": "Vintage illustration of a five-tier Japanese pagoda and temple roofs framed by cherry blossoms in Tokyo.",
+      "prompt": "Use case: lighting-weather/style-transfer. Create the DARK-THEME NIGHT counterpart of this exact TripCraft illustration. Preserve its entire composition, landmarks, viewpoint, crop, object positions, linework and drawing style; do not introduce or remove subjects. Change only time-of-day, lighting and palette. Ink-charcoal sky #151A20 with subtle #19222B slate undertones, matte charcoal/slate landscape shadows, muted warm limestone #B8B1A8, subdued burnt clay #C87850, shadowed olive foliage, tiny restrained antique-gold #D1AF83 window or lamp accents where appropriate. Keep fine engraved architectural detail legible and tactile paper grain. True quiet nighttime, no orange sunset, no saturated blue or purple, no excessive amber, no global dark overlay, no neon or glowing outlines. Night is atmospheric but the subject remains clearly readable. No text, labels, borders, collage, photography or 3D. One single landscape image with exactly the reference geometry and aspect ratio. Preserve existing clouds and keep any architectural illumination restrained and desaturated. No huge moon, no dramatic new sun, no neon signage. Soft readable midnight editorial illustration, not blackened artwork.",
+      "reference": "tokyo-pagoda-cherry-blossoms-light"
+    },
+    {
+      "asset": "07-tokyo",
+      "theme": "light",
+      "file": "/illustrations/light/tokyo-pagoda-cherry-blossoms-light.webp",
+      "alt": "Vintage illustration of a five-tier Japanese pagoda and temple roofs framed by cherry blossoms in Tokyo.",
+      "prompt": "Reference image is a STYLE AND PALETTE REFERENCE ONLY. Generate ONE entirely new full-bleed landscape travel illustration, 4:3 aspect ratio, for the same TripCraft collection. Match its fine hand-inked engraved contours, delicate crosshatching, matte gouache forms, subtle parchment grain, refined vintage travel-journal editorial style. Light palette: warm ivory #F8F5EF, pale sandstone, muted terracotta #B84A19 in small areas, desaturated olive/sage, dusty slate-blue. Soft natural daylight, restrained saturation. Detailed and recognizable, calm and readable at card size. Keep focal subjects inside the central crop-safe area. No text, labels, frame, collage, photography, glossy 3D, neon, saturated cyan, purple or amber wash. Do not repeat Amalfi architecture except where the subject specifically requires it. SUBJECT: Tokyo Asakusa travel scene: an unmistakable traditional five-tier Japanese pagoda near center, elegant Senso-ji-style temple roof at the right, delicate cherry blossom branches framing the upper left. Correct Japanese architecture; restrained dusty pink blossom and muted brick-terracotta timber, ivory/plaster accents, pale cream sky. No neon, signage or written characters.",
+      "reference": "amalfi-coast-positano-light"
+    },
+    {
+      "asset": "08-rome",
+      "theme": "dark",
+      "file": "/illustrations/dark/rome-saint-peters-tiber-dark.webp",
+      "alt": "Vintage illustration of St Peter's Basilica, a stone bridge and umbrella pines along Rome's River Tiber.",
+      "prompt": "Use case: lighting-weather/style-transfer. Create the DARK-THEME NIGHT counterpart of this exact TripCraft illustration. Preserve its entire composition, landmarks, viewpoint, crop, object positions, linework and drawing style; do not introduce or remove subjects. Change only time-of-day, lighting and palette. Ink-charcoal sky #151A20 with subtle #19222B slate undertones, matte charcoal/slate landscape shadows, muted warm limestone #B8B1A8, subdued burnt clay #C87850, shadowed olive foliage, tiny restrained antique-gold #D1AF83 window or lamp accents where appropriate. Keep fine engraved architectural detail legible and tactile paper grain. True quiet nighttime, no orange sunset, no saturated blue or purple, no excessive amber, no global dark overlay, no neon or glowing outlines. Night is atmospheric but the subject remains clearly readable. No text, labels, borders, collage, photography or 3D. One single landscape image with exactly the reference geometry and aspect ratio. Preserve existing clouds and keep any architectural illumination restrained and desaturated. No huge moon, no dramatic new sun, no neon signage. Soft readable midnight editorial illustration, not blackened artwork.",
+      "reference": "rome-saint-peters-tiber-light"
+    },
+    {
+      "asset": "08-rome",
+      "theme": "light",
+      "file": "/illustrations/light/rome-saint-peters-tiber-light.webp",
+      "alt": "Vintage illustration of St Peter's Basilica, a stone bridge and umbrella pines along Rome's River Tiber.",
+      "prompt": "Reference image is a STYLE AND PALETTE REFERENCE ONLY. Generate ONE entirely new full-bleed landscape travel illustration, 4:3 aspect ratio, for the same TripCraft collection. Match its fine hand-inked engraved contours, delicate crosshatching, matte gouache forms, subtle parchment grain, refined vintage travel-journal editorial style. Light palette: warm ivory #F8F5EF, pale sandstone, muted terracotta #B84A19 in small areas, desaturated olive/sage, dusty slate-blue. Soft natural daylight, restrained saturation. Detailed and recognizable, calm and readable at card size. Keep focal subjects inside the central crop-safe area. No text, labels, frame, collage, photography, glossy 3D, neon, saturated cyan, purple or amber wash. Do not repeat Amalfi architecture except where the subject specifically requires it. SUBJECT: Rome from a beautiful elevated river terrace: recognizable St Peter's Basilica with its detailed dome, Tiber river, stone bridge, warm limestone roofs, dark olive umbrella pines, modest terracotta pots at an edge. Refined detailed Roman architecture with ivory sky, muted sandstone, clay roof accents and dusty sage foliage.",
+      "reference": "amalfi-coast-positano-light"
+    },
+    {
+      "asset": "09-dubai",
+      "theme": "dark",
+      "file": "/illustrations/dark/dubai-burj-khalifa-dark.webp",
+      "alt": "Vintage illustration of the Burj Khalifa and Dubai's skyline reflected in a calm waterfront pool.",
+      "prompt": "Use case: lighting-weather/style-transfer. Create the DARK-THEME NIGHT counterpart of this exact TripCraft illustration. Preserve its entire composition, landmarks, viewpoint, crop, object positions, linework and drawing style; do not introduce or remove subjects. Change only time-of-day, lighting and palette. Ink-charcoal sky #151A20 with subtle #19222B slate undertones, matte charcoal/slate landscape shadows, muted warm limestone #B8B1A8, subdued burnt clay #C87850, shadowed olive foliage, tiny restrained antique-gold #D1AF83 window or lamp accents where appropriate. Keep fine engraved architectural detail legible and tactile paper grain. True quiet nighttime, no orange sunset, no saturated blue or purple, no excessive amber, no global dark overlay, no neon or glowing outlines. Night is atmospheric but the subject remains clearly readable. No text, labels, borders, collage, photography or 3D. One single landscape image with exactly the reference geometry and aspect ratio. Preserve existing clouds and keep any architectural illumination restrained and desaturated. No huge moon, no dramatic new sun, no neon signage. Soft readable midnight editorial illustration, not blackened artwork.",
+      "reference": "dubai-burj-khalifa-light"
+    },
+    {
+      "asset": "09-dubai",
+      "theme": "light",
+      "file": "/illustrations/light/dubai-burj-khalifa-light.webp",
+      "alt": "Vintage illustration of the Burj Khalifa and Dubai's skyline reflected in a calm waterfront pool.",
+      "prompt": "Reference image is a STYLE AND PALETTE REFERENCE ONLY. Generate ONE entirely new full-bleed landscape travel illustration, 4:3 aspect ratio, for the same TripCraft collection. Match its fine hand-inked engraved contours, delicate crosshatching, matte gouache forms, subtle parchment grain, refined vintage travel-journal editorial style. Light palette: warm ivory #F8F5EF, pale sandstone, muted terracotta #B84A19 in small areas, desaturated olive/sage, dusty slate-blue. Soft natural daylight, restrained saturation. Detailed and recognizable, calm and readable at card size. Keep focal subjects inside the central crop-safe area. No text, labels, frame, collage, photography, glossy 3D, neon, saturated cyan, purple or amber wash. Do not repeat Amalfi architecture except where the subject specifically requires it. SUBJECT: Dubai skyline around the Burj Khalifa, unmistakably tall tapering central tower in accurate proportions, layered modern buildings around a broad calm reflecting pool, modest palm silhouettes and warm pale stone waterfront. Use desaturated slate glass, ivory limestone, sand and restrained terracotta details. Calm cream sky, not blazing golden sunset; fine architectural engraved linework makes this modern destination belong to the vintage collection.",
+      "reference": "amalfi-coast-positano-light"
+    },
+    {
+      "asset": "10-agra",
+      "theme": "dark",
+      "file": "/illustrations/dark/agra-taj-mahal-dark.webp",
+      "alt": "Vintage illustration of the Taj Mahal in Agra with its minarets, cypress gardens and reflecting pool.",
+      "prompt": "Use case: lighting-weather/style-transfer. Create the DARK-THEME NIGHT counterpart of this exact TripCraft illustration. Preserve its entire composition, landmarks, viewpoint, crop, object positions, linework and drawing style; do not introduce or remove subjects. Change only time-of-day, lighting and palette. Ink-charcoal sky #151A20 with subtle #19222B slate undertones, matte charcoal/slate landscape shadows, muted warm limestone #B8B1A8, subdued burnt clay #C87850, shadowed olive foliage, tiny restrained antique-gold #D1AF83 window or lamp accents where appropriate. Keep fine engraved architectural detail legible and tactile paper grain. True quiet nighttime, no orange sunset, no saturated blue or purple, no excessive amber, no global dark overlay, no neon or glowing outlines. Night is atmospheric but the subject remains clearly readable. No text, labels, borders, collage, photography or 3D. One single landscape image with exactly the reference geometry and aspect ratio. Preserve the cloud shapes, stone engravings and distinct architectural/rock silhouettes. Make pale stone readable in soft moonlight with small warm accents only, no amber wash and no huge added moon. Do not crush the shadows.",
+      "reference": "agra-taj-mahal-light"
+    },
+    {
+      "asset": "10-agra",
+      "theme": "light",
+      "file": "/illustrations/light/agra-taj-mahal-light.webp",
+      "alt": "Vintage illustration of the Taj Mahal in Agra with its minarets, cypress gardens and reflecting pool.",
+      "prompt": "Reference image is a STYLE AND PALETTE REFERENCE ONLY. Generate ONE entirely new full-bleed landscape travel illustration, 4:3 aspect ratio, for the same TripCraft collection. Match its fine hand-inked engraved contours, delicate crosshatching, matte gouache forms, subtle parchment grain, refined vintage travel-journal editorial style. Light palette: warm ivory #F8F5EF, pale sandstone, muted terracotta #B84A19 in small areas, desaturated olive/sage, dusty slate-blue. Soft natural daylight, restrained saturation. Detailed and recognizable, calm and readable at card size. Keep focal subjects inside the central crop-safe area. No text, labels, frame, collage, photography, glossy 3D, neon, saturated cyan, purple or amber wash. Do not repeat Amalfi architecture except where the subject specifically requires it. SUBJECT: The Taj Mahal in Agra, India, recognizable central onion dome and four minarets with believable architectural proportions, intricate engraved marble ornament, symmetrical garden and long reflecting pool, elegant muted olive cypress trees. Warm ivory marble and sandstone foreground against a quiet parchment sky, fine ink detail with subtle matte color. No crowds or extra buildings masking the monument.",
+      "reference": "amalfi-coast-positano-light"
+    },
+    {
+      "asset": "11-naples-itinerary",
+      "theme": "dark",
+      "file": "/illustrations/dark/naples-waterfront-vesuvius-dark.webp",
+      "alt": "Vintage illustration of Naples' waterfront promenade, Castel dell'Ovo and Mount Vesuvius across the bay.",
+      "prompt": "Use case: lighting-weather/style-transfer. Create the DARK-THEME NIGHT counterpart of this exact TripCraft illustration. Preserve its entire composition, landmarks, viewpoint, crop, object positions, linework and drawing style; do not introduce or remove subjects. Change only time-of-day, lighting and palette. Ink-charcoal sky #151A20 with subtle #19222B slate undertones, matte charcoal/slate landscape shadows, muted warm limestone #B8B1A8, subdued burnt clay #C87850, shadowed olive foliage, tiny restrained antique-gold #D1AF83 window or lamp accents where appropriate. Keep fine engraved architectural detail legible and tactile paper grain. True quiet nighttime, no orange sunset, no saturated blue or purple, no excessive amber, no global dark overlay, no neon or glowing outlines. Night is atmospheric but the subject remains clearly readable. No text, labels, borders, collage, photography or 3D. One single landscape image with exactly the reference geometry and aspect ratio. Preserve the cloud shapes, stone engravings and distinct architectural/rock silhouettes. Make pale stone readable in soft moonlight with small warm accents only, no amber wash and no huge added moon. Do not crush the shadows.",
+      "reference": "naples-waterfront-vesuvius-light"
+    },
+    {
+      "asset": "11-naples-itinerary",
+      "theme": "light",
+      "file": "/illustrations/light/naples-waterfront-vesuvius-light.webp",
+      "alt": "Vintage illustration of Naples' waterfront promenade, Castel dell'Ovo and Mount Vesuvius across the bay.",
+      "prompt": "Reference image is a STYLE AND PALETTE REFERENCE ONLY. Generate ONE entirely new full-bleed landscape travel illustration, 4:3 aspect ratio, for the same TripCraft collection. Match its fine hand-inked engraved contours, delicate crosshatching, matte gouache forms, subtle parchment grain, refined vintage travel-journal editorial style. Light palette: warm ivory #F8F5EF, pale sandstone, muted terracotta #B84A19 in small areas, desaturated olive/sage, dusty slate-blue. Soft natural daylight, restrained saturation. Detailed and recognizable, calm and readable at card size. Keep focal subjects inside the central crop-safe area. No text, labels, frame, collage, photography, glossy 3D, neon, saturated cyan, purple or amber wash. Do not repeat Amalfi architecture except where the subject specifically requires it. SUBJECT: Naples waterfront, Italy: an elegant stone promenade curving from the lower left beside the sea, modest cafe terraces and warm pale buildings at the left, recognizable Castel dell'Ovo at center-right, Mount Vesuvius in the distance across the bay. Slate water, warm sandstone, subdued terracotta roofs and sparse olive plants, calm daytime engraving.",
+      "reference": "amalfi-coast-positano-light"
+    },
+    {
+      "asset": "12-capri-itinerary",
+      "theme": "dark",
+      "file": "/illustrations/dark/capri-faraglioni-sea-stacks-dark.webp",
+      "alt": "Vintage illustration of Capri's Faraglioni sea stacks, a small boat and a cliffside garden.",
+      "prompt": "Use case: lighting-weather/style-transfer. Create the DARK-THEME NIGHT counterpart of this exact TripCraft illustration. Preserve its entire composition, landmarks, viewpoint, crop, object positions, linework and drawing style; do not introduce or remove subjects. Change only time-of-day, lighting and palette. Ink-charcoal sky #151A20 with subtle #19222B slate undertones, matte charcoal/slate landscape shadows, muted warm limestone #B8B1A8, subdued burnt clay #C87850, shadowed olive foliage, tiny restrained antique-gold #D1AF83 window or lamp accents where appropriate. Keep fine engraved architectural detail legible and tactile paper grain. True quiet nighttime, no orange sunset, no saturated blue or purple, no excessive amber, no global dark overlay, no neon or glowing outlines. Night is atmospheric but the subject remains clearly readable. No text, labels, borders, collage, photography or 3D. One single landscape image with exactly the reference geometry and aspect ratio. Preserve the cloud shapes, stone engravings and distinct architectural/rock silhouettes. Make pale stone readable in soft moonlight with small warm accents only, no amber wash and no huge added moon. Do not crush the shadows.",
+      "reference": "capri-faraglioni-sea-stacks-light"
+    },
+    {
+      "asset": "12-capri-itinerary",
+      "theme": "light",
+      "file": "/illustrations/light/capri-faraglioni-sea-stacks-light.webp",
+      "alt": "Vintage illustration of Capri's Faraglioni sea stacks, a small boat and a cliffside garden.",
+      "prompt": "Reference image is a STYLE AND PALETTE REFERENCE ONLY. Generate ONE entirely new full-bleed landscape travel illustration, 4:3 aspect ratio, for the same TripCraft collection. Match its fine hand-inked engraved contours, delicate crosshatching, matte gouache forms, subtle parchment grain, refined vintage travel-journal editorial style. Light palette: warm ivory #F8F5EF, pale sandstone, muted terracotta #B84A19 in small areas, desaturated olive/sage, dusty slate-blue. Soft natural daylight, restrained saturation. Detailed and recognizable, calm and readable at card size. Keep focal subjects inside the central crop-safe area. No text, labels, frame, collage, photography, glossy 3D, neon, saturated cyan, purple or amber wash. Do not repeat Amalfi architecture except where the subject specifically requires it. SUBJECT: Capri, Italy, viewed from a high cliff garden toward its recognizable Faraglioni sea stacks: three sculptural limestone rock formations and a visible natural arch in the closest large stack, a small wooden boat on calm dusty slate water, tasteful olive foliage and modest dusty pink flowers at the edge. Warm ivory limestone, muted sage and terracotta touches. Refined airy coastal travel-journal scene.",
+      "reference": "amalfi-coast-positano-light"
+    }
+  ]
+}

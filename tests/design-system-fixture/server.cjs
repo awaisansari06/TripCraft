@@ -3,7 +3,7 @@ const esbuild=require('esbuild');
 const root=path.resolve(__dirname,'../..'),out=path.join(root,'tmp/design-system-fixture');
 fs.mkdirSync(out,{recursive:true});
 (async()=>{
- await esbuild.build({absWorkingDir:root,entryPoints:[path.join(__dirname,'entry.jsx')],outfile:path.join(out,'fixture.js'),bundle:true,external:['/light/*','/dark/*'],platform:'browser',format:'iife',jsx:'automatic',define:{'process.env.NODE_ENV':'"development"'},alias:{'next/navigation':path.join(__dirname,'services.jsx'),'@clerk/nextjs':path.join(__dirname,'services.jsx'),'convex/react':path.join(__dirname,'services.jsx'),'next/link':path.join(root,'tests/planner-fixture/link.jsx'),'next/image':path.join(root,'tests/planner-fixture/image.jsx')}});
+ await esbuild.build({absWorkingDir:root,entryPoints:[path.join(__dirname,'entry.jsx')],outfile:path.join(out,'fixture.js'),bundle:true,external:['/light/*','/dark/*','/illustrations/*'],platform:'browser',format:'iife',jsx:'automatic',define:{'process.env.NODE_ENV':'"development"'},alias:{'next/navigation':path.join(__dirname,'services.jsx'),'@clerk/nextjs':path.join(__dirname,'services.jsx'),'convex/react':path.join(__dirname,'services.jsx'),'next/link':path.join(root,'tests/planner-fixture/link.jsx'),'next/image':path.join(root,'tests/planner-fixture/image.jsx')}});
  const appBase=process.env.APP_BASE_URL||'http://localhost:3000';
  const html=await(await fetch(appBase+'/')).text();
  const styles=[...html.matchAll(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/g)].map(m=>m[1]);

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Ticket, Clock, Star } from "lucide-react";
 import type { Activity } from "./types";
+import { travelArtworkSrc } from "@/lib/travel-artwork";
 
 type Props = {
     activity: Activity;
@@ -42,7 +43,7 @@ function PlaceCardItem({ activity, onSelect }: Props) {
         (photoUrls.length > 0 ? photoUrls[0] : null) ||
         (activity?.place_image_url && !activity.place_image_url.includes("example.com")
             ? activity.place_image_url
-            : "/mountains.jpg");
+            : travelArtworkSrc("04-mountain-escape"));
 
     return (
         <div
@@ -61,7 +62,7 @@ function PlaceCardItem({ activity, onSelect }: Props) {
                     sizes="(min-width: 1024px) 32vw, (min-width: 640px) 50vw, 100vw"
                     className="object-cover"
                     unoptimized
-                    onError={() => setPhotoUrls(["/mountains.jpg"])}
+                    onError={() => setPhotoUrls([travelArtworkSrc("04-mountain-escape")])}
                 />
             </div>
 

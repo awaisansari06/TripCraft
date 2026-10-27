@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-import { ArrowRight, Upload } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import styles from "./Hero.module.css";
 import HeroScene from "./HeroScene";
 
@@ -17,10 +17,7 @@ const examples = [
 ];
 
 export default function Hero() {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const promptRef = useRef<HTMLTextAreaElement>(null);
   const [query, setQuery] = useState("");
-  const [fileName, setFileName] = useState("");
   const [focused, setFocused] = useState(false);
   const [typedExample, setTypedExample] = useState("");
   const { user } = useUser();
@@ -79,13 +76,8 @@ export default function Hero() {
           <p className={styles.subtitle}>Tell our AI where you&apos;re going and what you love. We&apos;ll create a personalized itinerary for you.</p>
           <form className={styles.card} onSubmit={(event) => { event.preventDefault(); planTrip(); }}>
             <label className={styles.promptLabel} htmlFor="dream-trip">Describe your dream trip... <span>(e.g. 7 days Bali trip, mountains, budget, activities)</span></label>
-            <textarea id="dream-trip" ref={promptRef} className={styles.prompt} aria-label="Describe your dream trip" placeholder={focused ? "Where would you like to go?" : typedExample} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} value={query} onChange={(event) => setQuery(event.target.value)} />
+            <textarea id="dream-trip" className={styles.prompt} aria-label="Describe your dream trip" placeholder={focused ? "Where would you like to go?" : typedExample} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} value={query} onChange={(event) => setQuery(event.target.value)} />
             <button type="submit" className={styles.plan}>Plan my trip <ArrowRight size={18} aria-hidden="true" /></button>
-            <input ref={fileInputRef} type="file" accept="image/*,.pdf" className="hidden" onChange={(event) => setFileName(event.target.files?.[0]?.name || "")} />
-            <button type="button" className={styles.upload} aria-label="Upload inspiration" onClick={() => fileInputRef.current?.click()}>
-              <Upload className="h-[18px] w-[18px] shrink-0" />
-            </button>
-            {fileName && <span className={styles.fileName} role="status" title={fileName}>{fileName} selected</span>}
           </form>
         </div>
       </div>
