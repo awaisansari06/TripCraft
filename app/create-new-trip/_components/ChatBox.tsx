@@ -4,7 +4,7 @@ import { Textarea } from '@/components/ui/textarea';
 import axios from 'axios';
 import { Send, ArrowLeft, MoreVertical, Trash2, Bot, Sparkles, Wand2, Loader, ArrowDown } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useEffectEvent, useState, useRef } from 'react';
 import UiRenderer, { type TripFormData } from './UiRenderer';
 import EditTripDialog from './EditTripDialog';
 import CreditDisplay, { type CreditInfo } from './CreditDisplay';
@@ -27,6 +27,8 @@ type Message = {
     ui?: string;
 }
 
+const getCurrentTime = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
 function ChatBox() {
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -43,35 +45,34 @@ function ChatBox() {
 
     // Convex Queries (enabled only if we have a tripId)
     // We use a ref or state to hold the 'active' tripId to separate from URL param
-    const [sessionId, setSessionId] = useState<string | null>(null);
+    const sessionId = tripIdParam;
 
     useEffect(() => {
-        if (tripIdParam) {
-            setSessionId(tripIdParam);
-            setTripDetailInfo(null);
-        } else {
+        if (!tripIdParam) {
             // Generate new Trip ID if none exists
             const newTripId = uuidv4();
-            setSessionId(newTripId);
-
-            // Clear existing state to prevent showing previous trip data
-            setTripData({});
-            setTripDetailInfo(null);
-
             // Update URL without reloading
             const newUrl = `/create-new-trip?tripId=${newTripId}` + (query ? '&query=' + encodeURIComponent(query) : '');
             router.replace(newUrl);
         }
-    }, [tripIdParam]);
+    }, [tripIdParam, query, router]);
 
     // Load data from DB
     const dbMessages = useQuery(api.chat.GetMessages, sessionId && userDetail ? { tripId: sessionId } : "skip");
     const dbTrip = useQuery(api.tripDetail.GetTrip, sessionId && userDetail ? { tripId: sessionId } : "skip");
 
-    const [messages, setMessages] = useState<Message[]>([]);
+    const [messages, setMessages] = useState<Message[]>(() => {
+        if (dbMessages?.length) return dbMessages as Message[];
+        if (dbTrip?.tripDetail && dbMessages?.length === 0) return [{
+            role: 'assistant',
+            content: 'Here is the plan for your trip to ' + (dbTrip.tripDetail.locationInfo?.name || 'your destination'),
+            ui: 'tripResult', timestamp: getCurrentTime(),
+        }];
+        return [];
+    });
     const [userInput, setUserInput] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
-    const [tripData, setTripData] = useState<TripFormData>({});
+    const [tripData, setTripData] = useState<TripFormData>(() => dbTrip?.tripDetail ?? {});
     const { setTripDetailInfo } = useTripDetail();
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [isFinal, setIsFinal] = useState(false);
@@ -80,25 +81,30 @@ function ChatBox() {
     const [deleting, setDeleting] = useState(false);
     const [actionError, setActionError] = useState('');
 
-    const { containerRef: messagesContainerRef, contentRef: conversationRef, following, showLatest, scrollToLatest } = useChatScroll();
+    const { containerRef: messagesContainerRef, contentRef: conversationRef, followLatest, showLatest, scrollToLatest } = useChatScroll();
     const initialized = useRef(false);
+    const [queryInitialized, setQueryInitialized] = useState(false);
     const pendingRequest = useRef<{ text: string; id: string } | null>(null);
     const sending = useRef(false);
 
-    // Sync Messages from DB
-    useEffect(() => {
-        // Only sync from DB if we haven't initialized from a query
-        // This prevents overwriting the user's first message from the landing page
-        if (dbMessages && !initialized.current) {
+    // Reconcile a new database snapshot before committing the render. This avoids
+    // an effect showing a stale conversation for a frame after data arrives.
+    const [previousMessages, setPreviousMessages] = useState(dbMessages);
+    if (dbMessages !== previousMessages) {
+        setPreviousMessages(dbMessages);
+        if (dbMessages && !queryInitialized) {
             setMessages(dbMessages as Message[]);
         }
-    }, [dbMessages]);
+    }
 
     // Sync Trip Data from DB
-    useEffect(() => {
+    const [previousTrip, setPreviousTrip] = useState(dbTrip);
+    const [previousLegacyMessages, setPreviousLegacyMessages] = useState(dbMessages);
+    if (dbTrip !== previousTrip || dbMessages !== previousLegacyMessages) {
+        setPreviousTrip(dbTrip);
+        setPreviousLegacyMessages(dbMessages);
         if (dbTrip && dbTrip.tripDetail) {
             setTripData(previous => ({ ...previous, ...dbTrip.tripDetail }));
-            setTripDetailInfo(dbTrip.tripDetail);
 
             // Fix for Legacy Trips: If we have trip data but NO messages in DB
             if (dbMessages !== undefined && dbMessages.length === 0) {
@@ -111,29 +117,13 @@ function ChatBox() {
                 setMessages([legacyMsg]);
             }
         }
-    }, [dbTrip, dbMessages]);
+    }
 
-    useEffect(() => {
-        if (query && sessionId && userDetail && dbMessages !== undefined && !initialized.current) {
-            initialized.current = true;
-            if (dbMessages.length === 0) void onSend(query);
-            router.replace('/create-new-trip?tripId=' + sessionId);
-        }
-    }, [query, sessionId, userDetail, dbMessages]);
-
-    useEffect(() => {
-        if (isFinal && userInput) {
-            onSend();
-        }
-    }, [isFinal, userInput]);
-
-    const getCurrentTime = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-    const onSend = async (msg?: string) => {
+    const onSend = useCallback(async (msg?: string, final = false) => {
         const textToUse = msg || userInput;
         if (!textToUse?.trim() || sending.current || !sessionId || !userDetail || deleting) return;
         sending.current = true;
-        following.current = true;
+        followLatest();
 
         setUserInput('');
         setLoading(true);
@@ -180,20 +170,20 @@ function ChatBox() {
             });
         }
 
-            const tripSpec = isFinal ? tripSpecification(tripData) : undefined;
-            const requestKey = JSON.stringify({ text: textToUse, isFinal, tripSpec });
+            const tripSpec = final ? tripSpecification(tripData) : undefined;
+            const requestKey = JSON.stringify({ text: textToUse, isFinal: final, tripSpec });
             if (pendingRequest.current?.text !== requestKey) {
                 pendingRequest.current = { text: requestKey, id: crypto.randomUUID() };
             }
             const result = await axios.post("/api/aimodel", {
                 messages: [...messages, { role: "user", content: textToUse }],
-                isFinal: isFinal,
+                isFinal: final,
                 tripSpec,
                 requestId: pendingRequest.current.id
             });
             if (result.data.credits) setCreditInfo(result.data.credits);
 
-            if (isFinal && result.data.trip_plan) {
+            if (final && result.data.trip_plan) {
                 // Handle Final Trip Plan
                 const tripPlan = result.data.trip_plan as TripInfo;
 
@@ -299,7 +289,7 @@ function ChatBox() {
 
         } catch (error) {
             console.error(error);
-            if (isFinal) setFailedGeneration(true);
+            if (final) setFailedGeneration(true);
 
             // Enhanced error handling with specific messages
             let errorMessage = error instanceof Error && error.message.startsWith('Your plan was generated') ? error.message : "Something went wrong. Please try again.";
@@ -349,7 +339,29 @@ function ChatBox() {
             setLoading(false);
             setIsFinal(false);
         }
-    }
+    }, [userInput, sessionId, userDetail, deleting, messages, tripData, saveMessage, createTripDetail, setTripDetailInfo, followLatest]);
+
+    useEffect(() => {
+        setTripDetailInfo(dbTrip?.tripDetail ?? null);
+    }, [dbTrip, setTripDetailInfo]);
+
+    // The URL/database readiness drives this event; edits to the composer must
+    // not replay the landing prompt. The event reads the latest send callback.
+    const sendLandingPrompt = useEffectEvent(() => {
+        if (query && sessionId && userDetail && dbMessages !== undefined && !initialized.current) {
+            initialized.current = true;
+            setQueryInitialized(true);
+            if (dbMessages.length === 0) void onSend(query);
+            router.replace('/create-new-trip?tripId=' + sessionId);
+        }
+    });
+
+    useEffect(() => {
+        // Allow the ready conversation to paint before starting the automatic
+        // landing request; cancel it if navigation/readiness changes first.
+        const timer = window.setTimeout(sendLandingPrompt, 0);
+        return () => window.clearTimeout(timer);
+    }, [query, sessionId, userDetail, dbMessages]);
 
     const handleUiSelect = (value: unknown) => {
         // Automatically send the selected value as a message
@@ -360,7 +372,7 @@ function ChatBox() {
         if (loading || sending.current) return;
         setFailedGeneration(false);
         setIsFinal(true);
-        setUserInput("Generate my full travel plan now");
+        void onSend("Generate my full travel plan now", true);
     }
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {

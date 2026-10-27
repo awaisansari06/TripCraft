@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { reserveRequest } from "@/lib/request-limits";
+import { readJsonBody } from "@/lib/request-body";
 
 const resourcePattern = /^places\/[a-zA-Z0-9_-]+\/photos\/[a-zA-Z0-9_-]+$/;
 const sign = (photo: string, expires: string, key: string) => createHmac("sha256", key).update(photo + ":" + expires).digest("hex");
@@ -9,8 +10,10 @@ const sign = (photo: string, expires: string, key: string) => createHmac("sha256
 export async function POST(request: NextRequest) {
   const user = await currentUser();
   if (!user) return NextResponse.json({ error: "Authentication required" }, { status: 401 });
-  let body;
-  try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 }); }
+  const parsedBody = await readJsonBody(request, 16 * 1024);
+  if (!parsedBody.ok) return NextResponse.json({ error: parsedBody.error }, { status: parsedBody.status });
+  const body = parsedBody.value && typeof parsedBody.value === "object" && !Array.isArray(parsedBody.value)
+    ? parsedBody.value as Record<string, unknown> : null;
   if (typeof body?.placeName !== "string" || !body.placeName.trim() || body.placeName.length > 300) {
     return NextResponse.json({ error: "Provide a place name of 1–300 characters." }, { status: 400 });
   }

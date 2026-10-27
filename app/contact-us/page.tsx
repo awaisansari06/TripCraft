@@ -14,6 +14,7 @@ import {
   Check,
 } from "lucide-react";
 import SiteFooter from "../_components/SiteFooter";
+import PageIntro from "../_components/PageIntro";
 
 const topics = [
   {
@@ -57,21 +58,11 @@ export default function Contact() {
     }
   };
   return (
-    <main className="tc-page" data-page-motion>
-      <section className="tc-page-hero">
-        <span className="tc-eyebrow">
-          <MessageSquare size={15} /> A little help along the way
-        </span>
-        <h1>
-          Better trips start with
-          <br />
-          <em>a conversation.</em>
-        </h1>
-        <p>
-          We’re here to help you plan better trips. Questions, feedback, or
-          ideas? Our team would love to hear from you.
-        </p>
-      </section>
+    <main className="tc-page tc-warm-page" data-page-motion>
+      <PageIntro icon={<MessageSquare size={16} aria-hidden="true" />} eyebrow="A little help along the way"
+        description="We’re here to help you plan better trips. Questions, feedback, or ideas? Our team would love to hear from you.">
+        Better trips start with<br />{" "}<em>a conversation.</em>
+      </PageIntro>
       <section
         className="tc-container tc-contact-topics"
         aria-label="Ways we can help"
@@ -152,6 +143,7 @@ export default function Contact() {
             <label htmlFor="contact-name">
               Your name
               <input
+                className="tc-field"
                 id="contact-name"
                 name="name"
                 autoComplete="name"
@@ -169,6 +161,7 @@ export default function Contact() {
             <label htmlFor="contact-email">
               Email address
               <input
+                className="tc-field"
                 id="contact-email"
                 name="email"
                 type="email"
@@ -187,6 +180,7 @@ export default function Contact() {
           <label htmlFor="contact-topic">
             How can we help?
             <select
+              className="tc-field"
               id="contact-topic"
               value={topic}
               onChange={(e) => {
@@ -202,6 +196,7 @@ export default function Contact() {
           <label htmlFor="contact-message">
             Your message
             <textarea
+              className="tc-field"
               id="contact-message"
               name="message"
               required

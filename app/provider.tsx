@@ -22,6 +22,7 @@ function AccountProvider({
 
   const createUser = useMutation(api.user.CreateNewUser);
   const [userDetail, setUserDetail] = useState<UserDetailType>(null);
+  const [accountError, setAccountError] = useState<Error | null>(null);
   const [tripDetailInfo, setTripDetailInfo] = useState<TripInfo | null>(null);
   const { user } = useUser();
   const { isAuthenticated } = useConvexAuth();
@@ -37,12 +38,18 @@ function AccountProvider({
         if (isSubscribed) {
           setUserDetail(result as UserDetailType);
         }
-      }).catch(error => console.error('Unable to initialize your account:', error));
+      }).catch(() => {
+        if (isSubscribed) setAccountError(new Error('Your account could not be loaded. Please try again.'));
+      });
     }
     return () => {
       isSubscribed = false;
     };
   }, [user, isAuthenticated, createUser]);
+
+  // Use the existing application error boundary instead of leaving account-
+  // dependent screens in an endless loading state after initialization fails.
+  if (accountError) throw accountError;
 
   return (
     <UserDetailContext.Provider value={{ userDetail, setUserDetail }}>

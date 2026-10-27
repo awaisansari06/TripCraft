@@ -1638,3 +1638,31 @@
   border: 1px solid transparent;
   box-shadow: none;
 }
+
+/* Shared tokens keep the homepage aligned with every other route. */
+.home, :global(.dark) .home {
+  --paper: var(--app-paper);
+  --ink: var(--app-ink);
+  --muted: var(--app-muted);
+  --orange: var(--app-accent);
+  --card: var(--app-surface);
+  --line: var(--app-line);
+  font-family: 'Geist', sans-serif;
+  background: var(--app-paper);
+}
+.home .templateCard, .home .destinationCard, .home .itinerary, .home .feature { border-color: var(--app-line); box-shadow: 0 8px 28px var(--app-shadow); }
+.home .feature, .home .itinerary, .home .sample { border-radius: 28px; }
+.home .newsletter button { background: var(--app-accent); color: var(--app-on-accent); border-radius: 999px; }
+/* The hero remains expressive; lower sections use the shared product system. */
+.container { width: min(var(--tc-container), calc(100% - 2 * var(--tc-gutter))); max-width: var(--tc-container); }
+.home h2 { font-weight: 600; font-size: var(--tc-section-size); letter-spacing: -.04em; }
+.home .templates, .home .features, .home .destinations, .home .how { padding-block: var(--tc-section-gap); }
+.home .feature, .home .itinerary { border-radius: var(--tc-radius-card); border: 1px solid var(--app-line); box-shadow: var(--tc-shadow); }
+.home .cta a { min-height: var(--tc-control-height); padding: 12px 22px; font-size: 14px; font-weight: 500; border: 1px solid transparent; background: var(--app-action); color: var(--app-on-action); box-shadow: var(--tc-shadow); }
+.home .cta a:hover { background: var(--app-action-hover); box-shadow: var(--tc-shadow-hover); }
+.home :is(.templateCard, .destinationCard, .feature, .itinerary)::before { display: none; }
+.home :is(.templateCard, .destinationCard, .feature, .itinerary):hover { box-shadow: var(--tc-shadow-hover); }
+.home [data-depth]:hover { transform: translateY(-2px); }
+.home .feature:hover .icon svg, .home .steps article:hover .stepTop svg { transform: none; }
+.home .feature h3, .home .steps h3 { font-weight: 600; }
+.home .itinerary .day { font-size: 14px; }

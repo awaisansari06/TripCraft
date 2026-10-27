@@ -11,10 +11,10 @@ export function PopularCityList() {
             <div className="max-w-7xl mx-auto px-6">
                 <div className="flex flex-col md:flex-row justify-between items-end mb-12">
                     <div className="text-center md:text-left">
-                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                        <h2 className="text-3xl font-bold text-foreground mb-2">
                             Popular destinations
                         </h2>
-                        <p className="text-gray-600 dark:text-gray-400">
+                        <p className="text-muted-foreground">
                             Handpicked places you can explore with one click
                         </p>
                     </div>

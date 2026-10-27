@@ -29,15 +29,15 @@ export default function GlobalError({
 
           {/* Text */}
           <div className="space-y-2">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-2xl font-bold text-foreground">
               Something went wrong
             </h1>
-            <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+            <p className="text-muted-foreground text-sm leading-relaxed">
               An unexpected error occurred. Don&apos;t worry — your trips are safe.
               Try refreshing the page or going back home.
             </p>
             {error.digest && (
-              <p className="text-xs text-gray-400 font-mono bg-gray-50 dark:bg-gray-900 px-3 py-1.5 rounded-lg inline-block">
+              <p className="text-xs text-gray-400 font-mono bg-muted px-3 py-1.5 rounded-lg inline-block">
                 Error ID: {error.digest}
               </p>
             )}

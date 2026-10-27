@@ -1,14 +1,15 @@
+const base=process.env.APP_BASE_URL||'http://localhost:3107';
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 (async()=>{
  const browser=await chromium.launch({channel:'msedge',headless:true});
- const results=[];
+ const results=[];fs.mkdirSync('artifacts/export-auth',{recursive:true});
  for(const theme of ['light','dark'])for(const width of [320,390,768,1024,1440])for(const mode of ['sign-in','sign-up']){
   const context=await browser.newContext({viewport:{width,height:900},colorScheme:theme,reducedMotion:'reduce'});
   await context.addInitScript(theme=>localStorage.setItem('theme',theme),theme);
   const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('http://localhost:3107/'+mode+'?redirect_url='+encodeURIComponent('/create-new-trip?query=Japan'),{waitUntil:'domcontentloaded'});
+  await page.goto(base+'/'+mode+'?redirect_url='+encodeURIComponent('/create-new-trip?query=Japan'),{waitUntil:'domcontentloaded'});
   const email=page.getByLabel('Email address',{exact:true});
   await email.waitFor({timeout:60000});
   await page.evaluate(()=>document.fonts.ready);
@@ -27,7 +28,7 @@ const fs=require('node:fs');
   assert.equal(await email.inputValue(),'not-an-email');
   await email.fill('');
   const crosslink=page.locator('.tc-auth-switch a');
-  assert.equal(new URL(await crosslink.getAttribute('href'),'http://localhost:3107').searchParams.get('redirect_url'),'/create-new-trip?query=Japan');
+  assert.equal(new URL(await crosslink.getAttribute('href'),base).searchParams.get('redirect_url'),'/create-new-trip?query=Japan');
   await page.screenshot({path:'artifacts/export-auth/'+mode+'-'+theme+'-'+width+'.png',fullPage:true});
   assert.deepEqual(errors,[]);
   results.push({theme,width,mode,liveClerk:true,fields:true,returnPath:true,errors});
@@ -35,14 +36,13 @@ const fs=require('node:fs');
   await context.close();
  }
  const page=await browser.newPage();
- await page.goto('http://localhost:3107/sign-in?redirect_url='+encodeURIComponent('http://localhost:3107/create-new-trip?query=Goa'));
+ await page.goto(base+'/sign-in?redirect_url='+encodeURIComponent(base+'/create-new-trip?query=Goa'));
  await page.locator('.tc-auth-switch a[href*="redirect_url"]').waitFor();
- assert.equal(new URL(await page.locator('.tc-auth-switch a').getAttribute('href'),'http://localhost:3107').searchParams.get('redirect_url'),'/create-new-trip?query=Goa');
- await page.goto('http://localhost:3107/sign-in?redirect_url='+encodeURIComponent('https://example.com/untrusted'));
+ assert.equal(new URL(await page.locator('.tc-auth-switch a').getAttribute('href'),base).searchParams.get('redirect_url'),'/create-new-trip?query=Goa');
+ await page.goto(base+'/sign-in?redirect_url='+encodeURIComponent('https://example.com/untrusted'));
  await page.locator('.tc-auth-switch a').waitFor();
  assert.equal(await page.locator('.tc-auth-switch a').getAttribute('href'),'/sign-up');
  await page.close();await browser.close();
  fs.writeFileSync('artifacts/export-auth/auth-results.json',JSON.stringify(results,null,2));
  console.log('Real Clerk sign-in/sign-up passed in both themes at five widths; safe trip continuation links verified. No account forms were submitted.');
 })().catch(e=>{console.error(e);process.exit(1)});
-

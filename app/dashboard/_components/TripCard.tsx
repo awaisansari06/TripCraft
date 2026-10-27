@@ -12,11 +12,11 @@ const destinationPhotos: [RegExp, string][] = [
   [/goa|beach/i, "/light/02-beach-weekend-light.png"],
   [/paris|france/i, "/light/05-paris-light.png"],
   [/new york/i, "/light/06-new-york-light.png"],
+  [/capri|amalfi/i, "/light/12-capri-itinerary-light.png"],
   [/rome|italy/i, "/light/08-rome-light.png"],
   [/dubai|uae/i, "/light/09-dubai-light.png"],
   [/agra|taj mahal/i, "/light/10-agra-light.png"],
   [/naples/i, "/light/11-naples-itinerary-light.png"],
-  [/capri|amalfi/i, "/light/12-capri-itinerary-light.png"],
 ];
 
 const validTripImage = (value: unknown): value is string =>
@@ -61,7 +61,10 @@ export default function TripCard({ trip }: { trip: Doc<"TripDetailTable"> }) {
           </div>
         </div>
         <div className="dashboard-trip-footer">
-          <span>{details?.group_size || "Your itinerary"}</span>
+          <div>
+            <span>{details?.group_size || "Your itinerary"}</span>
+            <time dateTime={new Date(trip._creationTime).toISOString()}>{new Intl.DateTimeFormat("en", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(trip._creationTime)}</time>
+          </div>
           <strong>View trip <ArrowUpRight size={16} aria-hidden="true" /></strong>
         </div>
       </div>

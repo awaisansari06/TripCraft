@@ -45,8 +45,10 @@ export function HomeHeader() {
       {label}
     </Link>
   ));
+
+
   return (
-    <header className="tc-header" data-scrolled={scrolled}>
+    <header className="tc-header" data-scrolled={scrolled} data-landing={pathname === "/"}>
       <a className="tc-skip" href="#main-content">
         Skip to content
       </a>
@@ -59,6 +61,7 @@ export function HomeHeader() {
           <button
             className="tc-icon-button"
             aria-label="Toggle light and dark theme"
+            aria-pressed={hydrated ? resolvedTheme === "dark" : false}
             onClick={() =>
               setTheme(resolvedTheme === "dark" ? "light" : "dark")
             }

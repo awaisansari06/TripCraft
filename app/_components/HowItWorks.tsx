@@ -27,8 +27,8 @@ function HowItWorks() {
         <section className="py-20 bg-white/60 backdrop-blur-sm dark:bg-black/20">
             <div className="max-w-7xl mx-auto px-6">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">How it Works</h2>
-                    <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                    <h2 className="text-3xl font-bold text-foreground mb-4">How it Works</h2>
+                    <p className="text-muted-foreground max-w-2xl mx-auto">
                         Planning your dream trip has never been easier. Just 3 simple steps to get started.
                     </p>
                 </div>
@@ -53,7 +53,7 @@ function HowItWorks() {
                                     {step.icon}
                                 </div>
                                 <h3 className="text-xl font-bold mb-3">{step.title}</h3>
-                                <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
+                                <p className="text-muted-foreground leading-relaxed">
                                     {step.desc}
                                 </p>
                             </div>

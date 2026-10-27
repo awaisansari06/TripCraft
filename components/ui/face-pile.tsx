@@ -34,7 +34,7 @@ export default function FacePile() {
                     ))}
                 </TooltipProvider>
             </div>
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Trusted by travelers</p>
+            <p className="text-sm font-medium text-muted-foreground">Trusted by travelers</p>
         </div>
     );
 }

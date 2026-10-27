@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
     Dialog,
     DialogContent,
@@ -24,6 +24,8 @@ interface GlassModalProps {
      * Optional title displayed in the header
      */
     title?: React.ReactNode;
+    /** Screen-reader title when the visual heading is part of the content. */
+    accessibleTitle?: string;
 
     /**
      * Optional description text for accessibility and context
@@ -43,13 +45,13 @@ interface GlassModalProps {
 
 /**
  * GlassModal
- * A reusable modal component with glassmorphism styling.
+ * A reusable theme-aware modal surface.
  * 
  * Features:
  * - Centered layout
  * - Rounded 2xl corners
- * - Backdrop blur
- * - Semi-transparent background
+ * - Shared theme colors
+ * - Opaque, readable surface
  * - Scroll locking (handled by Radix UI/Shadcn)
  * - Accessibility (ARIA)
  */
@@ -57,10 +59,12 @@ export function GlassModal({
     isOpen,
     onClose,
     title,
+    accessibleTitle = "Details",
     description,
     children,
     className,
 }: GlassModalProps) {
+    const returnFocus = useRef<HTMLElement | null>(null);
     const handleOpenChange = (open: boolean) => {
         if (!open) {
             onClose();
@@ -70,15 +74,25 @@ export function GlassModal({
     return (
         <Dialog open={isOpen} onOpenChange={handleOpenChange}>
             <DialogContent
+                onOpenAutoFocus={() => {
+                    returnFocus.current = document.activeElement instanceof HTMLElement
+                        ? document.activeElement : null;
+                }}
+                onCloseAutoFocus={(event) => {
+                    if (returnFocus.current?.isConnected) {
+                        event.preventDefault();
+                        returnFocus.current.focus({ preventScroll: true });
+                    }
+                }}
                 className={cn(
                     // Layout & Shape
                     "sm:max-w-lg w-[95%] rounded-2xl p-0 overflow-hidden",
 
                     // Glassmorphism Visuals
-                    "bg-white/80 dark:bg-zinc-950/80", // Semi-transparent background
-                    "backdrop-blur-md", // Content blur
-                    "border-white/20 dark:border-zinc-800/50", // Subtle border
-                    "shadow-2xl shadow-black/10", // Soft shadow
+                    "bg-card text-card-foreground", // Semi-transparent background
+                    "", // Content blur
+                    "border-border", // Subtle border
+                    "shadow-xl", // Soft shadow
 
                     // Animation (Derived from shadcn default, enhanced here if needed)
                     "data-[state=open]:animate-in data-[state=closed]:animate-out",
@@ -93,13 +107,16 @@ export function GlassModal({
                     <DialogHeader className="px-6 pt-6 pb-2">
                         {title && <DialogTitle className="text-xl font-semibold">{title}</DialogTitle>}
                         {description && (
-                            <DialogDescription className="text-gray-500 dark:text-gray-400">
+                            <DialogDescription className="text-muted-foreground">
                                 {description}
                             </DialogDescription>
                         )}
                     </DialogHeader>
                 ) : (
-                     <DialogTitle className="sr-only">Dialog</DialogTitle>
+                    <>
+                        <DialogTitle className="sr-only">{accessibleTitle}</DialogTitle>
+                        <DialogDescription className="sr-only">View details and available actions.</DialogDescription>
+                    </>
                 )}
 
                 <div className={cn("relative", (title || description) ? "px-6 pb-6" : "")}>

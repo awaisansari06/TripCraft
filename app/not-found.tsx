@@ -20,7 +20,7 @@ export default function NotFound() {
               <MapPin className="w-12 h-12 text-orange-500" />
             </div>
             {/* Compass floating */}
-            <div className="absolute -top-2 -right-2 w-10 h-10 rounded-full bg-white dark:bg-zinc-900 shadow-lg flex items-center justify-center border border-gray-100 dark:border-zinc-800">
+            <div className="absolute -top-2 -right-2 w-10 h-10 rounded-full bg-card shadow-lg flex items-center justify-center border border-border">
               <Compass className="w-5 h-5 text-purple-500 animate-spin" style={{ animationDuration: "4s" }} />
             </div>
           </div>
@@ -31,10 +31,10 @@ export default function NotFound() {
           <p className="text-sm font-semibold text-orange-500 tracking-widest uppercase">
             404 — Lost in Transit
           </p>
-          <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+          <h1 className="text-4xl font-extrabold text-foreground tracking-tight">
             Destination not found
           </h1>
-          <p className="text-gray-500 dark:text-gray-400 text-base leading-relaxed max-w-sm mx-auto">
+          <p className="text-muted-foreground text-base leading-relaxed max-w-sm mx-auto">
             Looks like this route is off the map. Head back home and we&apos;ll
             help you plan a real adventure.
           </p>

@@ -64,7 +64,7 @@ const fs = require('node:fs');
             assert.ok(await page.locator('.chat-history').evaluate(el=>el.scrollTop<4),'Reader position survives panel switching');
             const menu=page.getByRole('button',{name:'Open navigation menu'});
             await menu.click(); await page.getByRole('dialog').waitFor(); await page.keyboard.press('Escape');
-            assert.equal(await menu.evaluate(el=>el===document.activeElement),true);
+            await page.waitForFunction(()=>document.activeElement?.getAttribute('aria-label')==='Open navigation menu');
             await input.fill('Draft survives resizing');
             await page.setViewportSize({width:1280,height:900});
             await page.waitForTimeout(150);

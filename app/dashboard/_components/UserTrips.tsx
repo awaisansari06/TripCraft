@@ -1,4 +1,5 @@
 "use client";
+import TripCardSkeleton from "./TripCardSkeleton";
 
 import { useContext, useMemo, useState } from "react";
 import { useQuery } from "convex/react";
@@ -39,7 +40,7 @@ export default function UserTrips() {
 
       {trips === undefined ? (
         <div className="dashboard-card-grid" role="status" aria-label="Loading your trips">
-          {[0, 1, 2].map((item) => <div className="dashboard-skeleton" key={item} />)}
+          {[0, 1, 2].map((item) => <TripCardSkeleton key={item} />)}
         </div>
       ) : trips.length === 0 ? (
         <EmptyState />
@@ -49,7 +50,7 @@ export default function UserTrips() {
             <label className="dashboard-search">
               <Search size={18} aria-hidden="true" />
               <span className="sr-only">Search trips by destination</span>
-              <input value={searchQuery} onChange={(event) => { setSearchQuery(event.target.value); setVisibleCount(6); }} placeholder="Search destinations" />
+              <input className="tc-field" type="search" value={searchQuery} onChange={(event) => { setSearchQuery(event.target.value); setVisibleCount(6); }} placeholder="Search destinations" />
             </label>
             <DropdownMenu>
               <DropdownMenuTrigger className="dashboard-sort" aria-label="Sort trips">

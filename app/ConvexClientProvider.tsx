@@ -5,7 +5,8 @@ import { ConvexProviderWithClerk } from 'convex/react-clerk';
 import { useAuth } from '@clerk/nextjs';
 import React, { ReactNode } from 'react';
 
-const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || "https://placeholder.convex.cloud";
+const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
+if (!convexUrl) throw new Error("NEXT_PUBLIC_CONVEX_URL must be configured before building TripCraft.");
 const convex = new ConvexReactClient(convexUrl);
 
 export function ConvexClientProvider({ children }: { children: ReactNode }) {

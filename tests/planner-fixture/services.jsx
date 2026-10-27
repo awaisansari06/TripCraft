@@ -11,6 +11,7 @@ export function useQuery(name, args) {
     if (args === 'skip') return undefined;
     const path = String(name[Symbol.for('functionName')] || '');
     if (path.includes('GetSavedPlace')) return window.PLANNER_FIXTURE.savedPlace || null;
+    if (path.includes('GetTrip') && !path.includes('GetMessages')) return window.PLANNER_FIXTURE.legacyTrip || null;
     return path.includes('GetMessages') ? window.PLANNER_FIXTURE.messages : null;
 }
 const mutations = new Map();

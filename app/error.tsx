@@ -26,14 +26,14 @@ export default function Error({
         </div>
 
         <div className="space-y-2">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h2 className="text-2xl font-bold text-foreground">
             Oops, something broke
           </h2>
-          <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+          <p className="text-muted-foreground text-sm leading-relaxed">
             We ran into an issue loading this page. Your trips and data are safe.
           </p>
           {error.digest && (
-            <p className="text-xs text-gray-400 font-mono bg-gray-50 dark:bg-gray-900 px-3 py-1.5 rounded-lg inline-block">
+            <p className="text-xs text-gray-400 font-mono bg-muted px-3 py-1.5 rounded-lg inline-block">
               Error ID: {error.digest}
             </p>
           )}
@@ -42,7 +42,7 @@ export default function Error({
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Button
             onClick={reset}
-            className="gap-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white hover:from-orange-600 hover:to-pink-700 border-none"
+            className="gap-2"
           >
             <RefreshCcw className="w-4 h-4" />
             Try Again
