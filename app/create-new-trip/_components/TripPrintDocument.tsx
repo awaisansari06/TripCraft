@@ -3,35 +3,37 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import type { TripInfo } from './types';
+import { travelArtworkSrc, travelArtworkAlt } from '@/lib/travel-artwork';
 
 function usablePhoto(value?: string) {
     if (!value || /example\.com|placeholder|unsplash\.com\/random/i.test(value)) return undefined;
     if (value.startsWith('/') && !value.startsWith('//')) return value;
     try { const url = new URL(value); return url.protocol === 'https:' ? value : undefined; } catch { return undefined; }
 }
-function TravelPhoto({ src, className = '' }: { src?: string; className?: string }) {
+function TravelPhoto({ src, alt, className = '' }: { src?: string; alt: string; className?: string }) {
     const [failed, setFailed] = useState(false);
     const photo = usablePhoto(src);
     if (!photo || failed) return null;
-    return <div className={'te-photo ' + className}><Image src={photo} alt="" fill unoptimized={!photo.startsWith('/')} quality={75} loading="eager" sizes="700px" onError={() => setFailed(true)} /></div>;
+    return <div className={'te-photo ' + className}><Image src={photo} alt={alt} fill unoptimized={!photo.startsWith('/')} quality={75} loading="eager" sizes="700px" onError={() => setFailed(true)} /></div>;
 }
 function coverPhoto(destination: string) {
     const places: [RegExp, string][] = [
         [/paris|france/i, '05-paris'], [/new york/i, '06-new-york'], [/tokyo|japan/i, '07-tokyo'],
         [/rome/i, '08-rome'], [/dubai/i, '09-dubai'], [/agra/i, '10-agra'],
-        [/amalfi|naples|capri/i, '01-amalfi-hero'], [/goa/i, '02-beach-weekend'],
+        [/amalfi|positano/i, '01-amalfi-hero'], [/naples/i, '11-naples-itinerary'], [/capri/i, '12-capri-itinerary'], [/goa/i, '02-beach-weekend'],
     ];
     const match = places.find(([pattern]) => pattern.test(destination));
-    return match ? '/light/' + match[1] + '-light.png' : undefined;
+    return match ? { src: travelArtworkSrc(match[1]), alt: travelArtworkAlt(match[1]) } : undefined;
 }
 export default function TripPrintDocument({ trip, includePhotos = true }: { trip: TripInfo; includePhotos?: boolean }) {
     const hotels = trip.hotels || [];
     const days = trip.itinerary || [];
+    const cover = coverPhoto(trip.destination || '');
     return <article className="trip-export-document" aria-label="Printable trip itinerary">
         <section className="te-cover">
             <div className="te-brand"><Image src="/brand/tripcraft-symbol.png" width={30} height={30} alt="" unoptimized /><strong>TripCraft</strong><span>Your personal travel guide</span></div>
             <div className="te-cover-heading"><p className="te-eyebrow">A new chapter, thoughtfully planned</p><h1>{trip.destination || 'Your next adventure'}</h1><p className="te-origin">{trip.origin ? 'From ' + trip.origin : 'Your trip, at a glance'}</p></div>
-            {includePhotos && <TravelPhoto src={coverPhoto(trip.destination || '')} className="te-cover-photo" />}
+            {includePhotos && cover && <TravelPhoto src={cover.src} alt={cover.alt} className="te-cover-photo" />}
             <dl className="te-facts">
                 <div><dt>Duration</dt><dd>{trip.duration || 'Not specified'}</dd></div>
                 <div><dt>Travelers</dt><dd>{trip.group_size || 'Not specified'}</dd></div>
@@ -44,7 +46,7 @@ export default function TripPrintDocument({ trip, includePhotos = true }: { trip
         {hotels.length > 0 && <section className="te-hotels">
             <div className="te-section-heading"><p className="te-eyebrow">Rest, recharge, repeat</p><h2>Places to stay</h2><p>Your hotel recommendations, together in one place.</p></div>
             <div className="te-hotel-grid">{hotels.map((hotel, index) => <article className="te-hotel" key={hotel.hotel_name + index}>
-                {includePhotos && <TravelPhoto src={hotel.hotel_image_url} />}
+                {includePhotos && <TravelPhoto src={hotel.hotel_image_url} alt={hotel.hotel_name || 'Recommended hotel'} />}
                 <div className="te-hotel-body"><h3>{hotel.hotel_name}</h3>{hotel.hotel_address && <p className="te-address">{hotel.hotel_address}</p>}
                     {hotel.description && <p>{hotel.description}</p>}
                     <dl className="te-hotel-facts">
@@ -68,7 +70,7 @@ export default function TripPrintDocument({ trip, includePhotos = true }: { trip
                         {activity.time_travel_each_location && <div><dt>Travel time</dt><dd>{activity.time_travel_each_location}</dd></div>}
                     </dl>
                 </div>
-                {includePhotos && <TravelPhoto src={activity.place_image_url} />}
+                {includePhotos && <TravelPhoto src={activity.place_image_url} alt={activity.place_name || 'Recommended place to visit'} />}
             </article>)}</div>
             {!day.activities?.length && <p className="te-empty-day">No activities have been added to this day yet.</p>}
         </section>)}

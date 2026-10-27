@@ -3,7 +3,7 @@
 import { Suspense, useSyncExternalStore } from 'react';
 import { SignIn, SignUp } from '@clerk/nextjs';
 import { useSearchParams } from 'next/navigation';
-import Image from 'next/image';
+import TravelArtwork from '@/components/TravelArtwork';
 import Link from 'next/link';
 import { ArrowUpRight, Bookmark, MapPinned, Route } from 'lucide-react';
 import './auth.css';
@@ -68,7 +68,7 @@ export default function AuthScreen({ mode }: { mode: 'sign-in' | 'sign-up' }) {
                 <p className="tc-auth-story-title">{mode === 'sign-in' ? 'Your next chapter is waiting.' : 'Good trips start here.'}</p>
                 <p className="tc-auth-story-copy">{mode === 'sign-in' ? 'Come back to your saved places, thoughtful itineraries, and the trips you’re still dreaming about.' : 'Turn a travel idea into a trip that feels like you. Save your plans and pick up wherever you left off.'}</p>
                 <div className="tc-auth-photo">
-                    <Image src="/light/12-capri-itinerary-light.png" alt="Sunlit coastline and clear Mediterranean water" fill priority sizes="(max-width: 900px) 0px, 45vw" />
+                    <TravelArtwork asset="12-capri-itinerary" priority sizes="(max-width: 900px) 0px, 45vw" />
                     <span>Make room for your next adventure.</span>
                 </div>
                 <ul className="tc-auth-benefits">

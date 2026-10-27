@@ -22,13 +22,12 @@ const sizes=process.argv.includes('--interactions-only')?[]:[[375,812],[390,844]
     const input=document.querySelector('#dream-trip');
     const card=input.closest('form');
     const box=el=>{const r=el.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height,bottom:r.bottom,right:r.right}};
-    return {overflow:document.documentElement.scrollWidth>innerWidth,card:box(card),input:box(input),cta:box(card.querySelector('[type=submit]')),upload:box(card.querySelector('[aria-label="Upload inspiration"]')),videos:[...document.querySelectorAll('video')].map(v=>({box:box(v),paused:v.paused,time:v.currentTime})),inputScroll:input.scrollHeight,inputHeight:input.clientHeight,theme:document.documentElement.className};
+    return {overflow:document.documentElement.scrollWidth>innerWidth,card:box(card),input:box(input),cta:box(card.querySelector('[type=submit]')),videos:[...document.querySelectorAll('video')].map(v=>({box:box(v),paused:v.paused,time:v.currentTime})),inputScroll:input.scrollHeight,inputHeight:input.clientHeight,theme:document.documentElement.className};
    });
    assert.equal(info.overflow,false,`${theme} ${width}: horizontal overflow`);
    assert.ok(info.card.x>=0&&info.card.right<=width,`${width}: card outside viewport`);
    assert.ok(info.input.bottom<=info.cta.y,`${width}: input overlaps CTA`);
-   assert.ok(info.upload.right<info.cta.x,`${width}: controls overlap`);
-   assert.ok(info.cta.h>=44&&info.upload.h>=44);
+   assert.ok(info.cta.h>=44);
    assert.deepEqual(info.videos[0].box,info.videos[1].box,'Scene grades must align');
    assert.ok(info.videos.every(v=>v.paused&&v.time===0),'Reduced motion must freeze both grades');
    assert.ok(info.inputScroll<=info.inputHeight+1,`${width}: example clipped`);
@@ -61,15 +60,13 @@ const sizes=process.argv.includes('--interactions-only')?[]:[[375,812],[390,844]
  await input.fill('A quiet week in Kyoto with food and scenic hikes');
  await page.getByRole('button',{name:'Toggle light and dark theme'}).click();
  assert.equal(await input.inputValue(),'A quiet week in Kyoto with food and scenic hikes');
- const [chooser]=await Promise.all([page.waitForEvent('filechooser'),page.getByRole('button',{name:'Upload inspiration'}).click()]);
- await chooser.setFiles({name:'inspiration.webp',mimeType:'image/webp',buffer:fs.readFileSync('public/hero/day-poster.webp')});
- await page.getByRole('status').filter({hasText:'inspiration.webp selected'}).waitFor();
+ assert.equal(await page.locator('input[type=file]').count(),0);
+ assert.equal(await page.getByRole('button',{name:'Upload inspiration'}).count(),0);
  await page.reload({waitUntil:'domcontentloaded'});
  assert.ok(await page.locator('html').evaluate(el=>el.classList.contains('light')),'Theme preference did not persist');
- results.push({transition:true,intermediateOpacity:mid,playback,inputPreserved:true,attachmentSelection:true,persistence:true});
+ results.push({transition:true,intermediateOpacity:mid,playback,inputPreserved:true,uploadRemoved:true,persistence:true});
  const report=process.argv.includes('--interactions-only')?'interaction-verification.json':'verification.json';
  fs.writeFileSync(`${output}/${report}`,JSON.stringify(results,null,2));
  await browser.close();
- console.log('Responsive, transition, synchronized playback, reduced motion, input, upload and persistence checks passed.');
+ console.log('Responsive, transition, synchronized playback, reduced motion, input and persistence checks passed.');
 })().catch(e=>{console.error(e);process.exit(1)});
-

@@ -1,0 +1,50 @@
+{
+  "01-amalfi-hero": {
+    "filename": "amalfi-coast-positano",
+    "alt": "Vintage illustration of Positano's hillside houses, tiled church dome and boats on the Amalfi Coast."
+  },
+  "02-beach-weekend": {
+    "filename": "goa-palm-beach",
+    "alt": "Vintage illustration of a palm-lined Goa beach with gentle waves, coastal rocks and a distant headland."
+  },
+  "03-food-tour": {
+    "filename": "italian-pasta-food-tour",
+    "alt": "Vintage illustration of tomato and basil tagliatelle on a ceramic plate overlooking an Italian coastal village."
+  },
+  "04-mountain-escape": {
+    "filename": "alpine-mountain-lake",
+    "alt": "Vintage illustration of jagged alpine peaks, a mountain lake and a winding trail through pine-covered hills."
+  },
+  "05-paris": {
+    "filename": "paris-eiffel-tower-seine",
+    "alt": "Vintage illustration of the Eiffel Tower, a stone bridge and boats on the River Seine in Paris."
+  },
+  "06-new-york": {
+    "filename": "new-york-brooklyn-bridge",
+    "alt": "Vintage illustration of Brooklyn Bridge and the Manhattan skyline across New York's East River."
+  },
+  "07-tokyo": {
+    "filename": "tokyo-pagoda-cherry-blossoms",
+    "alt": "Vintage illustration of a five-tier Japanese pagoda and temple roofs framed by cherry blossoms in Tokyo."
+  },
+  "08-rome": {
+    "filename": "rome-saint-peters-tiber",
+    "alt": "Vintage illustration of St Peter's Basilica, a stone bridge and umbrella pines along Rome's River Tiber."
+  },
+  "09-dubai": {
+    "filename": "dubai-burj-khalifa",
+    "alt": "Vintage illustration of the Burj Khalifa and Dubai's skyline reflected in a calm waterfront pool."
+  },
+  "10-agra": {
+    "filename": "agra-taj-mahal",
+    "alt": "Vintage illustration of the Taj Mahal in Agra with its minarets, cypress gardens and reflecting pool."
+  },
+  "11-naples-itinerary": {
+    "filename": "naples-waterfront-vesuvius",
+    "alt": "Vintage illustration of Naples' waterfront promenade, Castel dell'Ovo and Mount Vesuvius across the bay."
+  },
+  "12-capri-itinerary": {
+    "filename": "capri-faraglioni-sea-stacks",
+    "alt": "Vintage illustration of Capri's Faraglioni sea stacks, a small boat and a cliffside garden."
+  }
+}

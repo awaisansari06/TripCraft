@@ -21,17 +21,16 @@ import s from "./home.module.css";
 import { useHomepageMotion } from "./_components/useHomepageMotion";
 import SiteFooter from "./_components/SiteFooter";
 import Hero from "@/components/Hero";
+import { travelArtworkSrc, travelArtworkAlt } from "@/lib/travel-artwork";
 
 const MotionLink = motion.create(Link);
 
 function Photo({
   asset,
-  alt = "",
   className = "",
   priority = false,
 }: {
   asset: string;
-  alt?: string;
   className?: string;
   priority?: boolean;
 }) {
@@ -39,14 +38,14 @@ function Photo({
   return (
     <span className={`${s.photo} ${className}`}>
       <Image
-        src={failed.light ? '/image-fallback.svg' : `/light/${asset}-light.png`}
-        alt={alt} fill sizes="(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 40vw"
+        src={failed.light ? '/image-fallback.svg' : travelArtworkSrc(asset)}
+        alt={travelArtworkAlt(asset)} fill sizes="(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 40vw"
         priority={priority} loading={priority ? undefined : "eager"} className={s.lightPhoto}
         onError={() => setFailed(previous => ({ ...previous, light: true }))}
       />
       <Image
-        src={failed.dark ? '/image-fallback.svg' : `/dark/${asset}-dark.png`}
-        alt={alt} fill sizes="(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 40vw"
+        src={failed.dark ? '/image-fallback.svg' : travelArtworkSrc(asset, 'dark')}
+        alt={travelArtworkAlt(asset)} fill sizes="(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 40vw"
         priority={priority} loading={priority ? undefined : "eager"} className={s.darkPhoto}
         onError={() => setFailed(previous => ({ ...previous, dark: true }))}
       />
@@ -116,7 +115,7 @@ export default function Home() {
               whileTap={{ scale: 0.98 }}
               transition={{ duration: .2, ease: "easeOut" }}
             >
-              <Photo asset={asset} alt={title} />
+              <Photo asset={asset} />
               <div>
                 <h3>{title}</h3>
                 <span>
@@ -318,7 +317,6 @@ export default function Home() {
       <section className={s.cta} data-reveal>
         <Photo
           asset="12-capri-itinerary"
-          alt="The coast and blue waters of Capri"
         />
         <div>
           <h2>
@@ -390,7 +388,7 @@ function DestinationCard({ asset, title, stagger }: { asset: string; title: stri
       whileTap={{ scale: 0.98 }}
       transition={{ duration: .2, ease: "easeOut" }}
     >
-      <Photo asset={asset} alt={title} />
+      <Photo asset={asset} />
       <h3>{title} <ArrowRight aria-hidden="true" /></h3>
     </MotionLink>
   );

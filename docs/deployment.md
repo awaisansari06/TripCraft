@@ -43,7 +43,7 @@ npm start -- --port 3000
 
 `verify` runs lint, TypeScript, isolated API/database-policy tests and the actual production compiler. Production environment checking intentionally rejects development Clerk keys and missing/local/example `SITE_URL`. A passing build alone does not certify external service configuration.
 
-Use the host's Next.js integration, install with `npm ci`, and build with `npm run build`. For a self-managed Node host, run `npm start` behind an HTTPS reverse proxy with process supervision. Serve `public/` and `/_next/` assets without requiring login. `proxy.ts` handles Clerk route protection; preserve it and Next's generated server output. Do not deploy only the static directory.
+Use the host's Next.js integration, install with `npm ci`, and build with `npm run build:production`. This release command checks production configuration before compilation and intentionally rejects development Clerk keys or a missing production origin. For a self-managed Node host, run `npm start` behind an HTTPS reverse proxy with process supervision. Serve `public/` and `/_next/` assets without requiring login. `proxy.ts` handles Clerk route protection; preserve it and Next's generated server output. Do not deploy only the static directory.
 
 The six local hero assets must remain available at `/hero/`; MP4/WebM variants share aligned geometry and synchronized playback. The day/night assets and animation CSS are part of the approved design.
 
@@ -58,11 +58,11 @@ No schema migration or data reset was introduced by this audit. Deploy the check
 3. Verify anonymous dashboard/planner access redirects to authentication, and anonymous protected APIs return a safe 401.
 4. With an approved test account, verify session refresh, profile initialization, own-trip listing, saving/reopening a newly created test trip, credit accounting and permitted edit/delete actions. Use dedicated test data, never another person's trips.
 5. Confirm Clerk billing plans and checkout navigation without completing a real purchase. Check Maps/Places and AI generation within the agreed test budget.
-6. Review both themes and mobile/laptop layouts; verify theme persistence, two clouds, upload selection, typewriter and the synchronized day/night transition.
+6. Review both themes and mobile/laptop layouts; verify theme persistence, two clouds, text input, typewriter, synchronized day/night transition and all 24 theme-paired travel illustrations.
 7. Confirm `/robots.txt`, `/sitemap.xml` and canonical/social URLs contain the actual production origin and exclude private routes.
 8. Monitor generic API error rates, slow upstream calls and account initialization failures without logging credentials, prompts or personal records.
 
-The current Contact page prepares/copies a message draft; it does not send mail. Newsletter enrollment is explicitly coming soon. Hero attachments currently support selection feedback, not document ingestion. These are existing product limitations, not services added by the audit. Do not advertise delivery, enrollment or ingestion until their service workflows exist and are tested.
+The current Contact page prepares/copies a message draft; it does not send mail. Newsletter enrollment is explicitly coming soon. The hero chatbox is text-only; upload selection has been removed. Do not advertise delivery, enrollment or ingestion until their service workflows exist and are tested. The generated travel collection and its filename/alt catalog are documented in [travel-illustrations.md](travel-illustrations.md).
 
 ## Rollback
 

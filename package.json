@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:production": "npm run check:env -- --production && next build",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",

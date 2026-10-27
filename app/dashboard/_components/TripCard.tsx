@@ -6,17 +6,19 @@ import Image from "next/image";
 import { ArrowUpRight, Clock } from "lucide-react";
 import type { Doc } from "@/convex/_generated/dataModel";
 import type { TripInfo } from "@/app/create-new-trip/_components/types";
+import TravelArtwork from "@/components/TravelArtwork";
+import { travelArtworkSrc } from "@/lib/travel-artwork";
 
 const destinationPhotos: [RegExp, string][] = [
-  [/japan|tokyo|kyoto|osaka/i, "/light/07-tokyo-light.png"],
-  [/goa|beach/i, "/light/02-beach-weekend-light.png"],
-  [/paris|france/i, "/light/05-paris-light.png"],
-  [/new york/i, "/light/06-new-york-light.png"],
-  [/capri|amalfi/i, "/light/12-capri-itinerary-light.png"],
-  [/rome|italy/i, "/light/08-rome-light.png"],
-  [/dubai|uae/i, "/light/09-dubai-light.png"],
-  [/agra|taj mahal/i, "/light/10-agra-light.png"],
-  [/naples/i, "/light/11-naples-itinerary-light.png"],
+  [/japan|tokyo|kyoto|osaka/i, "07-tokyo"],
+  [/goa|beach/i, "02-beach-weekend"],
+  [/paris|france/i, "05-paris"],
+  [/new york/i, "06-new-york"],
+  [/capri|amalfi/i, "12-capri-itinerary"],
+  [/rome|italy/i, "08-rome"],
+  [/dubai|uae/i, "09-dubai"],
+  [/agra|taj mahal/i, "10-agra"],
+  [/naples/i, "11-naples-itinerary"],
 ];
 
 const validTripImage = (value: unknown): value is string =>
@@ -25,16 +27,13 @@ const validTripImage = (value: unknown): value is string =>
   !value.includes("example.com") &&
   !value.startsWith("/api/google-place-detail?");
 
-function getTripImage(destination: string, details?: Partial<TripInfo>) {
-  const destinationPhoto = destinationPhotos.find(([pattern]) => pattern.test(destination))?.[1];
-  if (destinationPhoto) return destinationPhoto;
-
+function getTripImage(details?: Partial<TripInfo>) {
   const hotelPhoto = details?.hotels?.map((hotel) => hotel.hotel_image_url).find(validTripImage);
   if (hotelPhoto) return hotelPhoto;
 
   const activityPhoto = details?.itinerary?.flatMap((day) => day.activities ?? [])
     .map((activity) => activity.place_image_url).find(validTripImage);
-  return activityPhoto || "/beach.jpg";
+  return activityPhoto || travelArtworkSrc("02-beach-weekend");
 }
 
 export default function TripCard({ trip }: { trip: Doc<"TripDetailTable"> }) {
@@ -42,14 +41,16 @@ export default function TripCard({ trip }: { trip: Doc<"TripDetailTable"> }) {
   const destination = details?.destination || "Your destination";
   const duration = String(details?.duration || "").trim();
   const durationLabel = duration ? (/days?/i.test(duration) ? duration : `${duration} days`) : "";
-  const preferredPhoto = getTripImage(destination, details);
+  const artwork = destinationPhotos.find(([pattern]) => pattern.test(destination))?.[1];
+  const preferredPhoto = getTripImage(details);
   const [imageFailed, setImageFailed] = useState(false);
-  const photoUrl = imageFailed ? "/beach.jpg" : preferredPhoto;
+  const photoUrl = imageFailed ? travelArtworkSrc("02-beach-weekend") : preferredPhoto;
 
   return (
     <Link href={`/create-new-trip?tripId=${encodeURIComponent(trip.tripId)}`} className="dashboard-trip-card tc-surface" aria-label={`View trip to ${destination}`}>
       <div className="dashboard-trip-image">
-        <Image src={photoUrl} alt={`Travel inspiration for ${destination}`} fill sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw" unoptimized onError={() => setImageFailed(true)} />
+        {artwork ? <TravelArtwork asset={artwork} sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw" /> :
+          <Image src={photoUrl} alt={`Travel inspiration for ${destination}`} fill sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw" unoptimized onError={() => setImageFailed(true)} />}
         <span className="dashboard-trip-badge"><Clock size={13} aria-hidden="true" /> Planned</span>
       </div>
       <div className="dashboard-trip-body">

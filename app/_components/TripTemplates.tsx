@@ -6,12 +6,13 @@ import { ArrowRight } from "lucide-react";
 
 
 import Image from "next/image";
+import { travelArtworkSrc } from "@/lib/travel-artwork";
 
 const templates = [
     {
         title: "Beach Weekend",
         emoji: "🏖️",
-        image: "/beach.jpg",
+        image: travelArtworkSrc("02-beach-weekend"),
         prompt: "Plan a relaxing beach weekend trip",
         bgClass: "bg-cyan-50/40 dark:bg-cyan-900/10",
         borderClass: "hover:border-cyan-200 dark:hover:border-cyan-800",
@@ -20,7 +21,7 @@ const templates = [
     {
         title: "Food Tour",
         emoji: "🍜",
-        image: "/food.jpg",
+        image: travelArtworkSrc("03-food-tour"),
         prompt: "Plan a food tour trip",
         bgClass: "bg-orange-50/40 dark:bg-orange-900/10",
         borderClass: "hover:border-orange-200 dark:hover:border-orange-800",
@@ -29,7 +30,7 @@ const templates = [
     {
         title: "Mountain Escape",
         emoji: "🏔️",
-        image: "/mountains.jpg",
+        image: travelArtworkSrc("04-mountain-escape"),
         prompt: "Plan a mountain escape trip",
         bgClass: "bg-green-50/40 dark:bg-green-900/10",
         borderClass: "hover:border-green-200 dark:hover:border-green-800",
